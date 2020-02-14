@@ -1,7 +1,15 @@
+import core.ProblemManager;
+import data_processing.DataProcessing;
+
+import java.io.FileNotFoundException;
+
 public class Main {
 
 
-    public static void main(String[] args) {
-        System.out.println("hello world");
+    public static void main(String[] args) throws FileNotFoundException {
+
+        DataProcessing dataProcessing = new DataProcessing();
+        ProblemManager problemManager = dataProcessing.instantiateProblem();
+        problemManager.optimize();
     }
 }
