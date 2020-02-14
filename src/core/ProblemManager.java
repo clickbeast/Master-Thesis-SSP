@@ -1,58 +1,64 @@
 package core;
 
-import models.Jobs;
 import models.elemental.Job;
+import org.w3c.dom.ls.LSOutput;
 
 public class ProblemManager {
 
     private final int MAGAZINE_SIZE;
-    private final int NUMBER_TOOLS;
-    private final int NUMBER_JOBS;
+    private final int N_TOOLS;
+    private final int N_JOBS;
+    private final int SEED;
+
 
     private int[] sequence;
     private Job[] jobs;
     private int[][] jobToolGrid;
     private int[][] result;
 
+    private int currentCost;
+
+
     //Build up
-    public ProblemManager( int MAGAZINE_SIZE, int NUMBER_TOOLS, int NUMBER_JOBS, int[][] jobToolGrid) {
+    public ProblemManager(int MAGAZINE_SIZE, int N_TOOLS, int N_JOBS, int[][] jobToolGrid) {
         this.MAGAZINE_SIZE = MAGAZINE_SIZE;
-        this.NUMBER_TOOLS = NUMBER_TOOLS;
-        this.NUMBER_JOBS = NUMBER_JOBS;
+        this.N_TOOLS = N_TOOLS;
+        this.N_JOBS = N_JOBS;
         this.jobToolGrid = jobToolGrid;
 
+        this.SEED = 7;
 
-        //Solustion
-        this.result  = new int[NUMBER_JOBS][NUMBER_TOOLS];
+        this.result  = new int[N_JOBS][N_TOOLS];
+
         this.initializeJobs();
 
     }
 
 
     public void initializeJobs() {
-        Job[] jobs = new Job[NUMBER_JOBS];
+        Job[] jobs = new Job[N_JOBS];
 
-        for (int i = 0; i < NUMBER_JOBS; i++) {
+        for (int i = 0; i < N_JOBS; i++) {
             jobs[i] = new Job(0,this);
         }
-
         this.jobs = jobs;
     }
 
 
     public void initialSolution() {
+        this.printGrid(result);
 
-        for (int i = 0; i < NUMBER_JOBS; i++) {
-            for (int j = 0; j < NUMBER_TOOLS; j++) {
-                if(jobToolGrid[i][j] == 1 ) {
+        int cost = 0;
 
-                }
-            }
-
+        //Random sequence
+        for (int i = 0; i < N_JOBS; i++) {
+            Job job = this.getJobs()[i];
         }
 
-        return;
     }
+
+
+
 
     /**
      * Optimize the problem
@@ -63,9 +69,18 @@ public class ProblemManager {
                 "Vervang de huidige oplossing door de beste oplossing uit de omgeving STOP wanneer er in de omgeving " +
                 "geen oplossing is die beter is dan de huidige";*/
 
-
+        boolean RUN = true;
+        while(RUN) {
+            this.doMove();
+            int x = this.evaluate();
+        }
     }
 
+
+
+    public void doMove() {
+
+    }
 
     public void decode() {
         //KTNS
@@ -76,16 +91,33 @@ public class ProblemManager {
     }
 
 
+    /* UTILITIES ------------------------------------------------------------------ */
+
+    public void printGrid(int[][] grid) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                System.out.print(grid[i][j] + " ");
+            }
+            System.out.println("");
+        }
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /* GETTERS & SETTERS ------------------------------------------------------------------ */
+
+
+
     public int getMAGAZINE_SIZE() {
         return MAGAZINE_SIZE;
     }
 
-    public int getNUMBER_TOOLS() {
-        return NUMBER_TOOLS;
+    public int getN_TOOLS() {
+        return N_TOOLS;
     }
 
-    public int getNUMBER_JOBS() {
-        return NUMBER_JOBS;
+    public int getN_JOBS() {
+        return N_JOBS;
     }
 
     public int[] getSequence() {

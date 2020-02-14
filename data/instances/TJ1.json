@@ -1,0 +1,99 @@
+{
+    "N_TOOLS": 10,
+    "N_JOBS": 10,
+    "allowJobSplit": false,
+
+    "objective": [{
+        "min_switches": true,
+        "min_time_span": false,
+        "min_machine_stops": false,
+        "priority": ["min_switches", "min_time_span", "min_machine_stops"]
+    }],
+    "machines": [{
+        "id": 0,
+        "magazines": [0]
+    }],
+    "magazines": [{
+        "id": 0,
+        "magazineSize": 10,
+        "slotSize": [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }],
+    "tools": [{
+        "id": 0,
+        "switch_time": 0,
+        "priority": 0,
+        "size": 0,
+        "parallel": [1, 2, 8, 9, 3, 6]
+    }],
+    "jobs": [{
+        "id": 0,
+        "priority": 0,
+        "similarity": []
+    }],
+    "matrix": [
+        [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0],
+        [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ],
+
+    "result": {
+        "sequence": [1, 8, 9, 9, 10],
+        "finalCost": {
+            "switches": 0,
+            "timeSpan": 0,
+            "machineStops": 0
+        },
+
+        "costHistory": [{
+                "timeStamp": 0,
+                "switches": 0,
+                "timeSpan": 0,
+                "machineStops": 0
+            },
+            {
+                "timeStamp": 0,
+                "switches": 0,
+                "timeSpan": 0,
+                "machineStops": 0
+            },
+            {
+                "timeStamp": 0,
+                "switches": 0,
+                "timeSpan": 0,
+                "machineStops": 0
+            }
+        ],
+
+        "matrix": [
+            [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0],
+            [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ],
+
+        "magazines": [{
+            "MAGAZINE_SIZE": 10,
+            "magazine_contraint": false
+
+        }],
+        "tools": [{
+            "id": 0,
+            "timeConstraint": false,
+            "loadingConstraint": false,
+            "priority": 0,
+            "similarity": []
+        }],
+        "jobs": [{
+            "id": 0,
+            "timeConstraint": false,
+            "loadingConstraint": false,
+            "priority": 0,
+            "similarity": []
+        }]
+    }
+}

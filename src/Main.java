@@ -10,6 +10,7 @@ public class Main {
 
         DataProcessing dataProcessing = new DataProcessing();
         ProblemManager problemManager = dataProcessing.instantiateProblem();
-        problemManager.optimize();
+        problemManager.initialSolution();
+        //problemManager.optimize();
     }
 }

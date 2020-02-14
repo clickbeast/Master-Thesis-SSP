@@ -17,17 +17,17 @@ public class DataProcessing {
 
         Scanner scanner = new Scanner(new File(file));
 
-        int NUMBER_TOOLS = 0;
-        int NUMBER_JOBS = 0;
+        int N_TOOLS = 0;
+        int N_JOBS = 0;
         int MAGAZINE_SIZE = 0;
 
         loop: while(scanner.hasNext()) {
             String input = scanner.nextLine();
 
             if(input.matches("n=.*")) {
-                NUMBER_JOBS = extractValue(input);
+                N_JOBS = extractValue(input);
             }else if (input.matches("m=.*")) {
-                NUMBER_TOOLS = extractValue(input);
+                N_TOOLS = extractValue(input);
             }else if (input.matches("c=.*")) {
                 MAGAZINE_SIZE = extractValue(input);
             }else if (input.matches("problem.*")) {
@@ -36,11 +36,11 @@ public class DataProcessing {
 
         }
 
-        int[][] matrix = parseMatrix(NUMBER_TOOLS, NUMBER_JOBS, scanner);
+        int[][] matrix = parseMatrix(N_TOOLS, N_JOBS, scanner);
         int[] magazine  = new int[MAGAZINE_SIZE];
 
         ProblemManager problemManager = new ProblemManager(
-                MAGAZINE_SIZE, NUMBER_TOOLS, NUMBER_JOBS, matrix
+                MAGAZINE_SIZE, N_TOOLS, N_JOBS, matrix
         );
 
         return problemManager;
@@ -80,8 +80,7 @@ public class DataProcessing {
         return  0;
     }
 
-    public void writeResult() {
-
+    public void writeSolution() {
 
     }
 
