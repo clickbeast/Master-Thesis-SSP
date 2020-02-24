@@ -1,6 +1,7 @@
 {
     "N_TOOLS": 10,
     "N_JOBS": 10,
+    "SEED": 7,
     "allowJobSplit": false,
 
     "objective": [{

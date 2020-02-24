@@ -10,25 +10,33 @@ public class Job {
 
     private ProblemManager problemManager;
 
+    //STATIC
     private int id;
     private int[] tools;
     private int[] antiSet;
     private int[] set;
 
+    //HELP -> adjust to better structure than adjency
+
+    //CALCULATION
     private int position;
+    private int switches;
+    private int nextFirstJobChosenAntiCount;
     private int[] result;
 
 
+
+    /* INITIALIZATION ------------------------------------------------------------------ */
 
     public Job(int id,ProblemManager problemManager) {
         this.problemManager =  problemManager;
         List<Integer> collect = new ArrayList<>();
         List<Integer> collectAnti = new ArrayList<>();
 
-        this.tools = problemManager.getJobToolGrid()[id];
+        this.tools = problemManager.getJobToolMatrix()[id];
 
-        for (int i = 0; i < problemManager.getJobToolGrid()[id].length; i++) {
-            int value = problemManager.getJobToolGrid()[id][i];
+        for (int i = 0; i < problemManager.getJobToolMatrix()[id].length; i++) {
+            int value = problemManager.getJobToolMatrix()[id][i];
             if(value ==  1) {
                 collect.add(i);
             }else{
@@ -40,6 +48,38 @@ public class Job {
 
         this.position = id;
         this.result = this.problemManager.getResult()[id];
+    }
+
+
+    /* GRAPH ------------------------------------------------------------------ */
+
+    public Job nextJob() {
+        return this.problemManager.getJobs()[(position+1) % this.problemManager.getN_JOBS()];
+    }
+
+    public Job prevJob() {
+        return this.problemManager.getJobs()[(position-1) % this.problemManager.getN_JOBS()];
+
+    }
+
+
+    /* GETTERS & SETTERS ------------------------------------------------------------------ */
+
+
+    public int getSwitches() {
+        return switches;
+    }
+
+    public void setSwitches(int switches) {
+        this.switches = switches;
+    }
+
+    public int getNextJobAntiPickedCount() {
+        return nextFirstJobChosenAntiCount;
+    }
+
+    public void setNextFirstJobChosenAntiCount(int nextFirstJobChosenAntiCount) {
+        this.nextFirstJobChosenAntiCount = nextFirstJobChosenAntiCount;
     }
 
     public int[] getTools() {
