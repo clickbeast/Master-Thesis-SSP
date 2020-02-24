@@ -80,14 +80,6 @@ public class DataProcessing {
         return  0;
     }
 
-    public void writeSolution() {
-
-    }
-
-
-
-
-
 }
 
 

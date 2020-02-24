@@ -48,6 +48,10 @@ public class MoveManager {
         tmp = sequence[jobA];
         sequence[jobA] = sequence[jobB];
         sequence[jobB] =  tmp;
+        //Set the position inside the job
+        this.problemManager.getJobSeqPos(jobA).setPosition(jobA);
+        this.problemManager.getJobSeqPos(jobB).setPosition(jobB);
+
     }
 
     public void swapTwoJobs(int A, int B) {

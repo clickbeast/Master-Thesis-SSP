@@ -33,10 +33,11 @@ public class Job {
         List<Integer> collect = new ArrayList<>();
         List<Integer> collectAnti = new ArrayList<>();
 
-        this.tools = problemManager.getJobToolMatrix()[id];
+        this.tools = problemManager.getJOB_TOOL_MATRIX()[id];
+        this.id = id;
 
-        for (int i = 0; i < problemManager.getJobToolMatrix()[id].length; i++) {
-            int value = problemManager.getJobToolMatrix()[id][i];
+        for (int i = 0; i < problemManager.getJOB_TOOL_MATRIX()[id].length; i++) {
+            int value = problemManager.getJOB_TOOL_MATRIX()[id][i];
             if(value ==  1) {
                 collect.add(i);
             }else{
@@ -54,6 +55,10 @@ public class Job {
     /* GRAPH ------------------------------------------------------------------ */
 
     public Job nextJob() {
+        if(this.position + 1 == this.problemManager.getN_JOBS()) {
+            return null;
+        }
+
         return this.problemManager.getJobs()[(position+1) % this.problemManager.getN_JOBS()];
     }
 
@@ -74,7 +79,7 @@ public class Job {
         this.switches = switches;
     }
 
-    public int getNextJobAntiPickedCount() {
+    public int getPickedToolsNextJobCount() {
         return nextFirstJobChosenAntiCount;
     }
 
