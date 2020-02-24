@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class ProblemManager {
 
-    //SA PARAMS
+    //SA PARAMATERS
     private final long TIME_LIMIT;
     private final double START_TEMP;
     private final double END_TEMP;
@@ -19,16 +19,19 @@ public class ProblemManager {
     private MoveManager moveManager;
     private DataProcessing dataProcessing;
 
+    //PARAMETERS
     private final int MAGAZINE_SIZE;
     private final int N_TOOLS;
     private final int N_JOBS;
     private final int SEED;
 
+    //CONSTANTS
     private int[][] STD_SWITCHES;
+    private int[][] jobToolMatrix;
 
+    //VARIABLES
     private int[] sequence;
     private Job[] jobs;
-    private int[][] jobToolMatrix;
     private int[][] result;
 
     private int currentCost;
@@ -41,16 +44,19 @@ public class ProblemManager {
         this.N_JOBS = N_JOBS;
         this.jobToolMatrix = jobToolMatrix;
 
+
+        this.currentCost = Integer.MAX_VALUE;
         this.SEED = 7;
         this.TIME_LIMIT = 600;
         this.START_TEMP = 330.0;
         this.END_TEMP = 0.0097;
         this.DECAY_RATE = 0.9997;
 
-        this.random = new Random();
+        this.random = new Random(this.SEED);
 
         this.result  = new int[N_JOBS][N_TOOLS];
         this.sequence = new int[N_JOBS];
+
 
         this.initializeJobs();
         this.initializeDifferenceMatrix();
@@ -93,7 +99,6 @@ public class ProblemManager {
 
     public void initialSolution() {
         this.printGrid(result);
-        int cost = 0;
 
         //Setup sequence
         for (int i = 0; i < N_JOBS; i++) {
@@ -101,6 +106,17 @@ public class ProblemManager {
             this.sequence[i] = job.getId();
             job.setPosition(i);
         }
+        this.currentCost = decodeToolsAndSwitches();
+        printResult();
+    }
+
+
+    public int decodeToolsAndSwitches() {
+
+        //OPT: do not recalculate all when unneeded
+        //OPT: perform KTNS with flow network
+        //OPT: collect more side info
+        int switches = 0;
 
         //PERFORM KTNS + DETERMINE SWITCHES
         for (int i = 0; i < N_JOBS; i++) {
@@ -108,6 +124,7 @@ public class ProblemManager {
             //calculate amount of switches
             if(job.getId() != 0) {
                 job.setSwitches(this.STD_SWITCHES[job.getId()][job.prevJob().getId()] - job.getNextJobAntiPickedCount());
+                switches += job.getSwitches();
             }
 
             int m = MAGAZINE_SIZE - job.getSet().length;
@@ -118,6 +135,7 @@ public class ProblemManager {
             m_fill : while(m != 0) {
                 for (int k = 0; k < job.getAntiSet().length; k++) {
                     if(this.jobToolMatrix[nextJob.getId()][job.getAntiSet()[k]] == 1) {
+                        //enable the tool for this job
                         result[job.getId()][k] = 1;
                         //calculate how many stay present
                         nextFirstJobChosenAntiCount = nextFirstJobChosenAntiCount +  c;
@@ -131,16 +149,12 @@ public class ProblemManager {
             }
         }
 
-
-        printResult();
+        return switches;
     }
 
-
-    public Job getJobSeqPos(int i) {
-        return this.jobs[sequence[i]];
-    }
-
-    //merges the two
+    /**
+     * Merges the tools needed and the extra selected tools to minimize tool switches
+     */
     public void finalizeResult() {
         for (int i = 0; i < N_JOBS; i++) {
             for (int j = 0; j < N_TOOLS; j++) {
@@ -171,28 +185,32 @@ public class ProblemManager {
     public void optimize() {
         System.out.println("cost\tswitches\tmoves\t\ttemperature\t\t\ttimeRemaining\t");
 
-        double currentResult = Double.MAX_VALUE;
         double temperature = this.START_TEMP;
         int j = 0;
         int steps = 0;
         long timeLimit = System.currentTimeMillis() + 1000 * TIME_LIMIT;
 
         while (System.currentTimeMillis() < timeLimit) {
+            //Perform a move
+            this.moveManager.doMove();
+            //Clear switch count
+            this.result = new int[N_JOBS][N_TOOLS];
+            //decode to determine tools needed and switches needed
+            int cost = this.decodeToolsAndSwitches();
 
-            double newResult = evaluate();
-
-            if(newResult >= currentResult) {
+            if(cost >= currentCost) {
                 //ACCEPT to certain degree
-                if (Math.exp((currentResult - newResult) / temperature) < random.nextDouble()) {
+                if (Math.exp((cost - currentCost) / temperature) < random.nextDouble()) {
+                    moveManager.acceptMove();
+                    this.currentCost = cost;
 
-
-                    //Reset move... //TODO:
+                }else{
+                    moveManager.cancelMove();
                 }
             }else{
-
+                moveManager.acceptMove();
+                this.currentCost = cost;
             }
-
-
 
             //Keep temperature for a few steps before dropping
             if(j > 1000) {
@@ -212,33 +230,14 @@ public class ProblemManager {
                 System.out.println(this.currentCost + "\t" + steps + "\t\t\t" + steps
                         + "\t\t" + temperature + "\t" + (timeLimit - System.currentTimeMillis()) + "\t\t\t\t" + 0);
                 //LOG SOLUTION
+                printResult();
             }
 
             steps++;
 
         }
 
-
-
-
     }
-
-
-
-    public void doMove() {
-        //MOVE 1 : move a full block
-
-        //MOVE: 2: move a
-    }
-
-    public void decode() {
-        //KTNS
-    }
-
-    public int evaluate() {
-        return 0;
-    }
-
 
     /* UTILITIES ------------------------------------------------------------------ */
 
@@ -253,9 +252,74 @@ public class ProblemManager {
         System.out.println("");
     }
 
+
+
+    public Job getJobSeqPos(int i) {
+        return this.jobs[sequence[i]];
+    }
+
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
 
 
+    public long getTIME_LIMIT() {
+        return TIME_LIMIT;
+    }
+
+    public double getSTART_TEMP() {
+        return START_TEMP;
+    }
+
+    public double getEND_TEMP() {
+        return END_TEMP;
+    }
+
+    public double getDECAY_RATE() {
+        return DECAY_RATE;
+    }
+
+    public Random getRandom() {
+        return random;
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    public MoveManager getMoveManager() {
+        return moveManager;
+    }
+
+    public void setMoveManager(MoveManager moveManager) {
+        this.moveManager = moveManager;
+    }
+
+    public DataProcessing getDataProcessing() {
+        return dataProcessing;
+    }
+
+    public void setDataProcessing(DataProcessing dataProcessing) {
+        this.dataProcessing = dataProcessing;
+    }
+
+    public int getSEED() {
+        return SEED;
+    }
+
+    public int[][] getSTD_SWITCHES() {
+        return STD_SWITCHES;
+    }
+
+    public void setSTD_SWITCHES(int[][] STD_SWITCHES) {
+        this.STD_SWITCHES = STD_SWITCHES;
+    }
+
+    public int getCurrentCost() {
+        return currentCost;
+    }
+
+    public void setCurrentCost(int currentCost) {
+        this.currentCost = currentCost;
+    }
 
     public int getMAGAZINE_SIZE() {
         return MAGAZINE_SIZE;
