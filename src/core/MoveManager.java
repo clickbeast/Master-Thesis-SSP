@@ -9,7 +9,7 @@ public class MoveManager {
     private ProblemManager problemManager;
     private int[] sequence;
     private Random random;
-    int A,B;
+    private int A,B;
 
     public MoveManager(ProblemManager problemManager) {
         this.problemManager = problemManager;
@@ -17,8 +17,8 @@ public class MoveManager {
         this.sequence = this.problemManager.getSequence();
 
         //TMP
-        int A = 0;
-        int B = 0;
+        this.A = 0;
+        this.B = 0;
     }
 
     public void doMove() {
@@ -27,7 +27,7 @@ public class MoveManager {
 
     public void cancelMove() {
         //TODO
-        this.swapTwoJobs(A,B);
+        this.swapTwoJobs(this.A,this.B);
     }
 
     public void acceptMove() {
@@ -39,15 +39,21 @@ public class MoveManager {
         int jobB = this.random.nextInt(this.sequence.length);
         int tmp = 0;
 
-
+        //Look until other job not the same
         while (jobB == jobA) {
              jobB = this.random.nextInt(this.sequence.length);
         }
 
         //TODO: optimize swap
+        //Swap
         tmp = sequence[jobA];
         sequence[jobA] = sequence[jobB];
         sequence[jobB] =  tmp;
+
+        //Set to swapped
+        this.setA(jobA);
+        this.setB(jobB);
+
         //Set the position inside the job
         this.problemManager.getJobSeqPos(jobA).setPosition(jobA);
         this.problemManager.getJobSeqPos(jobB).setPosition(jobB);
@@ -56,10 +62,15 @@ public class MoveManager {
 
     public void swapTwoJobs(int A, int B) {
         int tmp = 0;
+
         //TODO: optimize swap
         tmp = sequence[A];
         sequence[A] = sequence[B];
         sequence[B] =  tmp;
+
+        //Set the position inside the job
+        this.problemManager.getJobSeqPos(A).setPosition(A);
+        this.problemManager.getJobSeqPos(B).setPosition(B);
     }
 
 
@@ -70,6 +81,23 @@ public class MoveManager {
 
 
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
+
+
+    public int getA() {
+        return A;
+    }
+
+    public void setA(int a) {
+        A = a;
+    }
+
+    public int getB() {
+        return B;
+    }
+
+    public void setB(int b) {
+        B = b;
+    }
 
     public ProblemManager getProblemManager() {
         return problemManager;

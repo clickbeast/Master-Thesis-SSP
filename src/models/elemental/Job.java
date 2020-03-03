@@ -55,15 +55,22 @@ public class Job {
     /* GRAPH ------------------------------------------------------------------ */
 
     public Job nextJob() {
-        if(this.position + 1 == this.problemManager.getN_JOBS()) {
+        if(position + 1 >=  this.problemManager.getN_JOBS()) {
             return null;
         }
 
-        return this.problemManager.getJobs()[(position+1) % this.problemManager.getN_JOBS()];
+        Job nextJob = this.problemManager.getJobSeqPos(position + 1);
+        return nextJob;
     }
 
     public Job prevJob() {
-        return this.problemManager.getJobs()[(position-1) % this.problemManager.getN_JOBS()];
+        //TODO: look to store this...
+        if(position - 1 < 0) {
+            return null;
+        }
+
+        Job prevJob = this.problemManager.getJobSeqPos(position - 1);
+        return prevJob;
 
     }
 

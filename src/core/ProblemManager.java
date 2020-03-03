@@ -38,6 +38,7 @@ public class ProblemManager {
     private int[][] result;
 
     private int currentCost;
+    private int minCost;
     private int MAX_TOOLS_JOB_ID;
 
 
@@ -50,14 +51,15 @@ public class ProblemManager {
 
 
         this.currentCost = Integer.MAX_VALUE;
+        this.minCost = Integer.MAX_VALUE;
 
         this.MAX_TOOLS_JOB = Integer.MIN_VALUE;
 
         this.SEED = 7;
         this.TIME_LIMIT = 600;
 
-        this.START_TEMP = 330.0;
-        this.END_TEMP = 0.0097;
+        this.START_TEMP = 200.0;
+        this.END_TEMP = 0.000097;
         this.DECAY_RATE = 0.9997;
 
         this.random = new Random(this.SEED);
@@ -88,7 +90,10 @@ public class ProblemManager {
 
 
     public void initializeDifferenceMatrix() {
-        this.STD_SWITCHES = new int[N_JOBS][N_JOBS];
+
+       //TODO: make more efficient
+
+        /*this.STD_SWITCHES = new int[N_JOBS][N_JOBS];
         int f = 1;
         for (int i = 0; i < N_JOBS; i++) {
             for (int j = f; j < N_JOBS; j++) {
@@ -105,6 +110,21 @@ public class ProblemManager {
                 this.STD_SWITCHES[j][i] = k;
             }
             f++;
+        }*/
+
+        this.STD_SWITCHES = new int[N_JOBS][N_JOBS];
+        for (int i = 0; i < N_JOBS; i++) {
+            for (int j = 0; j < N_JOBS; j++) {
+
+                int switches = 0;
+                for (int t = 0; t < N_TOOLS; t++) {
+                    if(this.JOB_TOOL_MATRIX[i][t] != this.JOB_TOOL_MATRIX[j][t]) {
+                        switches += 1;
+                    }
+                }
+
+                this.STD_SWITCHES[i][j] = switches;
+            }
         }
     }
 
@@ -121,8 +141,17 @@ public class ProblemManager {
 
         System.out.println(Arrays.toString(sequence));
 
-        this.currentCost = decodeToolsAndSwitches();
-        printResult();
+        this.currentCost = calculateSwitches();
+        this.copyGrid(this.JOB_TOOL_MATRIX,this.result);
+        this.printGrid(result);
+    }
+
+    public int calculateSwitches() {
+        int switches = 0;
+        for (int i = 0; i < sequence.length; i++) {
+            switches = switches + this.getSwitchesAtSeqPos(i);
+        }
+        return switches;
     }
 
     public int decodeToolsAndSwitches() {
@@ -169,14 +198,17 @@ public class ProblemManager {
         }
 
         //CALCULATE SWITCHES SEPPERATETLY
-
-
         return switches;
     }
 
-    /**
+
+
+/*
+    */
+/**
      * Merges the tools needed and the extra selected tools to minimize tool switches
-     */
+     *//*
+
     public void finalizeResult() {
         for (int i = 0; i < N_JOBS; i++) {
             for (int j = 0; j < N_TOOLS; j++) {
@@ -186,52 +218,50 @@ public class ProblemManager {
             }
         }
     }
-
+*/
+/*
     public void printResult() {
-
-        System.out.println("switches: " +  this.currentCost);
         this.finalizeResult();
-        printSolution(this.JOB_TOOL_MATRIX);
-        System.out.println();
-        System.out.println();
-        printSolution(this.result);
-    }
+        this.printFinalSolution();
+    }*/
+
+
 
     /**
      * Optimize the problem
      */
     public void optimize() {
-        System.out.println("cost\tswitches\tmoves\t\ttemperature\t\t\ttimeRemaining\t");
+    System.out.printf("%-10s %-10s %-10s %-20s %-10s %-10s %-10s \n", "Cost", "Min Cost" , "Moves" , "Temperature", "Time" , "Accepted" , "Sequence");
 
+        //SIMILARITY SCORING FUNCTION
         double temperature = this.START_TEMP;
         int j = 0;
         int steps = 0;
+        long accepted = 0;
         long timeLimit = System.currentTimeMillis() + 1000 * TIME_LIMIT;
-
         while (true) {
-            //Perform a move
             this.moveManager.doMove();
-            //Clear switch count
-            this.result = new int[N_JOBS][N_TOOLS];
-            //decode to determine tools needed and switches needed
-            int cost = this.decodeToolsAndSwitches();
+            int cost = this.calculateSwitches();
 
+            int deltaE = cost - this.currentCost;
 
-            if(cost >= currentCost) {
-                //ACCEPT to certain degree
-                if (Math.exp((cost - currentCost) / temperature) < random.nextDouble()) {
+            if(deltaE > 0) {
+                double acceptance = Math.exp(-deltaE/ temperature);
+                double ran = random.nextDouble();
+                if (acceptance < ran) {
                     moveManager.acceptMove();
+                    accepted+=1;
                     this.currentCost = cost;
-
                 }else{
                     moveManager.cancelMove();
                 }
             }else{
-                moveManager.acceptMove();
                 this.currentCost = cost;
+                this.minCost = Math.min(this.minCost,this.currentCost);
+                moveManager.acceptMove();
             }
 
-            //Keep temperature for a few steps before dropping
+            //Keep temperature steady for a few steps before dropping
             if(j > 1000) {
                 temperature = temperature * DECAY_RATE;
                 j=0;
@@ -244,14 +274,19 @@ public class ProblemManager {
                 temperature = 10.0 + random.nextDouble() * 40;
             }
 
+            //PROBLEM: it prints out the current one but it prints a worked on solution
+            //REWIND NOT WORKING CORRECTLY
+            if (steps % 100000 == 0) {
+                long remaining = (timeLimit - System.currentTimeMillis());
+                System.out.printf("%-10s %-10s %-10s %-20s %-10s %-10s %-10s \n", this.currentCost,this.minCost, steps, temperature, remaining, accepted,  Arrays.toString(sequence));
+                accepted = 0;
+                //this.printFinalSolution();
 
-            if (true) {
-                System.out.println(this.currentCost + "\t" + steps + "\t\t\t" + steps
-                        + "\t\t" + temperature + "\t" + (timeLimit - System.currentTimeMillis()) + "\t\t\t\t");
-                //LOG SOLUTION
-                //printResult();
             }
 
+            if(steps % 100000 == 0) {
+                //this.printFinalSolution();
+            }
             steps++;
         }
 
@@ -275,17 +310,87 @@ public class ProblemManager {
             for (int j = 0; j < grid[i].length; j++) {
                 System.out.print(grid[i][j] + " ");
             }
-            System.out.print("\t" + this.jobs[i].getSwitches());
+
+            System.out.print("\t" + this.getSwitchesAtSeqPos(i));
+
             System.out.println("");
         }
+
+        for (int j = 0; j < grid[0].length; j++) {
+            System.out.print("  ");
+        }
+        System.out.print("\t" + "---");
+        System.out.println("");
+
+
+        for (int j = 0; j < grid[0].length; j++) {
+            System.out.print("  ");
+        }
+        System.out.print("\t" + this.currentCost);
+        System.out.println("");
+
+
+
+        System.out.println("");
+        System.out.println("");
+    }
+
+
+    public void printFinalSolution() {
+
+        for (int i = 0; i < sequence.length; i++) {
+            int jobId = sequence[i];
+            System.out.print(jobId + "\t");
+
+            for (int j = 0; j < result[jobId].length; j++) {
+                System.out.print(result[jobId][j] + " ");
+            }
+
+            System.out.print("\t" + this.getSwitchesAtSeqPos(i));
+            System.out.println("");
+        }
+
+        System.out.print(" \t");
+        for (int j = 0; j < result[0].length; j++) {
+            System.out.print("  ");
+        }
+        System.out.print("\t" + "---");
+        System.out.println("");
+
+
+        System.out.print(" \t");
+
+        for (int j = 0; j < result[0].length; j++) {
+            System.out.print("  ");
+        }
+        System.out.print("\t" + this.currentCost);
+        System.out.println("");
+
         System.out.println("");
         System.out.println("");
     }
 
 
 
+    public int getSwitchesAtSeqPos(int i) {
+        if(i == 0) {
+            return 0;
+        }
+        Job job = this.getJobSeqPos(i);
+        return this.STD_SWITCHES[job.prevJob().getId()][job.getId()];
+    }
+
     public Job getJobSeqPos(int i) {
         return this.jobs[sequence[i]];
+    }
+
+
+    public void copyGrid(int[][] from, int[][] to) {
+        for (int i = 0; i < from.length; i++) {
+            for (int j = 0; j < from[i].length; j++) {
+                to[i][j] = from[i][j];
+            }
+        }
     }
 
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
@@ -393,5 +498,37 @@ public class ProblemManager {
 
     public void setResult(int[][] result) {
         this.result = result;
+    }
+
+    public int getMAX_TOOLS_JOB() {
+        return MAX_TOOLS_JOB;
+    }
+
+    public void setMAX_TOOLS_JOB(int MAX_TOOLS_JOB) {
+        this.MAX_TOOLS_JOB = MAX_TOOLS_JOB;
+    }
+
+    public int[] getEQUALIZE() {
+        return EQUALIZE;
+    }
+
+    public void setEQUALIZE(int[] EQUALIZE) {
+        this.EQUALIZE = EQUALIZE;
+    }
+
+    public int getMinCost() {
+        return minCost;
+    }
+
+    public void setMinCost(int minCost) {
+        this.minCost = minCost;
+    }
+
+    public int getMAX_TOOLS_JOB_ID() {
+        return MAX_TOOLS_JOB_ID;
+    }
+
+    public void setMAX_TOOLS_JOB_ID(int MAX_TOOLS_JOB_ID) {
+        this.MAX_TOOLS_JOB_ID = MAX_TOOLS_JOB_ID;
     }
 }
