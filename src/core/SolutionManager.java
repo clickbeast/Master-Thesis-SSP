@@ -30,15 +30,16 @@ public class SolutionManager {
         int cost = this.problemManager.getCurrentCost();
         int[][] result = new int[this.problemManager.getN_JOBS()][this.problemManager.getN_TOOLS()];
         int[][] ktns = new int[this.problemManager.getN_JOBS()][this.problemManager.getN_TOOLS()];
-        int[] switches = new int[sequence.length];
+        int[] switches = this.problemManager.getSwitches().clone();
 
         this.problemManager.copyGrid(this.problemManager.getResult(),result);
         this.problemManager.copyGrid(this.problemManager.getKtns(),ktns);
 
-        //Determine number of switches between...
+        //LEGACY
+        /*//Determine number of switches between...
         for (int i = 0; i < sequence.length; i++) {
             switches[i] = this.problemManager.getSwitchesAtSeqPos(i);
-        }
+        }*/
 
         Solution solution = new Solution(cost, sequence, result, ktns, switches);
 
