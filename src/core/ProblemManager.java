@@ -45,6 +45,9 @@ public class ProblemManager {
     private int[][] result;
     private int[][] ktns;
 
+    //TEMP: subject to change
+    private int[] switches;
+
     private int currentCost;
     private int minCost;
     private int MAX_TOOLS_JOB_ID;
@@ -75,6 +78,7 @@ public class ProblemManager {
         this.result  = new int[N_JOBS][N_TOOLS];
         this.sequence = new int[N_JOBS];
         this.ktns = new int[N_JOBS][N_TOOLS];
+        this.switches = new int[N_JOBS];
 
         this.initializeJobs();
         this.initializeDifferenceMatrix();
@@ -154,16 +158,39 @@ public class ProblemManager {
         System.out.println(Arrays.toString(sequence));
 
         this.currentCost = calculateSwitches();
-        //copy job tool grid
+        //copy job tool grid , INNEFCIENT
         this.copyGrid(this.JOB_TOOL_MATRIX,this.result);
         this.printGrid(result);
     }
 
     public int calculateSwitches() {
+
         int switches = 0;
         for (int i = 0; i < sequence.length; i++) {
             switches = switches + this.getSwitchesAtSeqPos(i);
         }
+        return switches;
+    }
+
+
+    public int calculateSwitchesGreedy() {
+        int switches = 0;
+
+        for (int i = 1; i < sequence.length; i++) {
+            Job job = this.getJobSeqPos(i);
+            int jobId = job.getId();
+            int prevJobId = job.prevJob().getId();
+            int lsw = 0;
+            for (int t = 0; t < this.getN_TOOLS(); t++) {
+                if(this.result[jobId][t] != this.result[prevJobId][t]) {
+                    switches += 1;
+                }
+            }
+
+            this.getSwitches()[jobId] = lsw;
+            switches+= lsw;
+        }
+
         return switches;
     }
 
@@ -244,34 +271,31 @@ public class ProblemManager {
 
         int switches = 0;
         for (int i = 0; i < N_JOBS; i++) {
+
             Job job = this.getJobSeqPos(i);
-            //calculate amount of switches
-            if(i != 0) {
-                //NOTE : wat als je kiest om er toch te houden die wel in de set zitten van deze ma in de antiset van den andere
-                job.setSwitches(this.STD_SWITCHES[job.getId()][job.prevJob().getId()]
-                        - job.prevJob().getPickedToolsNextJobCount());
-                switches += job.getSwitches();
-            }
 
             int m = MAGAZINE_SIZE - job.getSet().length;
             int c = 1;
-            int nextFirstJobChosenAntiCount  = 0;
+            int matchNextFirst  = 0;
             //fill the remainder of the places in the magazine (KTNS)
             Job nextJob =  job.nextJob();
             m_fill : while(m > 0 && nextJob != null) {
                 for (int k = 0; k < job.getAntiSet().length; k++) {
+                    if(m<=0) {
+                        break m_fill;
+                    }
                     if(this.JOB_TOOL_MATRIX[nextJob.getId()][job.getAntiSet()[k]] == 1) {
-                        //enable the tool for this job
+                        //enable the tool for this job, because it is needed in one of the next jobs
+                        ktns[job.getId()][job.getAntiSet()[k]] = 1;
                         result[job.getId()][job.getAntiSet()[k]] = 1;
-                        //calculate how many stay present
-                        nextFirstJobChosenAntiCount = nextFirstJobChosenAntiCount +  c;
+                        //TODO: subject to change
+                        //calculate how many match the first next job
+                        matchNextFirst=+c;
                         m--;
-                        //continue m_fill;
                     }
                 }
-                job.setNextFirstJobChosenAntiCount(nextFirstJobChosenAntiCount);
+                //TODO: switches
                 c=0;
-                nextFirstJobChosenAntiCount = 0;
                 nextJob =  nextJob.nextJob();
             }
         }
@@ -302,9 +326,17 @@ public class ProblemManager {
         long timeLimit = System.currentTimeMillis() + 1000 * TIME_LIMIT;
         while (timeLimit - System.currentTimeMillis() > 555500) {
             this.moveManager.doMove();
-            int cost = this.calculateSwitches();
+            //TODO: reduce redundancy & uneeded copying! ! ! !
             ktns = new int[N_JOBS][N_TOOLS];
 
+            result = new int[N_JOBS][N_TOOLS];
+            this.copyGrid(this.JOB_TOOL_MATRIX,this.result);
+
+            switches = new int[N_JOBS];
+
+            this.KTNS(ktns);
+
+            int cost = this.calculateSwitchesGreedy();
             int deltaE = cost - this.currentCost;
 
             if(deltaE > 0) {
@@ -457,6 +489,8 @@ public class ProblemManager {
         Job job = this.getJobSeqPos(i);
         return this.STD_SWITCHES[job.prevJob().getId()][job.getId()];
     }
+
+
 
     public Job getJobSeqPos(int i) {
         return this.jobs[sequence[i]];
@@ -616,5 +650,17 @@ public class ProblemManager {
 
     public void setKtns(int[][] ktns) {
         this.ktns = ktns;
+    }
+
+    public SolutionManager getSolutionManager() {
+        return solutionManager;
+    }
+
+    public int[] getSwitches() {
+        return switches;
+    }
+
+    public void setSwitches(int[] switches) {
+        this.switches = switches;
     }
 }
