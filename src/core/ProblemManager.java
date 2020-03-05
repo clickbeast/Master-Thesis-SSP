@@ -1,8 +1,14 @@
 package core;
 
 import data_processing.DataProcessing;
+import fastcsv.writer.CsvAppender;
+import fastcsv.writer.CsvWriter;
+import models.Solution;
 import models.elemental.Job;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -17,6 +23,7 @@ public class ProblemManager {
 
     //MANAGERS
     private MoveManager moveManager;
+    private final SolutionManager solutionManager;
     private DataProcessing dataProcessing;
 
     //PARAMETERS
@@ -36,6 +43,7 @@ public class ProblemManager {
     private int[] sequence;
     private Job[] jobs;
     private int[][] result;
+    private int[][] ktns;
 
     private int currentCost;
     private int minCost;
@@ -58,23 +66,27 @@ public class ProblemManager {
         this.SEED = 7;
         this.TIME_LIMIT = 600;
 
-        this.START_TEMP = 200.0;
+        this.START_TEMP = 270.0;
         this.END_TEMP = 0.000097;
-        this.DECAY_RATE = 0.9997;
+        this.DECAY_RATE = 0.99900;
 
         this.random = new Random(this.SEED);
 
         this.result  = new int[N_JOBS][N_TOOLS];
         this.sequence = new int[N_JOBS];
-
+        this.ktns = new int[N_JOBS][N_TOOLS];
 
         this.initializeJobs();
         this.initializeDifferenceMatrix();
         System.out.println("difference");
         printGrid(this.getSTD_SWITCHES());
+
         this.moveManager = new MoveManager(this);
+        this.solutionManager = new SolutionManager(this);
+
 
         System.out.println(Arrays.toString(jobs));
+
     }
 
     public void initializeJobs() {
@@ -142,6 +154,7 @@ public class ProblemManager {
         System.out.println(Arrays.toString(sequence));
 
         this.currentCost = calculateSwitches();
+        //copy job tool grid
         this.copyGrid(this.JOB_TOOL_MATRIX,this.result);
         this.printGrid(result);
     }
@@ -226,12 +239,60 @@ public class ProblemManager {
     }*/
 
 
+    public void KTNS(int[][] ktns) {
+        //PERFORM KTNS + DETERMINE SWITCHES
+
+        int switches = 0;
+        for (int i = 0; i < N_JOBS; i++) {
+            Job job = this.getJobSeqPos(i);
+            //calculate amount of switches
+            if(i != 0) {
+                //NOTE : wat als je kiest om er toch te houden die wel in de set zitten van deze ma in de antiset van den andere
+                job.setSwitches(this.STD_SWITCHES[job.getId()][job.prevJob().getId()]
+                        - job.prevJob().getPickedToolsNextJobCount());
+                switches += job.getSwitches();
+            }
+
+            int m = MAGAZINE_SIZE - job.getSet().length;
+            int c = 1;
+            int nextFirstJobChosenAntiCount  = 0;
+            //fill the remainder of the places in the magazine (KTNS)
+            Job nextJob =  job.nextJob();
+            m_fill : while(m > 0 && nextJob != null) {
+                for (int k = 0; k < job.getAntiSet().length; k++) {
+                    if(this.JOB_TOOL_MATRIX[nextJob.getId()][job.getAntiSet()[k]] == 1) {
+                        //enable the tool for this job
+                        result[job.getId()][job.getAntiSet()[k]] = 1;
+                        //calculate how many stay present
+                        nextFirstJobChosenAntiCount = nextFirstJobChosenAntiCount +  c;
+                        m--;
+                        //continue m_fill;
+                    }
+                }
+                job.setNextFirstJobChosenAntiCount(nextFirstJobChosenAntiCount);
+                c=0;
+                nextFirstJobChosenAntiCount = 0;
+                nextJob =  nextJob.nextJob();
+            }
+        }
+
+    }
+
 
     /**
      * Optimize the problem
      */
     public void optimize() {
-    System.out.printf("%-10s %-10s %-10s %-20s %-10s %-10s %-10s \n", "Cost", "Min Cost" , "Moves" , "Temperature", "Time" , "Accepted" , "Sequence");
+        File file = new File("data/log.csv");
+        CsvWriter csvWriter = new CsvWriter();
+
+        try (CsvAppender csvAppender = csvWriter.append(file, StandardCharsets.UTF_8)) {
+            // header
+            csvAppender.appendLine("Cost", "Min Cost", "Moves", "Temperature", "Time" , "Accepted" , "Sequence");
+
+        System.out.printf("%-10s %-10s %-10s %-20s %-10s %-10s %-10s \n", "Cost", "Min Cost" , "Moves" , "Temperature", "Time" , "Accepted" , "Sequence");
+
+        //TODO: improve time limit
 
         //SIMILARITY SCORING FUNCTION
         double temperature = this.START_TEMP;
@@ -239,16 +300,17 @@ public class ProblemManager {
         int steps = 0;
         long accepted = 0;
         long timeLimit = System.currentTimeMillis() + 1000 * TIME_LIMIT;
-        while (true) {
+        while (timeLimit - System.currentTimeMillis() > 555500) {
             this.moveManager.doMove();
             int cost = this.calculateSwitches();
+            ktns = new int[N_JOBS][N_TOOLS];
 
             int deltaE = cost - this.currentCost;
 
             if(deltaE > 0) {
                 double acceptance = Math.exp(-deltaE/ temperature);
                 double ran = random.nextDouble();
-                if (acceptance < ran) {
+                if (acceptance > ran) {
                     moveManager.acceptMove();
                     accepted+=1;
                     this.currentCost = cost;
@@ -257,12 +319,16 @@ public class ProblemManager {
                 }
             }else{
                 this.currentCost = cost;
-                this.minCost = Math.min(this.minCost,this.currentCost);
+                if(this.currentCost < this.minCost) {
+                    this.minCost = this.currentCost;
+                    Solution solution = this.solutionManager.saveSolution();
+                    this.solutionManager.writeSolution(solution);
+                }
                 moveManager.acceptMove();
             }
 
             //Keep temperature steady for a few steps before dropping
-            if(j > 1000) {
+            if(j > 10000) {
                 temperature = temperature * DECAY_RATE;
                 j=0;
             }
@@ -271,7 +337,7 @@ public class ProblemManager {
 
             //Reheating
             if (temperature < 1.5) {
-                temperature = 10.0 + random.nextDouble() * 40;
+                //temperature = 10.0 + random.nextDouble() * 40;
             }
 
             //PROBLEM: it prints out the current one but it prints a worked on solution
@@ -279,9 +345,17 @@ public class ProblemManager {
             if (steps % 100000 == 0) {
                 long remaining = (timeLimit - System.currentTimeMillis());
                 System.out.printf("%-10s %-10s %-10s %-20s %-10s %-10s %-10s \n", this.currentCost,this.minCost, steps, temperature, remaining, accepted,  Arrays.toString(sequence));
-                accepted = 0;
                 //this.printFinalSolution();
-
+                csvAppender.appendLine(
+                        String.valueOf(this.currentCost),
+                        String.valueOf(this.minCost),
+                        String.valueOf(steps),
+                        String.valueOf(temperature),
+                        String.valueOf(remaining),
+                        String.valueOf(accepted),
+                        Arrays.toString(sequence));
+                csvAppender.endLine();
+                accepted = 0;
             }
 
             if(steps % 100000 == 0) {
@@ -289,7 +363,11 @@ public class ProblemManager {
             }
             steps++;
         }
+        // 1st line in one operation
 
+        } catch (IOException e) {
+             e.printStackTrace();
+         }
     }
 
     /* UTILITIES ------------------------------------------------------------------ */
@@ -371,7 +449,7 @@ public class ProblemManager {
     }
 
 
-
+    //TODO: CONVERT FROM STD TO TOTAL PLEASE
     public int getSwitchesAtSeqPos(int i) {
         if(i == 0) {
             return 0;
@@ -530,5 +608,13 @@ public class ProblemManager {
 
     public void setMAX_TOOLS_JOB_ID(int MAX_TOOLS_JOB_ID) {
         this.MAX_TOOLS_JOB_ID = MAX_TOOLS_JOB_ID;
+    }
+
+    public int[][] getKtns() {
+        return ktns;
+    }
+
+    public void setKtns(int[][] ktns) {
+        this.ktns = ktns;
     }
 }

@@ -12,5 +12,6 @@ public class Main {
         ProblemManager problemManager = dataProcessing.instantiateProblem();
         problemManager.initialSolution();
         problemManager.optimize();
+
     }
 }
