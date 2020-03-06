@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class DataProcessing {
 
     public ProblemManager instantiateProblem() throws FileNotFoundException {
-        String file = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/datA1";
+        String file = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/datB3";
         String problemDescription = file + File.separator + "problem_description.csv";
         String jobToolMatrixFile =  file + File.separator + "job_tool_matrix.csv";
 
