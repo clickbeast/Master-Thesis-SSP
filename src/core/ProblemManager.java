@@ -16,6 +16,9 @@ public class ProblemManager {
 
     //SA PARAMATERS
     private final long TIME_LIMIT;
+    //in seconds
+    private final long RUN_TIME;
+
     private final double START_TEMP;
     private final double END_TEMP;
     private final double DECAY_RATE;
@@ -67,7 +70,11 @@ public class ProblemManager {
         this.MAX_TOOLS_JOB = Integer.MIN_VALUE;
 
         this.SEED = 7;
-        this.TIME_LIMIT = 600;
+
+        //IN MILISECONDS
+
+        this.RUN_TIME = 900;
+        this.TIME_LIMIT = System.currentTimeMillis() + 1000 * this.getRUN_TIME();;
 
         this.START_TEMP = 270.0;
         this.END_TEMP = 0.000097;
@@ -323,8 +330,10 @@ public class ProblemManager {
         int j = 0;
         int steps = 0;
         long accepted = 0;
-        long timeLimit = System.currentTimeMillis() + 1000 * TIME_LIMIT;
-        while (timeLimit - System.currentTimeMillis() > 555500) {
+
+
+
+        while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
             this.moveManager.doMove();
             //TODO: reduce redundancy & uneeded copying! ! ! !
             ktns = new int[N_JOBS][N_TOOLS];
@@ -360,7 +369,7 @@ public class ProblemManager {
             }
 
             //Keep temperature steady for a few steps before dropping
-            if(j > 10000) {
+            if(j > 50000) {
                 temperature = temperature * DECAY_RATE;
                 j=0;
             }
@@ -375,7 +384,7 @@ public class ProblemManager {
             //PROBLEM: it prints out the current one but it prints a worked on solution
             //REWIND NOT WORKING CORRECTLY
             if (steps % 100000 == 0) {
-                long remaining = (timeLimit - System.currentTimeMillis());
+                long remaining = (this.getTIME_LIMIT() - System.currentTimeMillis());
                 System.out.printf("%-10s %-10s %-10s %-20s %-10s %-10s %-10s \n", this.currentCost,this.minCost, steps, temperature, remaining, accepted,  Arrays.toString(sequence));
                 //this.printFinalSolution();
                 csvAppender.appendLine(
@@ -662,5 +671,9 @@ public class ProblemManager {
 
     public void setSwitches(int[] switches) {
         this.switches = switches;
+    }
+
+    public long getRUN_TIME() {
+        return RUN_TIME;
     }
 }
