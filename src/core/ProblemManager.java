@@ -274,13 +274,10 @@ public class ProblemManager {
 
 
     public void KTNS(int[][] ktns) {
-        //PERFORM KTNS + DETERMINE SWITCHES
-
+        //PERFORM KTNS + DETERMINE SWITCHES (currently not used)
         int switches = 0;
         for (int i = 0; i < N_JOBS; i++) {
-
             Job job = this.getJobSeqPos(i);
-
             int m = MAGAZINE_SIZE - job.getSet().length;
             int c = 1;
             int matchNextFirst  = 0;
