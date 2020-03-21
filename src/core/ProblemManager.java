@@ -274,13 +274,10 @@ public class ProblemManager {
 
 
     public void KTNS(int[][] ktns) {
-        //PERFORM KTNS + DETERMINE SWITCHES (currently not used)
         int switches = 0;
         for (int i = 0; i < N_JOBS; i++) {
             Job job = this.getJobSeqPos(i);
             int m = MAGAZINE_SIZE - job.getSet().length;
-            int c = 1;
-            int matchNextFirst  = 0;
             //fill the remainder of the places in the magazine (KTNS)
             Job nextJob =  job.nextJob();
             m_fill : while(m > 0 && nextJob != null) {
@@ -292,18 +289,11 @@ public class ProblemManager {
                         //enable the tool for this job, because it is needed in one of the next jobs
                         ktns[job.getId()][job.getAntiSet()[k]] = 1;
                         result[job.getId()][job.getAntiSet()[k]] = 1;
-                        //TODO: subject to change
-                        //calculate how many match the first next job
-                        matchNextFirst=+c;
-                        m--;
                     }
                 }
-                //TODO: switches
-                c=0;
                 nextJob =  nextJob.nextJob();
             }
         }
-
     }
 
 
