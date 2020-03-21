@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class DataProcessing {
 
     public ProblemManager instantiateProblem() throws FileNotFoundException {
-        String file = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/input/datA2";
+        String file = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/input/datB2";
         String problemDescription = file + File.separator + "problem_description.csv";
         String jobToolMatrixFile =  file + File.separator + "job_tool_matrix.csv";
 
@@ -36,18 +36,22 @@ public class DataProcessing {
 
         }
 
+        N_TOOLS = 15;
+        N_JOBS = 20;
+
         int[][] matrix = parseMatrix(N_TOOLS, N_JOBS, scanner);
         int[] magazine  = new int[MAGAZINE_SIZE];
 
         ProblemManager problemManager = new ProblemManager(
-                MAGAZINE_SIZE, N_TOOLS, N_JOBS, matrix
+                8, N_TOOLS, N_JOBS, matrix
         );
 
         return problemManager;
     }
 
     public int[][] parseMatrix(int n, int m, Scanner scanner) {
-        int[][] matrix = new int[n][m];
+        //TODO:fix me
+        int[][] matrix = new int[m][n];
         int i = 0;
         String input = "";
 
