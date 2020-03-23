@@ -1,14 +1,29 @@
 from os import listdir
+import os
 import json
 import re
 import copy
-from json_tricks import dump, dumps, load, loads, strip_comments
-
+from json import JSONEncoder
 from os.path import isfile, join
 
-path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances"
-resultPath = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/json"
-fileNames = [f for f in listdir(path) if isfile(join(path, f))]
+
+class MarkedList:
+    _list = None
+
+    def __init__(self, l):
+        self._list = l
+
+
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, o):
+        if isinstance(o, MarkedList):
+            return "##<{}>##".format(o._list)
+
+
+input_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/raw_instances"
+output_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data" \
+              "/instances "
+fileNames = [f for f in listdir(input_path) if isfile(join(input_path, f))]
 
 temp_tool = {
     "id": 0,
@@ -60,7 +75,7 @@ template = {
     "N_TOOLS": 10,
     "N_JOBS": 10,
     "SEED": 7,
-    "BEST_VALUE":  0,
+    "BEST_VALUE": 0,
     "allowJobSplit": False,
     "jobSplitNeeded": False,
 
@@ -96,19 +111,32 @@ template = {
 
 def extract(p, f):
     cpath = p + "/" + f
+    count = 0
+
+
     with open(cpath) as fr:
         while True:
+            line = fr.readline()
+            print("s")
+            if line.startswith("c="):
+                magazine_size = get_trailing_number(line)
+                print("yas")
+                break
+        print("yas")
+        while fr:
             line = setUntilFirstMatrixLine(fr)
+            print(line)
             if line is None:
                 break
             result = extractProblem(fr, line)
-            addProblem(result[0], result[1], f)
-
+            name = f + "_" + str(count)
+            addProblem(result[0], result[1], name, magazine_size)
+            count += 1
 
 
 def setUntilFirstMatrixLine(fr):
-    while fr:
-        line = fr.readline()
+    for line in fr:
+        print("bonjour")
         if line.startswith("0") | line.startswith("1"):
             return line
 
@@ -119,7 +147,8 @@ def extractProblem(file, line):
     matrix = []
     while line.startswith("0") | line.startswith("1"):
         matrixLine = line.strip().split(" ")
-        matrix.append(matrixLine)
+        matrixLine = [int(element) for element in matrixLine]
+        matrix.append(MarkedList(matrixLine))
         line = file.readline()
 
     # extract best value
@@ -135,25 +164,35 @@ def get_trailing_number(s):
     return int(m.group()) if m else None
 
 
-def addProblem(matrix, bestValue, name):
+def addProblem(matrix, bestValue, name, magazine_size):
     result = copy.deepcopy(template)
     magazine = copy.deepcopy(template["magazines"][0])
+    magazine["magazineSize"] = magazine_size
 
     result["BEST_VALUE"] = bestValue
     result["N_JOBS"] = len(matrix)
-    result["N_TOOLS"] = len(matrix[0])
+    result["N_TOOLS"] = len(matrix[0]._list)
     result["matrix"] = matrix
 
     result["magazines"] = magazine
-    with open(name + ".json", "w") as write_file:
-        json.dump(result, write_file, indent=4)
+
+    d = json.dumps(result, indent=4, cls=CustomJSONEncoder)
+    d = d.replace('"##<', "").replace('>##"', "")
+
+    name = name.replace("dat","DAT_")
+
+    target_path = output_path.strip(" ") + "/" + name
+    print("bonsour")
+    try:
+        os.mkdir(target_path)
+    except OSError:
+        print ("Creation of the directory %s failed" % target_path)
+
+    with open(target_path + "/" + name + ".json", "w") as write_file:
+        write_file.write(d)
 
 
 
 
-
-def parseArrayToSingleLine(file):
-    return None
-
-for fileName in fileNames:
-    extract(path, fileName)
+for n in fileNames:
+    extract(input_path, n)
