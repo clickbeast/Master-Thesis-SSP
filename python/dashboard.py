@@ -7,7 +7,7 @@ import dash_html_components as html
 import plotly.express as px
 
 BASE = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
-LOGFILE = BASE + "/data/log.csv"
+LOGFILE = BASE + "/data/log_A.csv"
 
 
 # app = dash.Dash(__name__)
