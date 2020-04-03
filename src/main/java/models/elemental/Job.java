@@ -12,7 +12,7 @@ public class Job {
 
     //STATIC
     private int id;
-    private int[] tools;
+    private int[] TOOLS;
     private int[] antiSet;
     private int[] set;
 
@@ -28,12 +28,12 @@ public class Job {
 
     /* INITIALIZATION ------------------------------------------------------------------ */
 
-    public Job(int id,ProblemManager problemManager) {
+    public Job(int id, ProblemManager problemManager) {
         this.problemManager =  problemManager;
         List<Integer> collect = new ArrayList<>();
         List<Integer> collectAnti = new ArrayList<>();
 
-        this.tools = problemManager.getJOB_TOOL_MATRIX()[id];
+        this.TOOLS = problemManager.getJOB_TOOL_MATRIX()[id];
         this.id = id;
 
         for (int i = 0; i < problemManager.getJOB_TOOL_MATRIX()[id].length; i++) {
@@ -44,22 +44,21 @@ public class Job {
                 collectAnti.add(i);
             }
         }
+
         this.set = collect.stream().mapToInt(i->i).toArray();
         this.antiSet = collectAnti.stream().mapToInt(i->i).toArray();
-
-        this.position = id;
-        this.result = this.problemManager.getResult()[id];
     }
 
 
     /* GRAPH ------------------------------------------------------------------ */
+/*
 
     public Job nextJob() {
         if(position + 1 >=  this.problemManager.getN_JOBS()) {
             return null;
         }
 
-        Job nextJob = this.problemManager.getJobSeqPos(position + 1);
+        //Job nextJob = this.problemManager.getJobSeqPos(position + 1);
         return nextJob;
     }
 
@@ -69,10 +68,12 @@ public class Job {
             return null;
         }
 
-        Job prevJob = this.problemManager.getJobSeqPos(position - 1);
+        //Job prevJob = this.problemManager.getJobSeqPos(position - 1);
         return prevJob;
 
     }
+
+*/
 
 
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
@@ -94,12 +95,12 @@ public class Job {
         this.nextFirstJobChosenAntiCount = nextFirstJobChosenAntiCount;
     }
 
-    public int[] getTools() {
-        return tools;
+    public int[] getTOOLS() {
+        return TOOLS;
     }
 
-    public void setTools(int[] tools) {
-        this.tools = tools;
+    public void setTOOLS(int[] TOOLS) {
+        this.TOOLS = TOOLS;
     }
 
     public int getPosition() {
@@ -155,7 +156,7 @@ public class Job {
     public String toString() {
         return "Job{" +
                 "id=" + id +
-                ", tools=" + Arrays.toString(tools) +
+                ", tools=" + Arrays.toString(TOOLS) +
                 ", antiSet=" + Arrays.toString(antiSet) +
                 ", set=" + Arrays.toString(set) +
                 '}';

@@ -1,0 +1,20 @@
+plugins {
+    id 'idea'
+    id 'java'
+}
+
+group 'com.simonvermeir'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'de.siegmar:fastcsv:1.0.3'
+    implementation 'com.diogonunes:JCDP:4.0.1'
+}

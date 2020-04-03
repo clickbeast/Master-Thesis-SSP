@@ -24,6 +24,7 @@ public class SolutionManager {
             e.printStackTrace();
         }
     }
+/*
 
     public Solution saveSolution() {
         int[] sequence = this.problemManager.getSequence().clone();
@@ -36,16 +37,20 @@ public class SolutionManager {
         this.problemManager.copyGrid(this.problemManager.getKtns(),ktns);
 
         //LEGACY
-        /*//Determine number of switches between...
+        */
+/*//*
+/Determine number of switches between...
         for (int i = 0; i < sequence.length; i++) {
             switches[i] = this.problemManager.getSwitchesAtSeqPos(i);
-        }*/
+        }*//*
+
 
         Solution solution = new Solution(cost, sequence, result, ktns, switches);
 
         this.solutions.add(solution);
         return solution;
     }
+*/
 
     public void writeSolution(Solution solution) throws IOException {
         // Creating a File object that represents the disk file.
