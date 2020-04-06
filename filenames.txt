@@ -1,0 +1,5 @@
+log_init_ordered__ls_none
+log_init_random__ls_none
+log_init_tsp__ls_none
+log_init_tool__ls_sd
+log_init_tool__ls_sd

@@ -4,10 +4,14 @@ import data_processing.DataProcessing;
 import data_processing.InputData;
 import data_processing.Logger;
 import data_processing.Parameters;
+import fastcsv.writer.CsvAppender;
 import models.elemental.Job;
+import models.elemental.Tool;
+import util.General;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 class Result {
@@ -33,9 +37,6 @@ class Result {
         this.sequence = sequence;
 
         this.jobToolMatrix = jobToolMatrix;
-
-
-
     }
 
 
@@ -116,7 +117,7 @@ public class ProblemManager {
     private final double END_TEMP;
     private final double DECAY_RATE;
 
-    String[] logTitles = {"Cost", "Min Cost" , "Moves" , "Temperature", "Time" , "Accepted" , "Sequence"};
+    String[] logTitles = {"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"};
 
     //CONSTANTS
     private final int MAGAZINE_SIZE;
@@ -124,9 +125,11 @@ public class ProblemManager {
     private final int N_JOBS;
     private int[][] JOB_TOOL_MATRIX;
     //Amount of different tool loading differences
-    private int[][] JOB_JOB_DIFFERENCES;
+    private int[][] DIFFERENCE_MATRIX;
     //Amount common tools
-    private int[][] JOB_JOB_INTERSECTION;
+    private int[][] SHARED_TOOLS_MATRIX;
+    private int[][] SWITCHES_LB_MATRIX;
+    private int[][] TOOL_PAIR_COUNT_MATRIX;
 
     //MANAGERS
     private MoveManager moveManager;
@@ -136,11 +139,13 @@ public class ProblemManager {
 
     //VARIABLES
     private Job[] jobs;
-    private int currentCost;
-    private int minCost;
+    private Tool[] tools;
 
+
+    private Result workingResult;
     private Result currentResult;
     private Result bestResult;
+
 
 
     //UTIL
@@ -149,7 +154,6 @@ public class ProblemManager {
 
 
     public ProblemManager(InputData inputData) throws IOException {
-
         //Configure Constants
         this.MAGAZINE_SIZE = inputData.getMAGAZINE_SIZE();
         this.N_TOOLS = inputData.getN_TOOLS();
@@ -173,27 +177,47 @@ public class ProblemManager {
         this.moveManager = new MoveManager(this);
         this.solutionManager = new SolutionManager(this);
         this.random = new Random(this.getSEED());
-        File logFile = new File(this.parameters.getInstanceFolder() + "/" + "log.csv");
+
+        String log_init_random__ls_none = "log_init_random__ls_none";
+        String log_init_ordered__ls_none = "log_init_ordered__ls_none";
+
+
+        File logFile = new File(this.parameters.getInstanceFolder() + "/" + log_init_ordered__ls_none + ".csv");
         this.logger = new Logger(this,logFile);
+
     }
 
     public void optimize() throws IOException {
-        this.logger.logLegend(logTitles);
-        this.initialSolution();
-        this.steepestDescent();
+
+        try(CsvAppender csvAppender = this.logger.getCsvWriter().append(this.logger.getFile(), StandardCharsets.UTF_8)) {
+            this.logger.setCsvAppender(csvAppender);
+            this.logger.logLegend(logTitles);
+            this.initialize();
+            this.initialSolution();
+            this.steepestDescent();
+        }
+    }
+
+    public void initialize(){
+        this.jobs = this.initializeJobs();
+        this.initializeTools();
+        this.DIFFERENCE_MATRIX = this.initializeDifferenceMatrix();
+        this.SHARED_TOOLS_MATRIX = initializeSharedToolsMatrix();
+        this.SWITCHES_LB_MATRIX = this.initializeSwitchesLowerBoundMatrix();
+        this.TOOL_PAIR_COUNT_MATRIX = this.initializeToolPairCountMatrix();
     }
 
     /* DATA MODEL SETUP ------------------------------------------------------------------ */
 
 
-    public void initializeJobs() {
+    public Job[] initializeJobs() {
         Job[] jobs = new Job[N_JOBS];
 
         for (int i = 0; i < N_JOBS; i++) {
             Job job = new Job(i,this);
             jobs[i] = job;
         }
-        this.jobs = jobs;
+        return jobs;
     }
 
     public void initializeTools() {
@@ -233,19 +257,26 @@ public class ProblemManager {
 
     /* INITIAL SOLUTION ------------------------------------------------------------------ */
 
-    public void initialSolution() {
+    public void initialSolution() throws IOException {
         this.logger.logInfo("Creating initial solution");
 
-
         int[] sequence = this.orderedInitialSequence();
-        int[][] jobToolMatrix = this.copyGrid(this.JOB_TOOL_MATRIX);
+        //sequence = this.randomInitialSequence(sequence);
+        int[][] jobToolMatrix = this.decode(sequence);
+        //int[][] jobToolMatrix = this.copyGrid(this.getJOB_TOOL_MATRIX());
 
         //TODO: start using the job position...
         //int[] jobPosition = Arrays.copyOf(sequence,sequence.length);
         int[] switches = this.calculateSwitches(sequence,jobToolMatrix);
         int cost = this.evaluate(sequence, jobToolMatrix, switches);
 
+
+
+
+        this.logger.logInfo(String.valueOf(cost));
         this.logger.logInfo("Initial Solution Created");
+
+        this.logger.log(cost, cost, sequence);
     }
 
     public int[] orderedInitialSequence() {
@@ -296,6 +327,9 @@ public class ProblemManager {
     //Best Improvement
     public void steepestDescent() {
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
+
+
+
             if(this.currentResult.getCost() >= this.bestResult.getCost()) {
                 this.bestResult = this.currentResult;
                 Result steepestBest = this.currentResult;
@@ -409,17 +443,12 @@ public class ProblemManager {
         ArrayList<LinkedList<Integer>> toolPrioritySequence = determineToolPriority(sequence);
         int[][] augmentedJobToolMatrix = new int[this.getN_JOBS()][this.getN_TOOLS()];
 
-        int M = this.MAGAZINE_SIZE;
-
-
         //Set tools
         int[] prev = new int[this.getN_TOOLS()];
 
-        //Remove unwanted tools tools
         for (int i = 0; i < sequence.length; i++) {
 
-
-            //set tools
+            //Set tools
             int numberOfToolsSet = 0;
             for (int j = 0; j < this.N_TOOLS; j++) {
                 augmentedJobToolMatrix[i][j] = this.getJOB_TOOL_MATRIX()[i][j];
@@ -428,17 +457,13 @@ public class ProblemManager {
                     numberOfToolsSet += 1;
                 }
             }
-
-
-
-            int numberOfToolsToRemove = Math.abs(numberOfToolsSet - getMAGAZINE_SIZE());
-
+            int numberOfToolsToRemove = Math.max(0,numberOfToolsSet - getMAGAZINE_SIZE());
+            System.out.println(numberOfToolsToRemove);
             LinkedList<Integer> toolPriority = toolPrioritySequence.get(i);
             //remove unwanted tools
             for (int j = 0; j < numberOfToolsToRemove; j++) {
                 while(true) {
                     int toolId = toolPriority.removeLast();
-
                     if(augmentedJobToolMatrix[i][toolId] == 1) {
                         augmentedJobToolMatrix[i][toolId] = 0;
                         break;
@@ -446,8 +471,10 @@ public class ProblemManager {
                 }
             }
 
+            prev = augmentedJobToolMatrix[i];
         }
 
+        General.printGrid(augmentedJobToolMatrix);
 
         return augmentedJobToolMatrix;
     }
@@ -456,19 +483,30 @@ public class ProblemManager {
     //TODO:
     public ArrayList<LinkedList<Integer>> determineToolPriority(int[] sequence) {
         ArrayList<LinkedList<Integer>> toolPrioritySequence = new ArrayList<>(sequence.length);
-        int[] visited = new int[this.getN_TOOLS()];
 
         for(int i = 0; i < sequence.length; i++) {
+            int[] visited = new int[this.getN_TOOLS()];
             int jobId = sequence[i];
             LinkedList<Integer> toolPriority = new LinkedList<>();
-            for (int j = 0; j < sequence.length; j++) {
-                for (int k = 0; k < this.getN_TOOLS(); k++) {
+            for (int j = i + 1; j < sequence.length; j++) {
+                for (int k = 0; k < visited.length; k++) {
+                    // visiter, belongs to current job, is used here
                     if(visited[k] == 0 && this.getJOB_TOOL_MATRIX()[jobId][k] == 0 && getJOB_TOOL_MATRIX()[j][k] == 1){
                         toolPriority.add(k);
                         visited[k] = 1;
                     }
                 }
             }
+
+            //Add the remaining tools
+            //TODO: optimize collect remaining tools
+            for (int j = 0; j < visited.length; j++) {
+                if(visited[j] == 0 && this.getJOB_TOOL_MATRIX()[jobId][j] == 0) {
+                    toolPriority.add(j);
+                }
+            }
+
+
             toolPrioritySequence.add(toolPriority);
         }
 
@@ -500,7 +538,8 @@ public class ProblemManager {
             int[] previous = jobToolMatrix[i-1];
             int[] current = jobToolMatrix[i];
             for (int j = 0; j < current.length; j++) {
-                if (previous[j] != current[j]) {
+                //CHECK: current implementation: when a tool gets loaded a "switch" is performed
+                if (previous[j] ==  0 &  current[j] ==  1) {
                     swapCount+=1;
                 }
             }
@@ -584,20 +623,20 @@ public class ProblemManager {
         this.JOB_TOOL_MATRIX = JOB_TOOL_MATRIX;
     }
 
-    public int[][] getJOB_JOB_DIFFERENCES() {
-        return JOB_JOB_DIFFERENCES;
+    public int[][] getDIFFERENCE_MATRIX() {
+        return DIFFERENCE_MATRIX;
     }
 
-    public void setJOB_JOB_DIFFERENCES(int[][] JOB_JOB_DIFFERENCES) {
-        this.JOB_JOB_DIFFERENCES = JOB_JOB_DIFFERENCES;
+    public void setDIFFERENCE_MATRIX(int[][] DIFFERENCE_MATRIX) {
+        this.DIFFERENCE_MATRIX = DIFFERENCE_MATRIX;
     }
 
-    public int[][] getJOB_JOB_INTERSECTION() {
-        return JOB_JOB_INTERSECTION;
+    public int[][] getSHARED_TOOLS_MATRIX() {
+        return SHARED_TOOLS_MATRIX;
     }
 
-    public void setJOB_JOB_INTERSECTION(int[][] JOB_JOB_INTERSECTION) {
-        this.JOB_JOB_INTERSECTION = JOB_JOB_INTERSECTION;
+    public void setSHARED_TOOLS_MATRIX(int[][] SHARED_TOOLS_MATRIX) {
+        this.SHARED_TOOLS_MATRIX = SHARED_TOOLS_MATRIX;
     }
 
     public MoveManager getMoveManager() {
@@ -627,22 +666,6 @@ public class ProblemManager {
 
     public void setJobs(Job[] jobs) {
         this.jobs = jobs;
-    }
-
-    public int getCurrentCost() {
-        return currentCost;
-    }
-
-    public void setCurrentCost(int currentCost) {
-        this.currentCost = currentCost;
-    }
-
-    public int getMinCost() {
-        return minCost;
-    }
-
-    public void setMinCost(int minCost) {
-        this.minCost = minCost;
     }
 
     public Result getCurrentResult() {
@@ -675,5 +698,49 @@ public class ProblemManager {
 
     public void setLogger(Logger logger) {
         this.logger = logger;
+    }
+
+    public Parameters getParameters() {
+        return parameters;
+    }
+
+    public String[] getLogTitles() {
+        return logTitles;
+    }
+
+    public void setLogTitles(String[] logTitles) {
+        this.logTitles = logTitles;
+    }
+
+    public int[][] getSWITCHES_LB_MATRIX() {
+        return SWITCHES_LB_MATRIX;
+    }
+
+    public void setSWITCHES_LB_MATRIX(int[][] SWITCHES_LB_MATRIX) {
+        this.SWITCHES_LB_MATRIX = SWITCHES_LB_MATRIX;
+    }
+
+    public int[][] getTOOL_PAIR_COUNT_MATRIX() {
+        return TOOL_PAIR_COUNT_MATRIX;
+    }
+
+    public void setTOOL_PAIR_COUNT_MATRIX(int[][] TOOL_PAIR_COUNT_MATRIX) {
+        this.TOOL_PAIR_COUNT_MATRIX = TOOL_PAIR_COUNT_MATRIX;
+    }
+
+    public Tool[] getTools() {
+        return tools;
+    }
+
+    public void setTools(Tool[] tools) {
+        this.tools = tools;
+    }
+
+    public Result getWorkingResult() {
+        return workingResult;
+    }
+
+    public void setWorkingResult(Result workingResult) {
+        this.workingResult = workingResult;
     }
 }
