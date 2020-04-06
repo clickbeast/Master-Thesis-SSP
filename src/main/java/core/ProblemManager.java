@@ -25,12 +25,15 @@ class Result {
     //FIXME: check if combination with jobs is better
     private int[] jobPosition;
     //the cost of this result
-    private double cost;
+    private int cost;
 
     private ProblemManager problemManager;
 
     //Possibility-> use magazine representation
     private int[][] magazineState;
+
+    //TODO: ADD PROPER DELTA EVAL: VERY VERY VERY IMPORTANT TOO...
+
 
     public Result(ProblemManager problemManager, int[] sequence, int[] jobPosition, int[][] jobToolMatrix) {
         this.problemManager = problemManager;
@@ -39,6 +42,24 @@ class Result {
         this.jobToolMatrix = jobToolMatrix;
     }
 
+    public Result(int[] sequence) {
+        this.sequence = sequence;
+    }
+
+    public Result getCopy() {
+
+        int[] sequence = Arrays.copyOf(this.getSequence(), this.getSequence().length);
+        int[] switches = Arrays.copyOf(this.getSwitches(), this.getSwitches().length);
+        int[][] jobToolMatrix = General.copyGrid(this.getJobToolMatrix());
+        int cost = this.getCost();
+
+        Result result = new Result(sequence);
+        result.setJobToolMatrix(jobToolMatrix);
+        result.setSwitches(switches);
+        result.setCost(cost);
+
+        return result;
+    }
 
 
     /* DATA MODEL SETUP ------------------------------------------------------------------ */
@@ -81,13 +102,14 @@ class Result {
         this.switches = switches;
     }
 
-    public double getCost() {
+    public int getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(int cost) {
         this.cost = cost;
     }
+
 
 
     @Override
@@ -180,9 +202,11 @@ public class ProblemManager {
 
         String log_init_random__ls_none = "log_init_random__ls_none";
         String log_init_ordered__ls_none = "log_init_ordered__ls_none";
+        String log_init_ordered__ls_sd = "log_init_ordered__ls_sd";
+        String log_init_random__ls_sd = "log_init_random__ls_sd";
 
 
-        File logFile = new File(this.parameters.getInstanceFolder() + "/" + log_init_ordered__ls_none + ".csv");
+        File logFile = new File(this.parameters.getInstanceFolder() + "/" + log_init_ordered__ls_sd + ".csv");
         this.logger = new Logger(this,logFile);
 
     }
@@ -270,8 +294,14 @@ public class ProblemManager {
         int[] switches = this.calculateSwitches(sequence,jobToolMatrix);
         int cost = this.evaluate(sequence, jobToolMatrix, switches);
 
+        this.currentResult = new Result(sequence);
+        this.currentResult.setCost(cost);
+        this.currentResult.setJobToolMatrix(jobToolMatrix);
+        this.currentResult.setSwitches(switches);
 
 
+        this.workingResult = this.currentResult.getCopy();
+        this.bestResult = this.currentResult.getCopy();
 
         this.logger.logInfo(String.valueOf(cost));
         this.logger.logInfo("Initial Solution Created");
@@ -325,25 +355,42 @@ public class ProblemManager {
     /* LS ------------------------------------------------------------------ */
 
     //Best Improvement
-    public void steepestDescent() {
+    public void steepestDescent() throws IOException {
+        boolean improved = false;
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
 
+            for (int i = 0; i < this.workingResult.getSequence().length; i++) {
+                for (int j = i + 1 ; j < this.workingResult.getSequence().length; j++) {
+                    int[] seq = this.workingResult.getSequence();
+                    int temp = seq[i];
+                    seq[i] = seq[j];
+                    seq[j] = temp;
 
+                    //sequence = this.randomInitialSequence(sequence);
+                    this.workingResult.setJobToolMatrix(this.decode(seq));
+                    this.workingResult.setSwitches(this.calculateSwitches(seq,this.workingResult.getJobToolMatrix()));
+                    this.workingResult.setCost(this.evaluate(seq, this.workingResult.getJobToolMatrix(), this.workingResult.getSwitches()));
 
-            if(this.currentResult.getCost() >= this.bestResult.getCost()) {
-                this.bestResult = this.currentResult;
-                Result steepestBest = this.currentResult;
+                    this.logger.log(this.workingResult.getCost(), this.bestResult.getCost(), this.workingResult.getSequence());
 
-                for (int i = 0; i < this.currentResult.getSequence().length; i++) {
-                    for (int j = i + 1 ; j < this.currentResult.getSequence().length; j++) {
-
+                    if(this.workingResult.getCost() < this.bestResult.getCost()) {
+                        improved = true;
+                        this.bestResult = this.workingResult.getCopy();
                     }
-                }
 
-            }else{
-                logger.logInfo("local min reached");
+                }
+            }
+
+            this.logger.logInfo("next neighbourhoud");
+
+            if (!improved) {
+                this.logger.logInfo("local min reached, no improvement");
                 break;
             }
+
+            improved = false;
+
+
         }
 
     }
@@ -458,7 +505,7 @@ public class ProblemManager {
                 }
             }
             int numberOfToolsToRemove = Math.max(0,numberOfToolsSet - getMAGAZINE_SIZE());
-            System.out.println(numberOfToolsToRemove);
+            //System.out.println(numberOfToolsToRemove);
             LinkedList<Integer> toolPriority = toolPrioritySequence.get(i);
             //remove unwanted tools
             for (int j = 0; j < numberOfToolsToRemove; j++) {
@@ -474,7 +521,7 @@ public class ProblemManager {
             prev = augmentedJobToolMatrix[i];
         }
 
-        General.printGrid(augmentedJobToolMatrix);
+        //General.printGrid(augmentedJobToolMatrix);
 
         return augmentedJobToolMatrix;
     }
@@ -548,6 +595,8 @@ public class ProblemManager {
 
         return switches;
     }
+
+    
 
     //TODO: can be made much better
     public int evaluate(int[] sequence, int[][] jobToolMatrix, int[] switches) {

@@ -11,4 +11,14 @@ public class General {
         System.out.println("");
         System.out.println("");
     }
+
+
+    public static int[][] copyGrid(int[][] grid) {
+        int[][] gridCopy = new int[grid.length][grid[0].length];
+        for (int i = 0; i < grid.length; i++) {
+            System.arraycopy(grid[i], 0, gridCopy[i], 0, grid[i].length);
+        }
+        return gridCopy;
+    }
+
 }
