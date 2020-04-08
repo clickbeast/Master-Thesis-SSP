@@ -14,116 +14,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-class Result {
-    //The sequence of jobs
-    private int[] sequence;
-    //The tool matrix
-    private int[][] jobToolMatrix;
-    //The amount of switches to reach a given position
-    private int[] switches;
-    //The position of jobs within the sequence
-    //FIXME: check if combination with jobs is better
-    private int[] jobPosition;
-    //the cost of this result
-    private int cost;
-
-    private ProblemManager problemManager;
-
-    //Possibility-> use magazine representation
-    private int[][] magazineState;
-
-    //TODO: ADD PROPER DELTA EVAL: VERY VERY VERY IMPORTANT TOO...
-
-
-    public Result(ProblemManager problemManager, int[] sequence, int[] jobPosition, int[][] jobToolMatrix) {
-        this.problemManager = problemManager;
-        this.sequence = sequence;
-
-        this.jobToolMatrix = jobToolMatrix;
-    }
-
-    public Result(int[] sequence) {
-        this.sequence = sequence;
-    }
-
-    public Result getCopy() {
-
-        int[] sequence = Arrays.copyOf(this.getSequence(), this.getSequence().length);
-        int[] switches = Arrays.copyOf(this.getSwitches(), this.getSwitches().length);
-        int[][] jobToolMatrix = General.copyGrid(this.getJobToolMatrix());
-        int cost = this.getCost();
-
-        Result result = new Result(sequence);
-        result.setJobToolMatrix(jobToolMatrix);
-        result.setSwitches(switches);
-        result.setCost(cost);
-
-        return result;
-    }
-
-
-    /* DATA MODEL SETUP ------------------------------------------------------------------ */
-
-
-    public Job getJobSeqPos(int i) {
-        return this.problemManager.getJobs()[this.getSequence()[i]];
-    }
-
-    public int getSwitchesAtSeqPos(int i) {
-        return this.getSwitches()[i];
-    }
-
-
-
-    /* GETTERS & SETTERS ------------------------------------------------------------------ */
-
-
-    public int[] getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(int[] sequence) {
-        this.sequence = sequence;
-    }
-
-    public int[][] getJobToolMatrix() {
-        return jobToolMatrix;
-    }
-
-    public void setJobToolMatrix(int[][] jobToolMatrix) {
-        this.jobToolMatrix = jobToolMatrix;
-    }
-
-    public int[] getSwitches() {
-        return switches;
-    }
-
-    public void setSwitches(int[] switches) {
-        this.switches = switches;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
-
-
-
-    @Override
-    public String toString() {
-        return "Result{" +
-                "sequence=" + Arrays.toString(sequence) +
-                ", jobToolMatrix=" + Arrays.deepToString(jobToolMatrix) +
-                ", switches=" + Arrays.toString(switches) +
-                ", cost=" + cost +
-                ", magazineState=" + Arrays.deepToString(magazineState) +
-                '}';
-    }
-}
-
 //TODO: CHANGE TO BITMAP VERSIONIONING
 
 public class ProblemManager {
@@ -206,7 +96,7 @@ public class ProblemManager {
         String log_init_random__ls_sd = "log_init_random__ls_sd";
 
 
-        File logFile = new File(this.parameters.getInstanceFolder() + "/" + log_init_ordered__ls_sd + ".csv");
+        File logFile = new File(this.parameters.getInstanceFolder() + "/" + log_init_random__ls_sd + ".csv");
         this.logger = new Logger(this,logFile);
 
     }
@@ -217,8 +107,10 @@ public class ProblemManager {
             this.logger.setCsvAppender(csvAppender);
             this.logger.logLegend(logTitles);
             this.initialize();
-            this.initialSolution();
-            this.steepestDescent();
+            //this.initialSolution();
+            this.initialRandomSolution();
+            //this.steepestDescent();
+            this.hillClimbing();
         }
     }
 
@@ -309,6 +201,36 @@ public class ProblemManager {
         this.logger.log(cost, cost, sequence);
     }
 
+    public void initialRandomSolution() throws IOException {
+        this.logger.logInfo("Creating initial solution");
+
+        int[] sequence = this.orderedInitialSequence();
+        sequence = this.randomInitialSequence(sequence);
+        //sequence = this.randomInitialSequence(sequence);
+        int[][] jobToolMatrix = this.decode(sequence);
+        //int[][] jobToolMatrix = this.copyGrid(this.getJOB_TOOL_MATRIX());
+
+        //TODO: start using the job position...
+        //int[] jobPosition = Arrays.copyOf(sequence,sequence.length);
+        int[] switches = this.calculateSwitches(sequence,jobToolMatrix);
+        int cost = this.evaluate(sequence, jobToolMatrix, switches);
+
+        this.currentResult = new Result(sequence);
+        this.currentResult.setCost(cost);
+        this.currentResult.setJobToolMatrix(jobToolMatrix);
+        this.currentResult.setSwitches(switches);
+
+
+        this.workingResult = this.currentResult.getCopy();
+        this.bestResult = this.currentResult.getCopy();
+
+        this.logger.logInfo(String.valueOf(cost));
+        this.logger.logInfo("Initial Solution Created");
+
+        this.logger.log(cost, cost, sequence);
+    }
+
+
     public int[] orderedInitialSequence() {
         int[] sequence = new int[this.N_JOBS];
         //Setup sequence
@@ -371,11 +293,14 @@ public class ProblemManager {
                     this.workingResult.setSwitches(this.calculateSwitches(seq,this.workingResult.getJobToolMatrix()));
                     this.workingResult.setCost(this.evaluate(seq, this.workingResult.getJobToolMatrix(), this.workingResult.getSwitches()));
 
-                    this.logger.log(this.workingResult.getCost(), this.bestResult.getCost(), this.workingResult.getSequence());
 
                     if(this.workingResult.getCost() < this.bestResult.getCost()) {
                         improved = true;
                         this.bestResult = this.workingResult.getCopy();
+
+
+                        this.logger.log(this.workingResult.getCost(), this.bestResult.getCost(), this.workingResult.getSequence());
+
                     }
 
                 }
@@ -387,10 +312,7 @@ public class ProblemManager {
                 this.logger.logInfo("local min reached, no improvement");
                 break;
             }
-
             improved = false;
-
-
         }
 
     }
@@ -403,22 +325,47 @@ public class ProblemManager {
 
 
     //First improvement
-    public void hillClimbing() {
+    public void hillClimbing() throws IOException {
+        boolean improved = false;
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
-            if(this.currentResult.getCost() >= this.bestResult.getCost()) {
-                this.bestResult = this.currentResult;
 
-                for (int i = 0; i < this.currentResult.getSequence().length; i++) {
-                    for (int j = i + 1 ; j < this.currentResult.getSequence().length; j++) {
-                        continue;
+            climb: for (int i = 0; i < this.workingResult.getSequence().length; i++) {
+                for (int j = i + 1 ; j < this.workingResult.getSequence().length; j++) {
+                    int[] seq = this.workingResult.getSequence();
+
+                    //Swap moves
+                    int temp = seq[i];
+                    seq[i] = seq[j];
+                    seq[j] = temp;
+
+                    //sequence = this.randomInitialSequence(sequence);
+                    this.workingResult.setJobToolMatrix(this.decode(seq));
+                    this.workingResult.setSwitches(this.calculateSwitches(seq,this.workingResult.getJobToolMatrix()));
+                    this.workingResult.setCost(this.evaluate(seq, this.workingResult.getJobToolMatrix(), this.workingResult.getSwitches()));
+
+
+                    if(this.workingResult.getCost() < this.bestResult.getCost()) {
+                        improved = true;
+                        this.bestResult = this.workingResult.getCopy();
+                        this.logger.log(this.workingResult.getCost(), this.bestResult.getCost(), this.workingResult.getSequence());
+
+                        //First improvement
+                        break climb;
                     }
-                }
 
-            }else{
-                logger.logInfo("local min reached");
+                }
+            }
+
+            this.logger.logInfo("next neighbourhoud");
+
+            if (!improved) {
+                this.logger.logInfo("local min reached, no improvement");
                 break;
             }
+            improved = false;
         }
+
+        this.logger.writeSolution(this.bestResult);
     }
 
     //First improvement
@@ -596,7 +543,7 @@ public class ProblemManager {
         return switches;
     }
 
-    
+
 
     //TODO: can be made much better
     public int evaluate(int[] sequence, int[][] jobToolMatrix, int[] switches) {

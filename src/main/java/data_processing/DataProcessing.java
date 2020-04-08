@@ -52,8 +52,9 @@ public class DataProcessing {
 
             Double N_JOBS = (Double) map.get("N_JOBS");
             Double N_TOOLS = (Double) map.get("N_TOOLS");
-            Map <?,?>  map2 = (Map<?, ?>) map.get("magazines");
-            Double MAGAZINE_SIZE = (Double) map2.get("magazineSize");
+            /*Map <?,?>  map2 = (Map<?, ?>) map.get("magazines");
+            Double MAGAZINE_SIZE = (Double) map2.get("magazineSize");*/
+            Double MAGAZINE_SIZE = (Double) map.get("MAGAZINE_SIZE");
             ArrayList<ArrayList<Double>> matrix = (ArrayList<ArrayList<Double>>) map.get("matrix");
             int[][] m = doubleToIntMatrix(matrix);
 

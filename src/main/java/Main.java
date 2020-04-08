@@ -9,24 +9,55 @@ public class Main {
 
 
     public static void main(String[] args) throws FileNotFoundException {
-        DataProcessing dataProcessing = new DataProcessing();
-        String INSTANCE_FOLDER = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances";
-        String INSTANCE  = "DAT_D4_9";
-        //String INSTANCE = "DAT_A1_0";
-        Parameters parameters = new Parameters(INSTANCE_FOLDER,INSTANCE);
-        ProblemManager problemManager = dataProcessing.instantiateProblem(parameters);
 
-        if (problemManager == null) {
-            System.out.println("Error while parsing");
-            return;
+        String[] catan = {
+                "Catan_A1_1",
+                "Catan_A1_2",
+                "Catan_A1_3",
+                "Catan_A1_4",
+                "Catan_A1_5",
+                "Catan_A1_6",
+                "Catan_A1_7",
+                "Catan_A1_8",
+                "Catan_A1_9",
+                "Catan_A1_10",
+        };
+
+
+        String[] mecler = {
+                "Mecler_C4_1",
+                "Mecler_C4_2",
+                "Mecler_C4_3",
+                "Mecler_C4_4",
+                "Mecler_C4_5",
+        };
+
+        String[] dat = catan;
+
+        for (int i = 0; i < dat.length; i++) {
+
+            DataProcessing dataProcessing = new DataProcessing();
+            String INSTANCE_FOLDER = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro";
+            String INSTANCE  = dat[i];
+            //String INSTANCE = "DAT_A1_0";
+            Parameters parameters = new Parameters(INSTANCE_FOLDER,INSTANCE);
+            ProblemManager problemManager = dataProcessing.instantiateProblem(parameters);
+
+            if (problemManager == null) {
+                System.out.println("Error while parsing");
+                return;
+            }
+
+
+            try {
+                problemManager.optimize();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
 
 
-        try {
-            problemManager.optimize();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
 
