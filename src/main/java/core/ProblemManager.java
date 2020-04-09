@@ -78,17 +78,18 @@ public class ProblemManager {
         this.RUN_TIME = 900;
         this.TIME_LIMIT = System.currentTimeMillis() + 1000 * this.getRUN_TIME();;
 
-        //SA PARAMS
-        this.START_TEMP = 270.0;
+        //SA PARAMSà
+        this.START_TEMP = 100;
         this.END_TEMP = 0.000097;
         this.DECAY_RATE = 0.99900;
 
         this.parameters = inputData.getParameters();
-
+        this.random = new Random(this.getSEED());
         //Configure managers
+
+
         this.moveManager = new MoveManager(this);
         this.solutionManager = new SolutionManager(this);
-        this.random = new Random(this.getSEED());
 
         String log_init_random__ls_none = "log_init_random__ls_none";
         String log_init_ordered__ls_none = "log_init_ordered__ls_none";
@@ -109,8 +110,11 @@ public class ProblemManager {
             this.initialize();
             //this.initialSolution();
             this.initialRandomSolution();
+
             //this.steepestDescent();
-            this.hillClimbing();
+
+            //this.hillClimbing();
+            this.simulatedAnnealing();
         }
     }
 
@@ -228,6 +232,8 @@ public class ProblemManager {
         this.logger.logInfo("Initial Solution Created");
 
         this.logger.log(cost, cost, sequence);
+        //this.logger.writeSolution(this.bestResult);
+
     }
 
 
@@ -368,44 +374,76 @@ public class ProblemManager {
         this.logger.writeSolution(this.bestResult);
     }
 
+
+
+
     //First improvement
     public void hillClimbingTournament() {
 
 
     }
 
+
+    public void acceptImproved() {
+
+    }
+
+
     //SA
-    public void simulatedAnnealing() {
+    public void simulatedAnnealing() throws IOException {
 
         double temperature = this.START_TEMP;
         int j = 0;
         int steps = 0;
         long accepted = 0;
+        long rejected = 0;
+        long improved = 0;
         int steady = 0;
 
 
-
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
-            //
-            //this.moveManager.doMove();
 
-            int deltaE = (int) (this.bestResult.getCost() - this.currentResult.getCost());
+            int[] seq = this.workingResult.getSequence();
+            this.getMoveManager().swap(this.workingResult);
+
+            //sequence = this.randomInitialSequence(sequence);
+            this.workingResult.setJobToolMatrix(this.decode(seq));
+            this.workingResult.setSwitches(this.calculateSwitches(seq,this.workingResult.getJobToolMatrix()));
+            this.workingResult.setCost(this.evaluate(seq, this.workingResult.getJobToolMatrix(), this.workingResult.getSwitches()));
+
+
+            int deltaE = (int) (this.workingResult.getCost() - this.bestResult.getCost());
 
             if(deltaE > 0) {
                 double acceptance = Math.exp(-deltaE/ temperature);
                 double ran = random.nextDouble();
-                if (acceptance > ran) {
-                    //accept move
+
+                if(acceptance > ran) {
+
+                    //accept move -> not the best solution
+                    this.currentResult = this.workingResult;
+                    this.workingResult = this.currentResult.getCopy();
+
+                    accepted+=1;
+
                 }else{
+                    rejected+=1;
                     //cancel move
+                    this.workingResult = this.currentResult.getCopy();
                 }
             }else{
+                //accept & best solution now
+                //this.logger.logInfo("New best solution found");
 
+                this.currentResult = this.workingResult;
+                this.workingResult = this.currentResult.getCopy();
+                this.bestResult = this.currentResult.getCopy();
 
+                improved+=1;
             }
 
             //Keep temperature steady for a few steps before dropping
-            if(steady > 50000) {
+            if(steady > 70) {
                 temperature = temperature * DECAY_RATE;
                 steady=0;
             }
@@ -418,10 +456,11 @@ public class ProblemManager {
             }
 
             //LOGGING
-            if (steps % 100000 == 0) {
-                long remaining = (this.getTIME_LIMIT() - System.currentTimeMillis());
+            if (steps % 1000 == 0) {
+                this.logger.log(this.currentResult.getCost(), this.bestResult.getCost(), accepted, rejected, improved, steps, temperature, this.currentResult.getSequence());
             }
 
+            //TODO: stop SA after no improvement is found anymore...
 
             steps++;
         }
@@ -511,6 +550,10 @@ public class ProblemManager {
 
 
     public int[] calculateSwitches(int[] sequence, int[][] jobToolMatrix) {
+        return count_version_simon(sequence,jobToolMatrix);
+    }
+
+    public int[] count_version_simon(int[] sequence, int[][] jobToolMatrix) {
 
         //TODO: countSwitches : see if combination with KTNS is possible
         int[] switches = new int[sequence.length];
@@ -542,6 +585,45 @@ public class ProblemManager {
 
         return switches;
     }
+
+    public int[] count_version_vidal(int[] sequence, int[][] jobToolMatrix) {
+
+        //COUNTING WHEN A 1 TURNS INTO A 0
+
+        //TODO: countSwitches : see if combination with KTNS is possible
+        int[] switches = new int[sequence.length];
+
+
+        //Inserstions
+        int insertionCount = 0;
+        for (int i = 0; i < jobToolMatrix[0].length; i++) {
+            if (jobToolMatrix[0][i] == 1) {
+                insertionCount += 1;
+            }
+        }
+
+        switches[0] = insertionCount;
+
+        //CHECK: a job switch is counted when one is SETUP, not when it is removed
+        //Or differently removing a tool is considered part of the setup process.
+
+        for (int i = 1; i < sequence.length; i++) {
+            int swapCount = 0;
+            int[] previous = jobToolMatrix[i-1];
+            int[] current = jobToolMatrix[i];
+            for (int j = 0; j < current.length; j++) {
+                //CHECK: current implementation: when a tool gets loaded a "switch" is performed
+                if (previous[j] ==  1 &  current[j] ==  0) {
+                    swapCount+=1;
+                }
+            }
+            switches[i] = swapCount;
+        }
+
+        return switches;
+    }
+
+
 
 
 

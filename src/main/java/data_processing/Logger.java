@@ -137,8 +137,50 @@ public class Logger {
 
     }
 
+
+    public void log( int switches, int bestSwitches, long accepted, long rejected, long improved, int step, double temperature, int[] sequence ) throws IOException {
+        //TODO: add deletion cost , accepted , etc..
+
+        long remaining = (this.problemManager.getTIME_LIMIT() - System.currentTimeMillis());
+        //"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence", "Temperature"
+
+        System.out.printf(spacing,
+                switches,
+                bestSwitches,
+                "",
+                "",
+
+                accepted,
+                rejected,
+                improved,
+
+                step,
+                remaining,
+
+                temperature);
+
+        csvAppender.appendLine(
+
+                String.valueOf(switches),
+                String.valueOf(bestSwitches),
+                "",
+                "",
+
+                "",
+                "",
+                "",
+
+                String.valueOf(step),
+                String.valueOf(remaining),
+
+                ""
+        );
+
+        step+=1;
+
+    }
+
     public void writeSolution(Result result) throws IOException {
-        System.out.println("koekoek");;
         try(FileWriter fw = new FileWriter("/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/results.txt", true);
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter out = new PrintWriter(bw))
