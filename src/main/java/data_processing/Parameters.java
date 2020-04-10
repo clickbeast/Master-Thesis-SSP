@@ -2,12 +2,12 @@ package data_processing;
 
 public class Parameters {
 
-    private String allInstancesFolder;
-    private String instanceFolder;
-    private String instance;
-    private String jsonFile;
+    private String ROOT_FOLDER;
+    private String INSTANCE_FOLDER;
+    private String INSTANCE;
+    private String RUN_ID;
+    private String INSTANCE_JSON_PATH;
 
-    private  long TIME_LIMIT;
     private  long RUN_TIME;
 
     private  int SEED;
@@ -16,44 +16,50 @@ public class Parameters {
     private  double DECAY_RATE;
 
 
-    public Parameters(String allInstancesFolder, String instance) {
-        this.allInstancesFolder = allInstancesFolder;
-        this.instance = instance;
-        this.instanceFolder = allInstancesFolder + "/" + instance;
-        this.jsonFile = allInstancesFolder + "/" +  instance  + "/"  + instance + ".json";
+    public Parameters(String ROOT_FOLDER, String INSTANCE, String RUN_TYPE) {
+        this.ROOT_FOLDER = ROOT_FOLDER;
+        this.INSTANCE = INSTANCE;
+        this.INSTANCE_FOLDER = ROOT_FOLDER + "/" + INSTANCE;
+        this.INSTANCE_JSON_PATH = ROOT_FOLDER + "/" +  INSTANCE  + "/"  + INSTANCE + ".json";
+        this.RUN_ID = RUN_TYPE;
     }
 
+    public Parameters(String ROOT_FOLDER, String INSTANCE, String RUN_TYPE, long RUN_TIME, int SEED, double START_TEMP, double END_TEMP, double DECAY_RATE) {
+        this.ROOT_FOLDER = ROOT_FOLDER;
+        this.INSTANCE = INSTANCE;
+        this.INSTANCE_FOLDER = ROOT_FOLDER + "/" + INSTANCE;
+        this.INSTANCE_JSON_PATH = ROOT_FOLDER + "/" +  INSTANCE  + "/"  + INSTANCE + ".json";
+        this.RUN_ID = RUN_TYPE;
 
-    public String getAllInstancesFolder() {
-        return allInstancesFolder;
+        this.RUN_TIME = RUN_TIME;
+        this.SEED = SEED;
+        this.START_TEMP = START_TEMP;
+        this.END_TEMP = END_TEMP;
+        this.DECAY_RATE = DECAY_RATE;
     }
 
-    public void setAllInstancesFolder(String allInstancesFolder) {
-        this.allInstancesFolder = allInstancesFolder;
+    public String getROOT_FOLDER() {
+        return ROOT_FOLDER;
+    }
+
+    public void setROOT_FOLDER(String ROOT_FOLDER) {
+        this.ROOT_FOLDER = ROOT_FOLDER;
     }
 
     public String getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     public void setInstance(String instance) {
-        this.instance = instance;
+        this.INSTANCE = instance;
     }
 
-    public String getJsonFile() {
-        return jsonFile;
+    public String getINSTANCE_JSON_PATH() {
+        return INSTANCE_JSON_PATH;
     }
 
-    public void setJsonFile(String jsonFile) {
-        this.jsonFile = jsonFile;
-    }
-
-    public long getTIME_LIMIT() {
-        return TIME_LIMIT;
-    }
-
-    public void setTIME_LIMIT(long TIME_LIMIT) {
-        this.TIME_LIMIT = TIME_LIMIT;
+    public void setINSTANCE_JSON_PATH(String INSTANCE_JSON_PATH) {
+        this.INSTANCE_JSON_PATH = INSTANCE_JSON_PATH;
     }
 
     public long getRUN_TIME() {
@@ -96,27 +102,20 @@ public class Parameters {
         this.DECAY_RATE = DECAY_RATE;
     }
 
-    public String getInstanceFolder() {
-        return instanceFolder;
+    public String getINSTANCE_FOLDER() {
+        return INSTANCE_FOLDER;
     }
 
-    public void setInstanceFolder(String instanceFolder) {
-        this.instanceFolder = instanceFolder;
+    public void setINSTANCE_FOLDER(String INSTANCE_FOLDER) {
+        this.INSTANCE_FOLDER = INSTANCE_FOLDER;
     }
 
-    @Override
-    public String toString() {
-        return "Parameters{" +
-                "allInstancesFolder='" + allInstancesFolder + '\'' +
-                ", instanceFolder='" + instanceFolder + '\'' +
-                ", instance='" + instance + '\'' +
-                ", jsonFile='" + jsonFile + '\'' +
-                ", TIME_LIMIT=" + TIME_LIMIT +
-                ", RUN_TIME=" + RUN_TIME +
-                ", SEED=" + SEED +
-                ", START_TEMP=" + START_TEMP +
-                ", END_TEMP=" + END_TEMP +
-                ", DECAY_RATE=" + DECAY_RATE +
-                '}';
+
+    public String getINSTANCE() {
+        return INSTANCE;
+    }
+
+    public String getRUN_ID() {
+        return RUN_ID;
     }
 }

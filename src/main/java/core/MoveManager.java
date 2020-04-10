@@ -67,6 +67,8 @@ public class MoveManager {
     //TODO:
     public Result jobPairSwap(Result result) {
 
+        //int jobA = this.random.nextInt(sequence.length);
+
 
         return null;
 
@@ -75,9 +77,6 @@ public class MoveManager {
 
     //TODO:
     public Result inversionBetweenTwoJobs(Result result) {
-
-
-
 
         return null;
     }
@@ -107,6 +106,14 @@ public class MoveManager {
         }
         return result;
     }
+
+
+    public Result swapTwoBlocksSeparated(Result result) {
+
+        return null;
+    }
+
+
 
 
 

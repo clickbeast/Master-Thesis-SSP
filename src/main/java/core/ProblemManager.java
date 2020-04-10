@@ -59,7 +59,6 @@ public class ProblemManager {
     private Result bestResult;
 
 
-
     //UTIL
     private Random random;
     private Logger logger;
@@ -72,21 +71,22 @@ public class ProblemManager {
         this.N_JOBS = inputData.getN_JOBS();
         this.JOB_TOOL_MATRIX = inputData.getJOB_TOOL_MATRIX();
 
-        //Configure Params
-        this.SEED = 7;
+        this.parameters = inputData.getParameters();
 
-        this.RUN_TIME = 900;
-        this.TIME_LIMIT = System.currentTimeMillis() + 1000 * this.getRUN_TIME();;
+
+        //Configure Params
+        this.SEED = this.getParameters().getSEED();
+        this.RUN_TIME = this.getParameters().getRUN_TIME();
+        this.TIME_LIMIT = System.currentTimeMillis() + 1000 * this.getParameters().getRUN_TIME();
+
+        this.random = new Random(this.getSEED());
 
         //SA PARAMSà
-        this.START_TEMP = 100;
-        this.END_TEMP = 0.000097;
-        this.DECAY_RATE = 0.99900;
+        this.START_TEMP = this.getParameters().getSTART_TEMP();
+        this.END_TEMP = this.getParameters().getEND_TEMP();
+        this.DECAY_RATE = this.getParameters().getDECAY_RATE();
 
-        this.parameters = inputData.getParameters();
         this.random = new Random(this.getSEED());
-        //Configure managers
-
 
         this.moveManager = new MoveManager(this);
         this.solutionManager = new SolutionManager(this);
@@ -97,7 +97,7 @@ public class ProblemManager {
         String log_init_random__ls_sd = "log_init_random__ls_sd";
 
 
-        File logFile = new File(this.parameters.getInstanceFolder() + "/" + log_init_random__ls_sd + ".csv");
+        File logFile = new File(this.parameters.getINSTANCE_FOLDER() + "/" + this.parameters.getRUN_ID() + ".csv");
         this.logger = new Logger(this,logFile);
 
     }
@@ -109,12 +109,12 @@ public class ProblemManager {
             this.logger.logLegend(logTitles);
             this.initialize();
             //this.initialSolution();
-            this.initialRandomSolution();
-
+            this.initialOrderedSolution();
+            General.printGrid(this.currentResult.getJobToolMatrix());
             //this.steepestDescent();
 
             //this.hillClimbing();
-            this.simulatedAnnealing();
+            //this.simulatedAnnealing();
         }
     }
 
@@ -177,7 +177,7 @@ public class ProblemManager {
 
     /* INITIAL SOLUTION ------------------------------------------------------------------ */
 
-    public void initialSolution() throws IOException {
+    public void initialOrderedSolution() throws IOException {
         this.logger.logInfo("Creating initial solution");
 
         int[] sequence = this.orderedInitialSequence();
