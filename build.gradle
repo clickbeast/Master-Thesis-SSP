@@ -4,7 +4,9 @@ plugins {
 }
 
 group 'com.simonvermeir'
-version '1.0-SNAPSHOT'
+version 'ran_swap-2job_full_sd_sw_v1_none'
+
+
 
 sourceCompatibility = 1.8
 
@@ -17,4 +19,18 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'de.siegmar:fastcsv:1.0.3'
     implementation 'com.diogonunes:JCDP:4.0.1'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'Main'
+        )
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+
 }

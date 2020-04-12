@@ -114,7 +114,7 @@ public class ProblemManager {
             //this.steepestDescent();
 
             //this.hillClimbing();
-            //this.simulatedAnnealing();
+            this.simulatedAnnealing();
         }
     }
 

@@ -9,6 +9,7 @@ public class Parameters {
     private String INSTANCE_JSON_PATH;
 
     private  long RUN_TIME;
+    private  long START_TIME;
 
     private  int SEED;
     private  double START_TEMP;
@@ -24,7 +25,7 @@ public class Parameters {
         this.RUN_ID = RUN_TYPE;
     }
 
-    public Parameters(String ROOT_FOLDER, String INSTANCE, String RUN_TYPE, long RUN_TIME, int SEED, double START_TEMP, double END_TEMP, double DECAY_RATE) {
+    public Parameters(String ROOT_FOLDER, String INSTANCE, String RUN_TYPE, long RUN_TIME, long START_TIME, int SEED, double START_TEMP, double END_TEMP, double DECAY_RATE) {
         this.ROOT_FOLDER = ROOT_FOLDER;
         this.INSTANCE = INSTANCE;
         this.INSTANCE_FOLDER = ROOT_FOLDER + "/" + INSTANCE;
@@ -32,6 +33,7 @@ public class Parameters {
         this.RUN_ID = RUN_TYPE;
 
         this.RUN_TIME = RUN_TIME;
+        this.START_TIME = START_TIME;
         this.SEED = SEED;
         this.START_TEMP = START_TEMP;
         this.END_TEMP = END_TEMP;

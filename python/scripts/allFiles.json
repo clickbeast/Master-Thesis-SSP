@@ -1,0 +1,42 @@
+{
+  "base": "SSP",
+  "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+  "files":
+  [
+    {
+      "root_folder": "catanzaro",
+      "author": "cat",
+      "jobs": 10 ,
+      "tools":  10,
+      "magazine": 10,
+      "variations": 100
+    },
+
+    {
+      "root_folder": "catanzaro",
+      "author": "cat",
+      "jobs": 10 ,
+      "tools":  10,
+      "magazine": 10,
+      "variations": 100
+    },
+
+    {
+      "root_folder": "catanzaro",
+      "author": "cat",
+      "jobs": 10 ,
+      "tools":  10,
+      "magazine": 10,
+      "variations": 100
+    },
+
+    {
+      "root_folder": "catanzaro",
+      "author": "cat",
+      "jobs": 10 ,
+      "tools":  10,
+      "magazine": 10,
+      "variations": 100
+    }
+  ]
+}

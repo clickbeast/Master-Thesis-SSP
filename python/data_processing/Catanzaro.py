@@ -20,7 +20,7 @@ class CustomJSONEncoder(JSONEncoder):
         if isinstance(o, MarkedList):
             return "##<{}>##".format(o._list)
 
-
+#tabela indicates :magazine type
 base_input_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/raw_instances/Catanzaro/Tabela1"
 
 base_output_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data" \

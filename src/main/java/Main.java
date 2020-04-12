@@ -41,13 +41,12 @@ public class Main {
         String[] dat = cat1;
         String ROOT_FOLDER = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro";
 
+
+
         //PARAMS
         String RUN_TYPE = "ran_swap-2job_full_sd_sw_v1_none";
-
         long RUN_TIME = 900;
-
         int SEED = 7;
-
         double START_TEMP = 100;
         double END_TEMP = 0.000097;
         double DECAY_RATE = 0.99900;
@@ -55,12 +54,15 @@ public class Main {
 
         for (int i = 0; i < dat.length; i++) {
 
+            //Start tracking run time
+            long START_TIME = System.currentTimeMillis();
+
             DataProcessing dataProcessing = new DataProcessing();
             String INSTANCE  = dat[i];
             //init_move_neighbourhoud_metaheurisitic_objective_ktns_delta_SEED
 
             //String INSTANCE = "DAT_A1_0";
-            Parameters parameters = new Parameters(ROOT_FOLDER,INSTANCE, RUN_TYPE,RUN_TIME,SEED, START_TEMP, END_TEMP, DECAY_RATE);
+            Parameters parameters = new Parameters(ROOT_FOLDER,INSTANCE, RUN_TYPE,RUN_TIME,START_TIME,SEED, START_TEMP, END_TEMP, DECAY_RATE);
             ProblemManager problemManager = dataProcessing.instantiateProblem(parameters);
 
             if (problemManager == null) {
