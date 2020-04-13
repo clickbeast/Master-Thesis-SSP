@@ -63,21 +63,27 @@ class Converter:
         super().__init__()
 
     def convert(self):
-        self.root_folder = self.root_folder + "/" + "Tabela1"
+        self.root_folder = self.root_folder + "/" + "Tabela"
+        root_folder_i = self.root_folder
+        tabelas = [1,2,3,4,5]
         self.rn = ["L"]
         self.extension = ".txt"
-        r1 = 34
+        r1l = [34,33,34,26,8]
         r2 = 10
+        i = 0
+        for r1 in r1l:
+            root_folder_i = self.root_folder + str(tabelas[i])
+            for ra in range(1, r1 + 1):
+                for rb in range(1, r2 + 1):
+                    original = self.rn[0] + str(ra) + "-" + str(rb) + self.extension
+                    input_file_path = root_folder_i + "/" + self.rn[0] + str(ra) + "-" + str(rb) + self.extension
+                    self.file_descriptor["original"] = original
+                    #print(self.file_descriptor)
+                    self.extract(input_file_path, tabelas[i])
+            i+=1
 
-        for ra in range(1, r1 + 1):
-            for rb in range(1, r2 + 1):
-                original = self.rn[0] + str(ra) + "-" + str(rb) + self.extension
-                input_file_path = self.root_folder + "/" + self.rn[0] + str(ra) + "-" + str(rb) + self.extension
-                self.file_descriptor["original"] = original
-                #print(self.file_descriptor)
-                self.extract(input_file_path)
 
-    def extract(self, input_file):
+    def extract(self, input_file,tabela):
         matrix = []
 
         with open(input_file) as fr:
@@ -93,6 +99,8 @@ class Converter:
                     break
 
                 matrix_line = line.strip().split(" ")
+                if(tabela is 4):
+                    matrix_line = line.strip().split("  ")
                 matrix_line = [int(element) for element in matrix_line]
                 matrix.append(matrix_line)
 
