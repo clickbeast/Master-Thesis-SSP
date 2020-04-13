@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 
 public class DataProcessing {
 
-    public ProblemManager instantiateProblem(Parameters parameters) throws FileNotFoundException {
+    public InputData instantiateProblem(Parameters parameters) throws FileNotFoundException {
         InputData inputData = new InputData();
         inputData.setParameters(parameters);
         try {
@@ -76,14 +76,8 @@ public class DataProcessing {
         //String problemDescription = file + File.separator + "problem_description.csv";
         //String jobToolMatrixFile =  file + File.separator + "job_tool_matrix.csv";
 
-        ProblemManager problemManager = null;
-        try {
-            problemManager = new ProblemManager(inputData);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        return problemManager;
+        return inputData;
     }
 
 

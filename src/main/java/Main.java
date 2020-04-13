@@ -1,9 +1,11 @@
 import core.ProblemManager;
 import data_processing.DataProcessing;
+import data_processing.InputData;
 import data_processing.ParameterProcessor;
 import data_processing.Parameters;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Main {
 
@@ -14,7 +16,7 @@ public class Main {
         //PARAMS
         String DEFAULT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro";
         String ROOT_FOLDER = (params.getNamed().getOrDefault("root_folder", DEFAULT_ROOT));
-        String INSTANCE = (params.getNamed().getOrDefault("instance", "Catan_A1_1"));
+        String INSTANCE = (params.getNamed().getOrDefault("instance", "cat_10_10_4_1"));
         System.out.println(params.getNamed().get("instance"));
         String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "ran_swap-2job_full_sd_sw_v1_none"));
         long RUN_TIME =  params.getNamed().containsKey("run_time") ? Integer.parseInt(params.getNamed().get(
@@ -32,13 +34,18 @@ public class Main {
 
         DataProcessing dataProcessing = new DataProcessing();
         Parameters parameters = new Parameters(ROOT_FOLDER,INSTANCE, RUN_TYPE,RUN_TIME,START_TIME,SEED, START_TEMP, END_TEMP, DECAY_RATE);
-        ProblemManager problemManager = dataProcessing.instantiateProblem(parameters);
+        InputData inputData = dataProcessing.instantiateProblem(parameters);
 
-        if (problemManager == null) {
-            System.out.println("Error while parsing");
-            return;
+
+
+        ProblemManager problemManager;
+
+        try {
+            problemManager = new ProblemManager(inputData);
+            problemManager.optimize();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        problemManager.optimize();
     }
 }
