@@ -5,12 +5,11 @@ public class Parameters {
     private String ROOT_FOLDER;
     private String INSTANCE_FOLDER;
     private String INSTANCE;
-    private String RUN_ID;
+    private String RUN_TYPE;
     private String INPUT_FILE_PATH;
     private String LOG_PATH;
     private String RESULTS_PATH;
     private String SOLUTION_PATH;
-
 
     private  long RUN_TIME;
     private  long START_TIME;
@@ -20,28 +19,34 @@ public class Parameters {
     private  double END_TEMP;
     private  double DECAY_RATE;
 
-
-    public Parameters(String ROOT_FOLDER, String INSTANCE, String RUN_TYPE) {
-        this.ROOT_FOLDER = ROOT_FOLDER;
-        this.INSTANCE = INSTANCE;
-        this.INSTANCE_FOLDER = ROOT_FOLDER + "/" + INSTANCE;
-        this.INPUT_FILE_PATH = ROOT_FOLDER + "/" +  INSTANCE  + "/"  + INSTANCE + ".json";
-        this.RUN_ID = RUN_TYPE;
-    }
-
     public Parameters(String ROOT_FOLDER, String INSTANCE, String RUN_TYPE, long RUN_TIME, long START_TIME, int SEED, double START_TEMP, double END_TEMP, double DECAY_RATE) {
         this.ROOT_FOLDER = ROOT_FOLDER;
         this.INSTANCE = INSTANCE;
         this.INSTANCE_FOLDER = ROOT_FOLDER + "/" + INSTANCE;
         this.INPUT_FILE_PATH = ROOT_FOLDER + "/" +  INSTANCE  + "/"  + INSTANCE + ".json";
-        this.RUN_ID = RUN_TYPE;
-
+        this.RUN_TYPE = RUN_TYPE;
         this.RUN_TIME = RUN_TIME;
         this.START_TIME = START_TIME;
         this.SEED = SEED;
         this.START_TEMP = START_TEMP;
         this.END_TEMP = END_TEMP;
         this.DECAY_RATE = DECAY_RATE;
+
+        this.createAdditionalFilePaths();
+    }
+
+    public void createAdditionalFilePaths() {
+        String logPath = this.getINSTANCE_FOLDER() + "/" + "log_" + this.getRUN_TYPE() + ".csv";
+        this.setLOG_PATH(logPath);
+        String resultPath = this.getINSTANCE_FOLDER() + "/" + "result_" + this.getRUN_TYPE() + ".txt";
+        this.setRESULTS_PATH(resultPath);
+        String solutionPath = this.getINSTANCE_FOLDER() + "/" + "solution_" + this.getRUN_TYPE() + ".txt";
+        this.setSOLUTION_PATH(solutionPath);
+    }
+
+
+    public void resetStartTime() {
+        this.setSTART_TIME(System.currentTimeMillis());
     }
 
     public String getROOT_FOLDER() {
@@ -121,8 +126,8 @@ public class Parameters {
         return INSTANCE;
     }
 
-    public String getRUN_ID() {
-        return RUN_ID;
+    public String getRUN_TYPE() {
+        return RUN_TYPE;
     }
 
 
@@ -130,8 +135,8 @@ public class Parameters {
         this.INSTANCE = INSTANCE;
     }
 
-    public void setRUN_ID(String RUN_ID) {
-        this.RUN_ID = RUN_ID;
+    public void setRUN_TYPE(String RUN_TYPE) {
+        this.RUN_TYPE = RUN_TYPE;
     }
 
     public long getSTART_TIME() {

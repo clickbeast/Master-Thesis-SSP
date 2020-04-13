@@ -78,7 +78,7 @@ public class SolutionManager {
             }
 
             System.out.print("\t" + switches[i]);
-            System.out.println("");
+            System.out.println();
         }
 
         System.out.print(" \t");
@@ -86,7 +86,7 @@ public class SolutionManager {
             System.out.print("  ");
         }
         System.out.print("\t" + "---");
-        System.out.println("");
+        System.out.println();
 
         System.out.print(" \t");
 
@@ -94,9 +94,9 @@ public class SolutionManager {
             System.out.print("  ");
         }
         System.out.print("\t" + solution.getCost());
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
         //
         //
         
@@ -110,7 +110,7 @@ public class SolutionManager {
             }
 
             System.out.print("\t" + "/");
-            System.out.println("");
+            System.out.println();
         }
 
         System.out.print(" \t");
@@ -118,7 +118,7 @@ public class SolutionManager {
             System.out.print("  ");
         }
         System.out.print("\t" + "---");
-        System.out.println("");
+        System.out.println();
 
         System.out.print(" \t");
 
@@ -126,16 +126,16 @@ public class SolutionManager {
             System.out.print("  ");
         }
         System.out.print("\t" + "/");
-        System.out.println("");
+        System.out.println();
 
 
 
 
-        System.out.println("");
+        System.out.println();
 
         System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
 
-        System.out.println("");
+        System.out.println();
 
         System.setOut(console);
     }

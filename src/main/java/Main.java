@@ -4,8 +4,7 @@ import data_processing.InputData;
 import data_processing.ParameterProcessor;
 import data_processing.Parameters;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 public class Main {
 
@@ -36,13 +35,29 @@ public class Main {
         Parameters parameters = new Parameters(ROOT_FOLDER,INSTANCE, RUN_TYPE,RUN_TIME,START_TIME,SEED, START_TEMP, END_TEMP, DECAY_RATE);
         InputData inputData = dataProcessing.instantiateProblem(parameters);
 
-
-
         ProblemManager problemManager;
 
-        try {
+        try(
+                FileWriter lfw = new FileWriter(parameters.getLOG_PATH(), true);
+                BufferedWriter lbw = new BufferedWriter(lfw);
+                PrintWriter logWriter = new PrintWriter(lbw);
+
+
+                FileWriter rfw = new FileWriter(parameters.getRESULTS_PATH(), true);
+                BufferedWriter rbw = new BufferedWriter(rfw);
+                PrintWriter resultsWriter = new PrintWriter(rbw);
+
+                FileWriter sfw = new FileWriter(parameters.getSOLUTION_PATH(), true);
+                BufferedWriter sbw = new BufferedWriter(sfw);
+                PrintWriter solutionWriter = new PrintWriter(sbw)
+
+        ) {
+
+
+            inputData.setWriters(logWriter, resultsWriter, solutionWriter);
             problemManager = new ProblemManager(inputData);
             problemManager.optimize();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

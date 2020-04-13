@@ -2,6 +2,7 @@ package data_processing;
 
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
+import com.sun.jna.platform.unix.solaris.LibKstat;
 import core.ProblemManager;
 import core.Result;
 import fastcsv.writer.CsvAppender;
@@ -13,90 +14,98 @@ import java.util.Arrays;
 
 public class Logger {
 
-    public CsvAppender csvAppender;
+    //public CsvAppender csvAppender;
     ProblemManager problemManager;
-    CsvWriter csvWriter;
+    //CsvWriter csvWriter;
     ColoredPrinter cp;
-
-    File logFile;
 
     String spacing = "%-5s %-15s %-5s %-15s %-5s %-15s %-5s %-20s %-10s %-10s %-20s %-10s %-10s %-15s %-10s %-30s \n";
     //String[] logTitles2 = {"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"};
     String[] logTitles = {"SW", "B_SW", "THOP" , "B_THOP" , "TAD", "B_TAD" , "TRD", "B_TRD" , "ACCEPT" , "REJECT", "IMPROVE", "STEP", "T_RUN","T_REM", "TEMP", "SEQ"};
 
 
-    public Logger(ProblemManager problemManager) throws IOException {
+    private PrintWriter logWriter;
+    private PrintWriter resultsWriter;
+    private PrintWriter solutionWriter;
+
+    private long resultsCount = 0;
+
+
+    /* SETUP ------------------------------------------------------------------ */
+
+
+
+    public Logger(ProblemManager problemManager,
+                  PrintWriter logWriter,
+                  PrintWriter resultsWriter,
+                  PrintWriter solutionWriter) throws IOException {
+
         this.problemManager = problemManager;
 
         //Setup color printer
         cp = new ColoredPrinter.Builder(1, true)
                 .foreground(Ansi.FColor.BLUE)
                 .build();
-        this.logFile = new File(this.problemManager.getParameters().getLOG_PATH());
-        this.csvWriter = new CsvWriter();
 
+        this.createLogFile();
+        this.createResultsFile();
+        this.createSolutionFile();
 
-        //Create log file
-
-        //Create results file
-
+        this.logWriter = logWriter;
+        this.resultsWriter = resultsWriter;
+        this.solutionWriter = solutionWriter;
 
     }
 
+
+
+    public void createLogFile() throws IOException {
+        Writer fileWriter = new FileWriter(this.problemManager.getParameters().getLOG_PATH(), false);
+    }
+
+    public void createResultsFile() throws IOException {
+        Writer fileWriter = new FileWriter(this.problemManager.getParameters().getRESULTS_PATH(), false);
+
+    }
+
+    public void createSolutionFile() throws IOException {
+        Writer fileWriter = new FileWriter(this.problemManager.getParameters().getSOLUTION_PATH(), false);
+    }
+
+
+
+    /* SETUP ------------------------------------------------------------------ */
+
+
+
+
+    /* PROGRESS ------------------------------------------------------------------ */
+
     public void logLegend(String[] titles)  {
+        PrintWriter out = this.getLogWriter();
+
         System.out.println();
         System.out.printf(spacing, (Object[]) logTitles);
         System.out.println();
-    }
 
-
-    public void csvAppend(CsvAppender csvAppender, int currentCost, int minCost, int steps, int temperature, int accepted, int[] sequence ) throws IOException {
-
-        long remaining = (this.problemManager.getTIME_LIMIT() - System.currentTimeMillis());
-
-        csvAppender.appendLine(
-                String.valueOf(currentCost),
-                String.valueOf(minCost),
-                String.valueOf(steps),
-                String.valueOf(temperature),
-                String.valueOf(remaining),
-                String.valueOf(accepted),
-                "Arrays.toString(sequence)");
-    }
-
-    public void log( int currentCost, int minCost, int steps, int temperature, int accepted, int[] sequence ) throws IOException {
-
-        long remaining = (this.problemManager.getTIME_LIMIT() - System.currentTimeMillis());
-        //"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"
-
-        System.out.printf(spacing, currentCost, minCost, steps, temperature, remaining, accepted,  Arrays.toString(sequence));
-
-        csvAppender.appendLine(
-                String.valueOf(currentCost),
-                String.valueOf(minCost),
-                String.valueOf(steps),
-                String.valueOf(temperature),
-                String.valueOf(remaining),
-                String.valueOf(accepted),
-                "");
+        String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s";
+        out.printf(logSpacing, (Object[]) logTitles);
+        out.println();
 
     }
-
-
 
     public void log( int switches, int bestSwitches, int[] sequence ) throws IOException {
-
+        this.log(switches, bestSwitches,-1,-1,-1,-1, sequence);
     }
 
+    public void log( int switches, int bestSwitches, long accepted, long rejected, long improved,int[] sequence ) throws IOException {
+        this.log(switches, bestSwitches,accepted,rejected,improved,-1, sequence);
+    }
 
-    public void log( int switches, int bestSwitches, long accepted, long rejected, long improved, int step, double temperature, int[] sequence ) throws IOException {
-        //TODO: add deletion cost , accepted , etc..
-
-        long timeRemaining = (this.problemManager.getTIME_LIMIT() - System.currentTimeMillis());
-        long timeRunning = (System.currentTimeMillis() - this.problemManager.getParameters().getSTART_TIME());
-
-        //"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence", "Temperature"
-
+    public void log( int switches, int bestSwitches, long accepted, long rejected, long improved, double temperature, int[] sequence ) throws IOException {
+        PrintWriter out = this.getLogWriter();
+        long timeRunning = this.getTimeRunning();
+        long timeRemaining = this.getTimeRemaining();
         System.out.printf(spacing,
                 //SW
                 switches,
@@ -121,7 +130,7 @@ public class Logger {
                 // IMPROVE
                 improved,
                 // STEP
-                step,
+                this.getProblemManager().getSteps(),
                 // T_RUN
                 timeRunning,
                 // T_REM
@@ -129,48 +138,156 @@ public class Logger {
                 // TEMP
                 temperature ,
                 // SEQ
-                sequence
-           );
-
-        csvAppender.appendLine(
-
-                String.valueOf(switches),
-                String.valueOf(bestSwitches),
-                "",
-                "",
-
-                "",
-                "",
-                "",
-
-                String.valueOf(step),
-                String.valueOf(timeRemaining),
-
-                ""
+                Arrays.toString(sequence)
         );
 
-        step+=1;
+        String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,\"%s\"";
+        out.printf(logSpacing,
+                //SW
+                switches,
+                // B_SW
+                bestSwitches,
+                // HOP
+                "",
+                // B_THOP
+                "",
+                // TAD
+                "",
+                // B_TAD
+                "",
+                // TRD
+                "",
+                // B_TRD
+                "",
+                // ACCEPT
+                accepted,
+                // REJECT
+                rejected,
+                // IMPROVE
+                improved,
+                // STEP
+                this.getProblemManager().getSteps(),
+                // T_RUN
+                this.getTimeRunning(),
+                // T_REM
+                this.getTimeRemaining(),
+                // TEMP
+                temperature ,
+                // SEQ
+                Arrays.toString(sequence)
+        );
+
+        out.println();
+
 
     }
+
+
+    /* SOLUTIONS & RESULTS ------------------------------------------------------------------ */
+
 
     public void writeSolution(Result result) throws IOException {
-        try(FileWriter fw = new FileWriter("/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/results.txt", true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter out = new PrintWriter(bw))
-        {
-            out.println(result.getCost());
 
-        } catch (IOException e) {
-            //exception handling left as an exercise for the reader
+        PrintWriter out = this.getSolutionWriter();
+
+        long timeRunning = this.getTimeRunning();
+        long timeRemaining = this.getTimeRemaining();
+
+        //n_jobs
+        out.println(this.problemManager.getN_JOBS());
+        //n_tools
+        out.println(this.problemManager.getN_TOOLS());
+        //magazine_size
+        out.println(this.problemManager.getMAGAZINE_SIZE());
+        //switches
+        out.println(result.getCost());
+        //tool_hops
+        out.println(-1);
+        //tool_add_distance
+        out.println(-1);
+        //tool_remove_distance
+        out.println(-1);
+        //run_time
+        out.println(timeRunning);
+        //sequence
+        out.println(Arrays.toString(result.getSequence()));
+        //tool_hops_sequence
+        out.println(-1);
+        //tool_add_distance_sequence
+        out.println(-1);
+        //tool_remove_distance_sequence
+        out.println(-1);
+        //matrix
+        for (int i = 0; i < this.problemManager.getN_JOBS(); i++) {
+            for (int j = 0; j < this.problemManager.getN_TOOLS(); j++) {
+                out.print(result.getJobToolMatrix()[i][j]);
+                out.print(" ");
+            }
+            out.println();
         }
 
-    /*    // Creating a File object that represents the disk file.
-        PrintStream o = new PrintStream(new PrintStream(new FileOutputStream(this.fileName, true)));
-        printSolution(o, result);
-        o.close();*/
     }
 
 
+    public void writeResult(Result result) throws IOException {
+         /*result = {
+                "n_jobs": 0,
+                "n_tools": 0,
+                "magazine_size": 0,
+                "switches": 0,
+                "tool_hops": 0,
+                "tool_add_distance": 0,
+                "tool_remove_distance": 0,
+                "run_time": 0,
+                "sequence": [],
+        "tool_hops_sequence": [],
+        "tool_add_distance_sequence": [],
+        "tool_remove_distance_sequence": [],
+        "matrix": [[]],
+        }*/
+
+         PrintWriter out = this.getResultsWriter();
+
+        long timeRunning = this.getTimeRunning();
+        long timeRemaining = this.getTimeRemaining();
+
+         out.println("#" + this.getResultsCount());
+         //n_jobs
+         out.println(this.problemManager.getN_JOBS());
+         //n_tools
+         out.println(this.problemManager.getN_TOOLS());
+         //magazine_size
+         out.println(this.problemManager.getMAGAZINE_SIZE());
+         //switches
+         out.println(result.getCost());
+         //tool_hops
+         out.println(-1);
+         //tool_add_distance
+         out.println(-1);
+         //tool_remove_distance
+         out.println(-1);
+         //run_time
+         out.println(timeRunning);
+         //sequence
+         out.println(Arrays.toString(result.getSequence()));
+         //tool_hops_sequence
+         out.println(-1);
+         //tool_add_distance_sequence
+         out.println(-1);
+         //tool_remove_distance_sequence
+         out.println(-1);
+         //matrix
+        for (int i = 0; i < this.problemManager.getN_JOBS(); i++) {
+            for (int j = 0; j < this.problemManager.getN_TOOLS(); j++) {
+                out.print(result.getJobToolMatrix()[i][j]);
+                out.print(" ");
+            }
+            out.println();
+        }
+
+        resultsCount+=1;
+
+    }
 
     public void printSolution(PrintStream printStream, Result result)  {
         PrintStream console = System.out;
@@ -256,20 +373,8 @@ public class Logger {
     }
 
 
+    /* MESSAGES ------------------------------------------------------------------ */
 
-
-    public void log(String[] items) throws IOException {
-        System.out.printf(spacing, (Object[]) items);
-        /*try(CsvAppender csvAppender = csvWriter.append(file, StandardCharsets.UTF_8)) {
-            // header
-            csvAppender.appendLine(items);
-            csvAppender.endLine();
-        }
-
-
-        //csvAppender.appendLine(items);
-        //csvAppender.endLine();*/
-    }
 
     public void logInfo(String bonjour) {
         cp.println(">> " + bonjour);
@@ -280,6 +385,19 @@ public class Logger {
     }
 
 
+    /* UTILITY ------------------------------------------------------------------ */
+
+    public long getTimeRemaining() {
+        return (this.problemManager.getTIME_LIMIT() - System.currentTimeMillis());
+    }
+
+    public long getTimeRunning() {
+        return (System.currentTimeMillis() - this.problemManager.getParameters().getSTART_TIME());
+    }
+
+
+    /* GETTERS & SETTERS ------------------------------------------------------------------ */
+
     public ProblemManager getProblemManager() {
         return problemManager;
     }
@@ -288,21 +406,6 @@ public class Logger {
         this.problemManager = problemManager;
     }
 
-    public CsvAppender getCsvAppender() {
-        return csvAppender;
-    }
-
-    public void setCsvAppender(CsvAppender csvAppender) {
-        this.csvAppender = csvAppender;
-    }
-
-    public CsvWriter getCsvWriter() {
-        return csvWriter;
-    }
-
-    public void setCsvWriter(CsvWriter csvWriter) {
-        this.csvWriter = csvWriter;
-    }
 
     public ColoredPrinter getCp() {
         return cp;
@@ -328,12 +431,37 @@ public class Logger {
         this.logTitles = logTitles;
     }
 
-    public File getLogFile() {
-        return logFile;
+    public PrintWriter getLogWriter() {
+        return logWriter;
     }
 
-    public void setLogFile(File logFile) {
-        this.logFile = logFile;
+    public void setLogWriter(PrintWriter logWriter) {
+        this.logWriter = logWriter;
+    }
+
+    public PrintWriter getResultsWriter() {
+        return resultsWriter;
+    }
+
+    public void setResultsWriter(PrintWriter resultsWriter) {
+        this.resultsWriter = resultsWriter;
+    }
+
+    public PrintWriter getSolutionWriter() {
+        return solutionWriter;
+    }
+
+    public void setSolutionWriter(PrintWriter solutionWriter) {
+        this.solutionWriter = solutionWriter;
+    }
+
+
+    public long getResultsCount() {
+        return resultsCount;
+    }
+
+    public void setResultsCount(long resultsCount) {
+        this.resultsCount = resultsCount;
     }
 }
 

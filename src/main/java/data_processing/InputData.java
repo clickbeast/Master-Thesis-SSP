@@ -1,5 +1,6 @@
 package data_processing;
 
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 public class InputData {
@@ -10,6 +11,10 @@ public class InputData {
     int N_TOOLS;
     int MAGAZINE_SIZE;
     int[][] JOB_TOOL_MATRIX;
+
+    private PrintWriter logWriter;
+    private PrintWriter resultsWriter;
+    private PrintWriter solutionWriter;
 
     public Parameters getParameters() {
         return parameters;
@@ -60,5 +65,35 @@ public class InputData {
                 ", MAGAZINE_SIZE=" + MAGAZINE_SIZE +
                 ", JOB_TOOL_MATRIX=" + Arrays.toString(JOB_TOOL_MATRIX) +
                 '}';
+    }
+
+    public void setWriters(PrintWriter logWriter, PrintWriter resultsWriter, PrintWriter solutionWriter) {
+        this.logWriter = logWriter;
+        this.resultsWriter = resultsWriter;
+        this.solutionWriter = solutionWriter;
+    }
+
+    public PrintWriter getLogWriter() {
+        return logWriter;
+    }
+
+    public void setLogWriter(PrintWriter logWriter) {
+        this.logWriter = logWriter;
+    }
+
+    public PrintWriter getResultsWriter() {
+        return resultsWriter;
+    }
+
+    public void setResultsWriter(PrintWriter resultsWriter) {
+        this.resultsWriter = resultsWriter;
+    }
+
+    public PrintWriter getSolutionWriter() {
+        return solutionWriter;
+    }
+
+    public void setSolutionWriter(PrintWriter solutionWriter) {
+        this.solutionWriter = solutionWriter;
     }
 }

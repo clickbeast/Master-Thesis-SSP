@@ -9,14 +9,14 @@ class Runner:
            "/libs/Master-Thesis-SSP"
 
     files_path_base = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances"
-    files_path = files_path_base + "/" + "yanasse_files.json"
+    files_path = files_path_base + "/" + "catanzaro_files.json"
     files = {}
     file_descriptor = None
 
     params = {
         "root_folder": "",
         "instance": "",
-        "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+        "run_type": "or_none_none_sw_v1_none",
         "run_time": "700",
         "seed": "7",
         "start_temp": "100",

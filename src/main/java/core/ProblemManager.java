@@ -93,25 +93,27 @@ public class ProblemManager {
         this.solutionManager = new SolutionManager(this);
 
         this.steps = 0;
-        this.logger = new Logger(this);
+        this.logger = new Logger(this, inputData.getLogWriter(),inputData.getResultsWriter(), inputData.getSolutionWriter());
 
     }
 
-    public void optimize() {
-        try(CsvAppender csvAppender = this.logger.getCsvWriter().append(this.logger.getLogFile(), StandardCharsets.UTF_8)) {
-            this.logger.setCsvAppender(csvAppender);
-            this.logger.logLegend(logTitles);
-            this.initialize();
-            //this.initialSolution();
-            this.initialOrderedSolution();
-            General.printGrid(this.currentResult.getJobToolMatrix());
-            //this.steepestDescent();
+    public void optimize() throws IOException {
+        this.logger.logLegend(logTitles);
 
-            //this.hillClimbing();
-            this.simulatedAnnealing();
-        }catch(IOException io) {
-        }
+        this.initialize();
+        //this.initialSolution();
+        this.initialOrderedSolution();
+        //this.logger.writeResult(this.bestResult);
+        //General.printGrid(this.currentResult.getJobToolMatrix());
+        //this.steepestDescent();
+
+        //this.hillClimbing();
+        //this.simulatedAnnealing();
+        this.logger.writeResult(bestResult);
+        this.logger.writeSolution(this.bestResult);
     }
+
+
 
     public void initialize(){
         this.jobs = this.initializeJobs();
@@ -121,6 +123,7 @@ public class ProblemManager {
         this.SWITCHES_LB_MATRIX = this.initializeSwitchesLowerBoundMatrix();
         this.TOOL_PAIR_COUNT_MATRIX = this.initializeToolPairCountMatrix();
     }
+
 
     /* DATA MODEL SETUP ------------------------------------------------------------------ */
 
@@ -389,7 +392,7 @@ public class ProblemManager {
 
         double temperature = this.START_TEMP;
         int j = 0;
-        int steps = 0;
+        this.setSteps(0);
         long accepted = 0;
         long rejected = 0;
         long improved = 0;
@@ -407,7 +410,7 @@ public class ProblemManager {
             this.workingResult.setCost(this.evaluate(seq, this.workingResult.getJobToolMatrix(), this.workingResult.getSwitches()));
 
 
-            int deltaE = (int) (this.workingResult.getCost() - this.bestResult.getCost());
+            int deltaE = this.workingResult.getCost() - this.bestResult.getCost();
 
             if(deltaE > 0) {
                 double acceptance = Math.exp(-deltaE/ temperature);
@@ -452,7 +455,11 @@ public class ProblemManager {
 
             //LOGGING
             if (steps % 1000 == 0) {
-                this.logger.log(this.currentResult.getCost(), this.bestResult.getCost(), accepted, rejected, improved, steps, temperature, this.currentResult.getSequence());
+                this.logger.log(this.currentResult.getCost(), this.bestResult.getCost(), accepted, rejected, improved,temperature, this.currentResult.getSequence());
+            }
+
+            if(temperature < 0.007) {
+                break;
             }
 
             //TODO: stop SA after no improvement is found anymore...
@@ -815,5 +822,13 @@ public class ProblemManager {
 
     public void setWorkingResult(Result workingResult) {
         this.workingResult = workingResult;
+    }
+
+    public long getSteps() {
+        return steps;
+    }
+
+    public void setSteps(long steps) {
+        this.steps = steps;
     }
 }

@@ -134,7 +134,7 @@ public class ParameterProcessor {
 
         while (var2.hasNext()) {
             String key = (String) var2.next();
-            this.rawArgs.add("--" + key + "=" + (String) this.namedParams.get(key));
+            this.rawArgs.add("--" + key + "=" + this.namedParams.get(key));
         }
 
     }
