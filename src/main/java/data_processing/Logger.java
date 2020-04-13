@@ -13,50 +13,39 @@ import java.util.Arrays;
 
 public class Logger {
 
-    private final String fileName;
     public CsvAppender csvAppender;
     ProblemManager problemManager;
-    File file;
     CsvWriter csvWriter;
     ColoredPrinter cp;
 
 
-    private long step;
+    String spacing = "%-5s %-15s %-5s %-15s %-5s %-15s %-5s %-20s %-10s %-10s %-20s %-10s %-10s %-15s %-10s %-30s \n";
+    //String[] logTitles2 = {"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"};
+    String[] logTitles = {"SW", "B_SW", "THOP" , "B_THOP" , "TAD", "B_TAD" , "TRD", "B_TRD" , "ACCEPT" , "REJECT", "IMPROVE", "STEP", "T_RUN","T_REM", "TEMP", "SEQ"};
 
-    String spacing = "%-15s %-20s %-15s %-35s %-10s %-10s %-30s %-15s %-30s %-10s \n";
-    String[] logTitles = {"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"};
 
-
-    public Logger(ProblemManager problemManager, File file) throws IOException {
+    public Logger(ProblemManager problemManager) throws IOException {
         this.problemManager = problemManager;
+
+        //Setup color printer
         cp = new ColoredPrinter.Builder(1, true)
                 .foreground(Ansi.FColor.BLUE)
                 .build();
 
-        this.file = file;
         this.csvWriter = new CsvWriter();
-        //this.csvAppender = csvWriter.append(file, StandardCharsets.UTF_8);
 
 
-        //Create result file
+        //Create log file
 
-        this.fileName = "data/result.txt";
-        File f = new File(this.fileName);
-        try {
-            FileWriter writer = new FileWriter(f,true);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //Create results file
+
+
     }
 
-    public void logLegend(String[] titles) throws IOException {
+    public void logLegend(String[] titles)  {
         System.out.println();
         System.out.printf(spacing, (Object[]) logTitles);
-
         System.out.println();
-
-        csvAppender.appendLine(titles);
     }
 
 
@@ -75,7 +64,6 @@ public class Logger {
     }
 
     public void log( int currentCost, int minCost, int steps, int temperature, int accepted, int[] sequence ) throws IOException {
-        //TODO: add deletion cost , accepted , etc..
 
         long remaining = (this.problemManager.getTIME_LIMIT() - System.currentTimeMillis());
         //"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"
@@ -96,44 +84,6 @@ public class Logger {
 
 
     public void log( int switches, int bestSwitches, int[] sequence ) throws IOException {
-        //TODO: add deletion cost , accepted , etc..
-
-        long remaining = (this.problemManager.getTIME_LIMIT() - System.currentTimeMillis());
-        //"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence", "Temperature"
-
-        System.out.printf(spacing,
-                switches,
-                bestSwitches,
-                "",
-                "",
-
-                "",
-                "",
-                "",
-
-                step,
-                remaining,
-
-                "");
-
-        csvAppender.appendLine(
-
-                String.valueOf(switches),
-                 String.valueOf(bestSwitches),
-                "",
-                "",
-
-                "",
-                "",
-                "",
-
-                String.valueOf(step),
-                String.valueOf(remaining),
-
-                ""
-                );
-
-        step+=1;
 
     }
 
@@ -141,23 +91,45 @@ public class Logger {
     public void log( int switches, int bestSwitches, long accepted, long rejected, long improved, int step, double temperature, int[] sequence ) throws IOException {
         //TODO: add deletion cost , accepted , etc..
 
-        long remaining = (this.problemManager.getTIME_LIMIT() - System.currentTimeMillis());
+        long timeRemaining = (this.problemManager.getTIME_LIMIT() - System.currentTimeMillis());
+        long timeRunning = (System.currentTimeMillis() - this.problemManager.getParameters().getSTART_TIME());
+
         //"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence", "Temperature"
 
         System.out.printf(spacing,
+                //SW
                 switches,
+                // B_SW
                 bestSwitches,
+                // HOP
                 "",
+                // B_THOP
                 "",
-
+                // TAD
+                "",
+                // B_TAD
+                "",
+                // TRD
+                "",
+                // B_TRD
+                "",
+                // ACCEPT
                 accepted,
+                // REJECT
                 rejected,
+                // IMPROVE
                 improved,
-
+                // STEP
                 step,
-                remaining,
-
-                temperature);
+                // T_RUN
+                timeRunning,
+                // T_REM
+                timeRemaining,
+                // TEMP
+                temperature ,
+                // SEQ
+                sequence
+           );
 
         csvAppender.appendLine(
 
@@ -171,7 +143,7 @@ public class Logger {
                 "",
 
                 String.valueOf(step),
-                String.valueOf(remaining),
+                String.valueOf(timeRemaining),
 
                 ""
         );

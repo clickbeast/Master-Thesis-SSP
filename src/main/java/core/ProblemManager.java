@@ -62,6 +62,7 @@ public class ProblemManager {
     //UTIL
     private Random random;
     private Logger logger;
+    private long steps;
 
 
     public ProblemManager(InputData inputData) throws IOException {
@@ -91,19 +92,12 @@ public class ProblemManager {
         this.moveManager = new MoveManager(this);
         this.solutionManager = new SolutionManager(this);
 
-        String log_init_random__ls_none = "log_init_random__ls_none";
-        String log_init_ordered__ls_none = "log_init_ordered__ls_none";
-        String log_init_ordered__ls_sd = "log_init_ordered__ls_sd";
-        String log_init_random__ls_sd = "log_init_random__ls_sd";
-
-
-        File logFile = new File(this.parameters.getINSTANCE_FOLDER() + "/" + this.parameters.getRUN_ID() + ".csv");
-        this.logger = new Logger(this,logFile);
+        this.steps = 0;
+        this.logger = new Logger(this);
 
     }
 
-    public void optimize() throws IOException {
-
+    public void optimize() {
         try(CsvAppender csvAppender = this.logger.getCsvWriter().append(this.logger.getFile(), StandardCharsets.UTF_8)) {
             this.logger.setCsvAppender(csvAppender);
             this.logger.logLegend(logTitles);
@@ -114,7 +108,9 @@ public class ProblemManager {
             //this.steepestDescent();
 
             //this.hillClimbing();
-            this.simulatedAnnealing();
+            //this.simulatedAnnealing();
+        }catch(IOException io) {
+
         }
     }
 

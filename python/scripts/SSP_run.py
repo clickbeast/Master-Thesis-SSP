@@ -8,6 +8,7 @@ files = {
     "files":
         [
             {
+                "orginal": "orginal",
                 "root_folder": "catanzaro",
                 "author": "cat",
                 "jobToolVersions": ["A", "B", "C", "D"],
@@ -56,8 +57,8 @@ class Runner:
                         instance = file["author"] + "_" + jobToolVersion + str(magazineVersion) + "_" + str(variation)
                         command = "java -jar" + jar_file + " " + root_folder + " " + instance + " " + run_type
 
-
                         os.system("command")
+                        i+=1
 
 
 runner = Runner()
