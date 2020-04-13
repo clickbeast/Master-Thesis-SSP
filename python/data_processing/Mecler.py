@@ -1,11 +1,27 @@
-from os import listdir
 import os
 import json
 import re
 import copy
 import numpy  as np
 from json import JSONEncoder
-from os.path import isfile, join
+
+
+template = {
+    "N_JOBS": 10,
+    "N_TOOLS": 10,
+    "MAGAZINE_SIZE": 0,
+    "matrix_m": "N_JOBS",
+    "matrix_n": "N_TOOLS",
+    "matrix": [
+        [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0],
+        [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ],
+
+}
 
 
 class MarkedList:
@@ -21,117 +37,149 @@ class CustomJSONEncoder(JSONEncoder):
             return "##<{}>##".format(o._list)
 
 
-base_input_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP" \
-                  "/data/raw_instances/Mecler/Tabela4"
+class Converter:
+    out_folder = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP" \
+                 "/data/instances/mecler"
+    root_folder = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP" \
+                  "/data/raw_instances/Mecler"
+    files = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/mecler_files.json"
 
-base_output_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data" \
-                   "/instances/mecler"
+    rn = ["F"]
+    extension = ".txt"
+    variation_map = dict()
 
+    file_descriptor = {
+        "original": "",
+        "root_folder": "mecler",
+        "instance": "",
+        "author": "mec",
+        "n_jobs": 10,
+        "n_tools": 10,
+        "magazine_size": 10,
+        "variation": 100
+    }
 
-def generateFileNames():
-    input_base = "F300"
-    output_base = "Mecler_C4_"
-
-    files = []
-
-    for a in range(1, 6):
-        file = {
-            "input_file_path": base_input_path + "/" + input_base + str(a) + ".txt",
-            "output_path": base_output_path,
-            "output_name": output_base + str(a)
-        }
-
-        files.append(file)
-    return files
-
-
-template = {
-    "N_JOBS": 10,
-    "N_TOOLS": 10,
-    "MAGAZINE_SIZE": 0,
-    "matrix_m": "N_JOBS",
-    "matrix_n": "N_TOOLS",
-    "SEED": 7,
-    "matrix": [
-        [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0],
-        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0],
-        [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ],
-
-}
+    def __init__(self) -> None:
 
 
-def extract(file):
-    matrix = []
+        super().__init__()
+        self.create_out_folder()
 
-    with open(file["input_file_path"]) as fr:
-        n_jobs = int(fr.readline())
-        n_tools = int(fr.readline())
-        magazine_size = int(fr.readline())
+    def create_out_folder(self):
+        try:
+            os.mkdir(self.out_folder)
+        except OSError:
+            print("Creation of the directory %s failed" % self.out_folder)
 
-        while True:
-            line = fr.readline()
-
-            if line is None or line is '':
-                break
-
-            matrix_line = line.strip().split(" ")
-            matrix_line = [int(element) for element in matrix_line]
-            matrix.append(matrix_line)
-
-        matrix_transpose = transposeMatrix(matrix)
-        matrix_tranpose_marked = markMatrix(matrix_transpose)
-
-        addProblem(file, matrix_tranpose_marked, n_tools, n_jobs, magazine_size)
-
-
-def markMatrix(matrix):
-    out = []
-    for i in range(len(matrix)):
-        out.append(MarkedList(matrix[i]))
-    return out
+    def convert(self):
+        self.root_folder = self.root_folder + "/" + "Tabela"
+        root_folder_i = self.root_folder
+        tabelas = [1,2,3,4]
+        r1 = 3
+        r2 = 5
+        for i in range(len(tabelas)):
+            root_folder_i = self.root_folder + str(tabelas[i])
+            for ra in range(1, r1 + 1):
+                for rb in range(1, r2 + 1):
+                    original = self.rn[0] + str(ra) + "00" + str(rb) + self.extension
+                    input_file_path = root_folder_i + "/" + original
+                    self.file_descriptor["original"] = original
+                    #print(self.file_descriptor)
+                    self.extract(input_file_path, tabelas[i])
 
 
-def transposeMatrix(matrix):
-    a = np.array(matrix)
-    a = a.transpose()
 
-    return a.tolist()
+    def extract(self, input_file,tabela):
+        matrix = []
+
+        with open(input_file) as fr:
+
+            n_jobs = int(fr.readline())
+            n_tools = int(fr.readline())
+            magazine_size = int(fr.readline())
+
+            while True:
+                line = fr.readline()
+
+                if line is None or line is '':
+                    break
+
+                matrix_line = line.strip().split(" ")
+
+                matrix_line = [int(element) for element in matrix_line]
+                matrix.append(matrix_line)
+
+            matrix_transpose = self.transpose_matrix(matrix)
+            matrix_tranpose_marked = self.mark_matrix(matrix_transpose)
+
+            self.file_descriptor["n_jobs"] = n_jobs
+            self.file_descriptor["n_tools"] = n_tools
+            self.file_descriptor["magazine_size"] = magazine_size
+            self.file_descriptor["variation"] = self.get_variation(n_tools, n_jobs, magazine_size)
+            self.file_descriptor["instance"] = self.file_descriptor["author"] + "_" + str(n_jobs) + "_" + str(
+                n_tools) + "_" + str(magazine_size) + "_" + str(self.file_descriptor["variation"])
+
+            self.addFile()
+            self.add_problem(matrix_tranpose_marked, n_tools, n_jobs, magazine_size)
+
+    def get_variation(self, n_tools, n_jobs, magazine_size):
+        key = str(n_tools) + "_" + str(n_jobs) + "_" + str(magazine_size)
+        self.variation_map[key] = self.variation_map.get(key, 0) + 1
+        return self.variation_map[key]
 
 
-def get_trailing_number(s):
-    m = re.search(r'\d+$', s)
-    return int(m.group()) if m else None
+    def addFile(self):
+        with open(self.files, 'r') as f:
+            # parsing JSON string:
+            j = json.load(f)
+        s = j["files"]
+        s.append(self.file_descriptor)
+
+        with open(self.files,'w') as write_file:
+            json.dump(j, write_file , indent=4)
 
 
-def addProblem(file, matrix, n_tools, n_jobs, magazine_size):
-    output_directory = file["output_path"].strip(" ") + "/" + file["output_name"]
+    def add_problem(self, matrix, n_tools, n_jobs, magazine_size):
 
-    result = copy.deepcopy(template)
+        output_directory = self.out_folder.strip(" ") + "/" + self.file_descriptor["instance"]
+        output_file_path = output_directory + "/" + self.file_descriptor["instance"] + ".json"
 
-    result["MAGAZINE_SIZE"] = magazine_size
-    result["N_JOBS"] = n_jobs
-    result["N_TOOLS"] = n_tools
-    result["matrix"] = matrix
+        result = copy.deepcopy(template)
 
-    d = json.dumps(result, indent=4, cls=CustomJSONEncoder)
-    d = d.replace('"##<', "").replace('>##"', "")
+        result["MAGAZINE_SIZE"] = magazine_size
+        result["N_JOBS"] = n_jobs
+        result["N_TOOLS"] = n_tools
+        result["matrix"] = matrix
 
-    try:
-        os.mkdir(output_directory)
-    except OSError:
-        print("Creation of the directory %s failed" % output_directory)
+        d = json.dumps(result, indent=4, cls=CustomJSONEncoder)
+        d = d.replace('"##<', "").replace('>##"', "")
 
-    with open(output_directory + "/" + file["output_name"] + ".json", "w") as write_file:
-        write_file.write(d)
+        try:
+            os.mkdir(output_directory)
+        except OSError:
+            print("Creation of the directory %s failed" % output_directory)
 
-    print("done")
+        with open(output_file_path, "w") as write_file:
+            write_file.write(d)
 
 
-file_names = generateFileNames()
 
-for file in file_names:
-    extract(file)
+    def mark_matrix(self, matrix):
+        out = []
+        for i in range(len(matrix)):
+            out.append(MarkedList(matrix[i]))
+        return out
+
+    def transpose_matrix(self, matrix):
+        a = np.array(matrix)
+        a = a.transpose()
+
+        return a.tolist()
+
+    def get_trailing_number(self, s):
+        m = re.search(r'\d+$', s)
+        return int(m.group()) if m else None
+
+
+converter = Converter()
+converter.convert()

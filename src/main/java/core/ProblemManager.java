@@ -98,7 +98,7 @@ public class ProblemManager {
     }
 
     public void optimize() {
-        try(CsvAppender csvAppender = this.logger.getCsvWriter().append(this.logger.getFile(), StandardCharsets.UTF_8)) {
+        try(CsvAppender csvAppender = this.logger.getCsvWriter().append(this.logger.getLogFile(), StandardCharsets.UTF_8)) {
             this.logger.setCsvAppender(csvAppender);
             this.logger.logLegend(logTitles);
             this.initialize();

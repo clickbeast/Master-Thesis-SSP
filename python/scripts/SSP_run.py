@@ -1,64 +1,58 @@
 import os
+import json
 
 os.system("echo \"hello world\"")
-
-files = {
-    "base": "SSP",
-    "run_type": "ran_swap-2job_full_sd_sw_v1_none",
-    "files":
-        [
-            {
-                "orginal": "orginal",
-                "root_folder": "catanzaro",
-                "author": "cat",
-                "jobToolVersions": ["A", "B", "C", "D"],
-                "magazineVersions": [1, 2, 3, 4],
-                "variations": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-            },
-            {
-
-                "root_folder": "crama",
-                "author": "crama",
-                "jobToolVersions": ["A", "B", "C", "D"],
-                "magazineVersions": [1, 2, 3, 4],
-                "variations": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-            }, {
-
-            "root_folder": "mecler",
-            "author": "cat",
-            "jobToolVersions": ["A", "B", "C", "D"],
-            "magazineVersions": [1, 2, 3, 4],
-            "variations": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        },
-
-        ]
-}
 
 
 class Runner:
     base = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/build" \
            "/libs/Master-Thesis-SSP"
 
+    files_path_base = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances"
+    files_path = files_path_base + "/" + "yanasse_files.json"
+    files = {}
+    file_descriptor = None
+
+    params = {
+        "root_folder": "",
+        "instance": "",
+        "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+        "run_time": "700",
+        "seed": "7",
+        "start_temp": "100",
+        "end_temp": "0.000097",
+        "decay_rate": "0.99900",
+    }
+
     def __init__(self) -> None:
         super().__init__()
+        self.read_files()
+
+    def read_files(self):
+        with open(self.files_path, 'r') as f:
+            # parsing JSON string:
+            self.files = json.load(f)
 
     def run(self):
 
-        i = 0
-        jar_file = self.base + "-" + files["version"] + ".jar"
-        run_type = files["run_type"]
+        #self.params["run_type"] = self.files["run_type"]
+        jar_file = self.base + "-" + self.params["run_type"] + ".jar"
 
-        for file in files["files"]:
-            for jobToolVersion in file["jobToolVersions"]:
-                for magazineVersion in file["magazineVersions"]:
-                    for variation in file["variations"]:
-                        root_folder = file["root_folder"]
-                        instance = file["author"] + "_" + jobToolVersion + str(magazineVersion) + "_" + str(variation)
-                        command = "java -jar" + jar_file + " " + root_folder + " " + instance + " " + run_type
+        for file in self.files["files"]:
+            self.params["root_folder"] = self.files["root_path"] + file["root_folder"]
+            self.params["instance"] = file["instance"]
+            command = "java -jar" + " " + jar_file + " " + \
+                      self.create_command_param()
 
-                        os.system("command")
-                        i+=1
+            print(command)
+            os.system(command)
+
+    def create_command_param(self):
+
+        command = ""
+        for k, v in self.params.items():
+            command += "--" + k + "=" + v + " "
+        return command
 
 
 runner = Runner()

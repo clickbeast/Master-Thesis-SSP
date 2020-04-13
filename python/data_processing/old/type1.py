@@ -20,7 +20,7 @@ class CustomJSONEncoder(JSONEncoder):
             return "##<{}>##".format(o._list)
 
 
-input_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/raw_instances"
+input_path = "/data/raw_instances"
 output_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data" \
               "/instances "
 fileNames = [f for f in listdir(input_path) if isfile(join(input_path, f))]

@@ -61,6 +61,15 @@ class Converter:
 
     def __init__(self) -> None:
         super().__init__()
+        self.create_out_folder()
+
+    def create_out_folder(self):
+        try:
+            os.mkdir(self.out_folder)
+        except OSError:
+            print("Creation of the directory %s failed" % self.out_folder)
+
+
 
     def convert(self):
         self.root_folder = self.root_folder + "/" + "Tabela"

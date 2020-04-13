@@ -18,6 +18,7 @@ public class Logger {
     CsvWriter csvWriter;
     ColoredPrinter cp;
 
+    File logFile;
 
     String spacing = "%-5s %-15s %-5s %-15s %-5s %-15s %-5s %-20s %-10s %-10s %-20s %-10s %-10s %-15s %-10s %-30s \n";
     //String[] logTitles2 = {"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"};
@@ -31,7 +32,7 @@ public class Logger {
         cp = new ColoredPrinter.Builder(1, true)
                 .foreground(Ansi.FColor.BLUE)
                 .build();
-
+        this.logFile = new File(this.problemManager.getParameters().getLOG_PATH());
         this.csvWriter = new CsvWriter();
 
 
@@ -259,7 +260,7 @@ public class Logger {
 
     public void log(String[] items) throws IOException {
         System.out.printf(spacing, (Object[]) items);
-        try(CsvAppender csvAppender = csvWriter.append(file, StandardCharsets.UTF_8)) {
+        /*try(CsvAppender csvAppender = csvWriter.append(file, StandardCharsets.UTF_8)) {
             // header
             csvAppender.appendLine(items);
             csvAppender.endLine();
@@ -267,7 +268,7 @@ public class Logger {
 
 
         //csvAppender.appendLine(items);
-        //csvAppender.endLine();
+        //csvAppender.endLine();*/
     }
 
     public void logInfo(String bonjour) {
@@ -287,12 +288,12 @@ public class Logger {
         this.problemManager = problemManager;
     }
 
-    public File getFile() {
-        return file;
+    public CsvAppender getCsvAppender() {
+        return csvAppender;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public void setCsvAppender(CsvAppender csvAppender) {
+        this.csvAppender = csvAppender;
     }
 
     public CsvWriter getCsvWriter() {
@@ -311,20 +312,28 @@ public class Logger {
         this.cp = cp;
     }
 
-
-    public CsvAppender getCsvAppender() {
-        return csvAppender;
+    public String getSpacing() {
+        return spacing;
     }
 
-    public void setCsvAppender(CsvAppender csvAppender) {
-        this.csvAppender = csvAppender;
+    public void setSpacing(String spacing) {
+        this.spacing = spacing;
     }
 
-    public long getStep() {
-        return step;
+    public String[] getLogTitles() {
+        return logTitles;
     }
 
-    public void setStep(long step) {
-        this.step = step;
+    public void setLogTitles(String[] logTitles) {
+        this.logTitles = logTitles;
+    }
+
+    public File getLogFile() {
+        return logFile;
+    }
+
+    public void setLogFile(File logFile) {
+        this.logFile = logFile;
     }
 }
+
