@@ -1,0 +1,76 @@
+{
+    "files_folder_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances",
+    "files_name": "mecler_files.json",
+    "title": "Mecler1",
+    "params": {
+        "root_folder": "",
+        "instance": "",
+        "run_type": "ran_2job-swap_sd_sw_v1_none_1",
+        "run_time": "700",
+        "seed": "7",
+        "start_temp": "100",
+        "end_temp": "0.000097",
+        "decay_rate": "0.99900",
+        "log_verbose": "true"
+    },
+    "filter": {
+        "n_jobs": [
+            10,
+            10
+        ],
+        "n_tools": [
+            10,
+            10
+        ],
+        "magazine_size": [
+            5,5
+        ],
+        "variation": [
+            1,
+            10
+        ]
+    },
+    "solution": {
+        "n_jobs": 0,
+        "n_tools": 0,
+        "magazine_size": 0,
+        "switches": 0,
+        "tool_hops": 0,
+        "tool_add_distance": 0,
+        "tool_remove_distance": 0,
+        "run_time": 0,
+        "sequence": [],
+        "tool_hops_sequence": [],
+        "tool_add_distance_sequence": [],
+        "tool_remove_distance_sequence": [],
+        "matrix": [
+            []
+        ]
+    },
+    "result": {
+        "n_jobs": 0,
+        "n_tools": 0,
+        "magazine_size": 0,
+        "switches": 0,
+        "tool_hops": 0,
+        "tool_add_distance": 0,
+        "tool_remove_distance": 0,
+        "run_time": 0,
+        "sequence": [],
+        "tool_hops_sequence": [],
+        "tool_add_distance_sequence": [],
+        "tool_remove_distance_sequence": [],
+        "matrix": [
+            []
+        ]
+    },
+    "csv_line": {
+        "instance": "",
+        "n_jobs": 0,
+        "n_tools": 0,
+        "magazine_size": 0,
+        "switches": 0,
+        "run_time": 0,
+        "sequence": []
+    }
+}

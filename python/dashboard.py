@@ -34,10 +34,6 @@ fig4 = px.line(df, x = 'T_RUN', y = 'ACCEPT')
 #fig4.update_xaxes(autorange="reversed")$
 
 
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=T_RUN, y=random_y1,
-                         mode='lines+markers',
-                         name='lines+markers'))
 
 app.layout = html.Div(
     style={"height": "100%"},

@@ -13,11 +13,11 @@ public class Main {
         ParameterProcessor params = new ParameterProcessor(args);
 
         //PARAMS
-        String DEFAULT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro";
+        String DEFAULT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/crama";
         String ROOT_FOLDER = (params.getNamed().getOrDefault("root_folder", DEFAULT_ROOT));
-        String INSTANCE = (params.getNamed().getOrDefault("instance", "cat_10_10_4_1"));
+        String INSTANCE = (params.getNamed().getOrDefault("instance", "cram_10_10_4_1"));
         System.out.println(params.getNamed().get("instance"));
-        String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "ran_swap-2job_full_sd_sw_v1_none"));
+        String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "ran_swap-2job_full_sd_sw_v1_none_TESTING"));
         long RUN_TIME =  params.getNamed().containsKey("run_time") ? Integer.parseInt(params.getNamed().get(
                 "run_time")) : 7;
         int SEED = params.getNamed().containsKey("seed") ? Integer.parseInt(params.getNamed().get(

@@ -1,7 +1,5 @@
 import csv
 import json
-import copy
-
 
 # params
 config_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/config/config.json"
@@ -110,52 +108,6 @@ class Processor:
             if self.solution_allowed():
                 self.write_CSV_line()
 
-    #TODO
-    def process_solutions_variations_summarized(self):
-
-        self.write_csv_header()
-
-        sumarized_solutions = {}
-
-        for file in self.files["files"]:
-            self.file_descriptor = file
-            self.params["root_folder"] = self.files["root_path"] + file["root_folder"]
-            self.params["instance"] = file["instance"]
-            # todo: extract from params itself
-            #self.params["run_type"] = file["run_type"]
-            instance_path = self.params["root_folder"] + "/" + self.params[
-                "instance"] + "/" + "solution_" + self.params["run_type"] + ".txt"
-            self.read_solution(instance_path)
-            key = file["author"] + "_" + str(self.solution["n_jobs"]) + "_" + str(self.solution["n_tools"]) + "_" + str(self.solution["magazine_size"])
-
-            sumarized_solutions[key] = sumarized_solutions.get(key, [])
-            sumarized_solutions[key].append(copy.deepcopy(self.solution))
-
-            #todo
-
-        for k,v in sumarized_solutions.items():
-            count = len(v)
-            total_switches = 0
-            total_run_time = 0
-            for sol in v:
-                total_switches += sol["switches"]
-                total_run_time += sol["run_time"]
-
-            avg_switches = total_switches / count
-            avg_run_time = total_run_time / count
-
-            sum = {
-                "instance": k,
-                "n_jobs": v[0]["n_jobs"],
-                "n_tools": v[0]["n_tools"],
-                "magazine_size": v[0]["magazine_size"],
-                "switches": avg_switches,
-                "run_time": avg_run_time,
-                "sequence": []
-            }
-            l = self.construct_CSV_list_variations_sumarized(sum)
-            self.write_CSV_line_row(l)
-
 
     def solution_allowed(self):
         for k, range in self.filter.items():
@@ -174,13 +126,6 @@ class Processor:
             csvwriter = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
             csvwriter.writerow(self.csv_line.keys())
 
-    def write_CSV_line_row(self, row):
-        print(self.get_results_file_out_path())
-
-        with open(self.get_results_file_out_path(), 'a', newline='') as csvfile:
-            csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-            csvwriter.writerow(row)
-
     def write_CSV_line(self):
         print(self.get_results_file_out_path())
 
@@ -188,17 +133,9 @@ class Processor:
             csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             csvwriter.writerow(self.construct_CSV_list())
 
-    def construct_CSV_list_variations_sumarized(self, sum):
-        out = []
-        dicts = [sum]
-        for k, v in self.csv_line.items():
-            out.append(self.match_key_with_dict(k, dicts))
-        return out
-
-
     def construct_CSV_list(self):
         out = []
-        dicts = [self.solution, self.file_descriptor, self.params]
+        dicts = [self.file_descriptor,self.params, self.solution]
         for k, v in self.csv_line.items():
             out.append(self.match_key_with_dict(k, dicts))
         return out
@@ -232,4 +169,4 @@ class Processor:
 
 
 processor = Processor(config_path)
-processor.process_solutions_variations_summarized()
+processor.process_solutions()

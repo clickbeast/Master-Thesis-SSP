@@ -3,6 +3,8 @@ import json
 
 os.system("echo \"hello world\"")
 
+config_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/config/config.json"
+
 
 class Runner:
     base = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/build" \
@@ -12,20 +14,19 @@ class Runner:
     files_path = files_path_base + "/" + "catanzaro_files.json"
     files = {}
     file_descriptor = None
+    files_folder_path = ""
+    files_name = ""
+    title = ""
+    params = {}
+    filter = {}
+    solution = {}
+    result = {}
+    csv_line = {}
 
-    params = {
-        "root_folder": "",
-        "instance": "",
-        "run_type": "or_none_none_sw_v1_none",
-        "run_time": "700",
-        "seed": "7",
-        "start_temp": "100",
-        "end_temp": "0.000097",
-        "decay_rate": "0.99900",
-    }
-
-    def __init__(self) -> None:
+    def __init__(self, path) -> None:
         super().__init__()
+        self.config_path = path
+        self.read_config_file()
         self.read_files()
 
     def read_files(self):
@@ -35,7 +36,7 @@ class Runner:
 
     def run(self):
 
-        #self.params["run_type"] = self.files["run_type"]
+        # self.params["run_type"] = self.files["run_type"]
         jar_file = self.base + "-" + self.params["run_type"] + ".jar"
 
         for file in self.files["files"]:
@@ -54,6 +55,19 @@ class Runner:
             command += "--" + k + "=" + v + " "
         return command
 
+    def read_config_file(self):
+        with open(self.config_path) as f:
+            d = json.load(f)
+            self.files_path = d["files_folder_path"] + "/" + d["files_name"]
+            self.files_folder_path = d["files_folder_path"]
+            self.files_name = d["files_name"]
+            self.title = d["title"]
+            self.params = d["params"]
+            self.filter = d["filter"]
+            self.solution = d["solution"]
+            self.result = d["result"]
+            self.csv_line = d["csv_line"]
 
-runner = Runner()
+
+runner = Runner(config_path)
 runner.run()

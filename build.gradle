@@ -1,10 +1,17 @@
+import groovy.json.JsonSlurper
+
 plugins {
     id 'idea'
     id 'java'
 }
 
+def jsonFile = file('/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/config/config.json')
+def parsedJson = new JsonSlurper().parseText(jsonFile.text)
+def file_type = parsedJson.params.run_type
+
+
 group 'com.simonvermeir'
-version 'or_none_none_sw_v1_none_1'
+version file_type
 
 
 
@@ -34,3 +41,7 @@ jar {
 
 
 }
+
+
+
+

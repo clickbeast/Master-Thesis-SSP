@@ -102,15 +102,25 @@ public class ProblemManager {
 
         this.initialize();
         //this.initialSolution();
-        this.initialOrderedSolution();
+        //this.initialOrderedSolution();
+        this.initialRandomSolution();
+
+        General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
+
         //this.logger.writeResult(this.bestResult);
         //General.printGrid(this.currentResult.getJobToolMatrix());
-        //this.steepestDescent();
-
+        this.steepestDescent();
         //this.hillClimbing();
         //this.simulatedAnnealing();
         this.logger.writeResult(bestResult);
         this.logger.writeSolution(this.bestResult);
+
+
+
+        General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
+
+        General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
+
     }
 
 
@@ -368,11 +378,7 @@ public class ProblemManager {
             }
             improved = false;
         }
-
-        this.logger.writeSolution(this.bestResult);
     }
-
-
 
 
     //First improvement
@@ -615,7 +621,7 @@ public class ProblemManager {
             int[] current = jobToolMatrix[i];
             for (int j = 0; j < current.length; j++) {
                 //CHECK: current implementation: when a tool gets loaded a "switch" is performed
-                if (previous[j] ==  1 &  current[j] ==  0) {
+                if (previous[j] ==  0 &  current[j] ==  1) {
                     swapCount+=1;
                 }
             }
