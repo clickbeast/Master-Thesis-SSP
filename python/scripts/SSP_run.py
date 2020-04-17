@@ -1,16 +1,14 @@
 import os
 import json
+from inspect import getsourcefile
 
 os.system("echo \"hello world\"")
 
-config_path = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/config/config.json"
-
 
 class Runner:
-    base = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/build" \
-           "/libs/Master-Thesis-SSP"
-
-    files_path_base = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances"
+    config_path = "data/config/config.json"
+    base = "build/libs/Master-Thesis-SSP"
+    files_path_base = "data/instances"
     files_path = files_path_base + "/" + "catanzaro_files.json"
     files = {}
     file_descriptor = None
@@ -23,9 +21,14 @@ class Runner:
     result = {}
     csv_line = {}
 
-    def __init__(self, path) -> None:
+    def __init__(self, root_project_path) -> None:
         super().__init__()
-        self.config_path = path
+
+        self.config_path = os.path.join(root_project_path, self.config_path)
+        self.base = os.path.join(root_project_path, self.base)
+        self.files_path_base = os.path.join(root_project_path, self.files_path_base)
+        self.files_path = os.path.join(root_project_path, self.files_path)
+
         self.read_config_file()
         self.read_files()
 
@@ -69,5 +72,13 @@ class Runner:
             self.csv_line = d["csv_line"]
 
 
-runner = Runner(config_path)
+def create_project_root_path():
+    path = os.path.dirname(__file__)
+    while os.path.split(path)[1] != "Master-Thesis-SSP":
+        path = os.path.dirname(path)
+
+    return path
+
+
+runner = Runner(create_project_root_path())
 runner.run()
