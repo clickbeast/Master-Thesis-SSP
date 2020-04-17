@@ -101,15 +101,24 @@ public class ProblemManager {
         this.logger.logLegend(logTitles);
 
         this.initialize();
+
+        General.printGrid(this.getJOB_TOOL_MATRIX());
+        General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
         //this.initialSolution();
         //this.initialOrderedSolution();
         this.initialRandomSolution();
 
-        General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
+        //General.printGrid(this.getBestResult().getJobToolMatrix());
+        //General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
+
+        //General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
 
         //this.logger.writeResult(this.bestResult);
         //General.printGrid(this.currentResult.getJobToolMatrix());
         this.steepestDescent();
+
+        //General.printGrid(this.getBestResult().getJobToolMatrix());
+
         //this.hillClimbing();
         //this.simulatedAnnealing();
         this.logger.writeResult(bestResult);
@@ -117,9 +126,9 @@ public class ProblemManager {
 
 
 
-        General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
+        //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
 
-        General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
+        //General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
 
     }
 
@@ -498,6 +507,10 @@ public class ProblemManager {
                     numberOfToolsSet += 1;
                 }
             }
+
+            System.out.println("Decode");
+            General.printGrid(augmentedJobToolMatrix);
+
             int numberOfToolsToRemove = Math.max(0,numberOfToolsSet - getMAGAZINE_SIZE());
             //System.out.println(numberOfToolsToRemove);
             LinkedList<Integer> toolPriority = toolPrioritySequence.get(i);
@@ -505,7 +518,7 @@ public class ProblemManager {
             for (int j = 0; j < numberOfToolsToRemove; j++) {
                 while(true) {
                     int toolId = toolPriority.removeLast();
-                    if(augmentedJobToolMatrix[i][toolId] == 1) {
+                    if(augmentedJobToolMatrix[i][toolId] == 1 && this.getJOB_TOOL_MATRIX()[i][toolId] != 1) {
                         augmentedJobToolMatrix[i][toolId] = 0;
                         break;
                     }
@@ -532,7 +545,7 @@ public class ProblemManager {
             for (int j = i + 1; j < sequence.length; j++) {
                 for (int k = 0; k < visited.length; k++) {
                     // visiter, belongs to current job, is used here
-                    if(visited[k] == 0 && this.getJOB_TOOL_MATRIX()[jobId][k] == 0 && getJOB_TOOL_MATRIX()[j][k] == 1){
+                    if(visited[k] == 0  && getJOB_TOOL_MATRIX()[j][k] == 1){
                         toolPriority.add(k);
                         visited[k] = 1;
                     }
@@ -542,7 +555,7 @@ public class ProblemManager {
             //Add the remaining tools
             //TODO: optimize collect remaining tools
             for (int j = 0; j < visited.length; j++) {
-                if(visited[j] == 0 && this.getJOB_TOOL_MATRIX()[jobId][j] == 0) {
+                if(visited[j] == 0) {
                     toolPriority.add(j);
                 }
             }
