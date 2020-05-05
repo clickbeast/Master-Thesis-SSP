@@ -74,6 +74,7 @@ class Runner:
 
 def create_project_root_path():
     path = os.path.dirname(__file__)
+    print(path)
     while os.path.split(path)[1] != "Master-Thesis-SSP":
         path = os.path.dirname(path)
 

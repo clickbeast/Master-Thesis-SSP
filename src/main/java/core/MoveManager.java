@@ -115,6 +115,21 @@ public class MoveManager {
 
 
 
+    /* RUIN + RECREATE ------------------------------------------------------------------ */
+
+
+    public Result ruin(Result result) {
+
+        return null;
+    }
+
+
+    public Result recreate(Result result) {
+
+        return null;
+    }
+
+
 
 
 
