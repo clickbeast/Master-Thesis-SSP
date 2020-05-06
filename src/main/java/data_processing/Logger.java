@@ -2,14 +2,9 @@ package data_processing;
 
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
-import com.sun.jna.platform.unix.solaris.LibKstat;
 import core.ProblemManager;
 import core.Result;
-import fastcsv.writer.CsvAppender;
-import fastcsv.writer.CsvWriter;
-
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class Logger {
@@ -240,43 +235,49 @@ public class Logger {
                 "tool_remove_distance": 0,
                 "run_time": 0,
                 "sequence": [],
-        "tool_hops_sequence": [],
-        "tool_add_distance_sequence": [],
-        "tool_remove_distance_sequence": [],
-        "matrix": [[]],
+                "tool_hops_sequence": [],
+                "tool_add_distance_sequence": [],
+                "tool_remove_distance_sequence": [],
+                "matrix": [[]],
         }*/
 
          PrintWriter out = this.getResultsWriter();
+         out.println("#" + this.getResultsCount());
+         this.printResult(result, out);
 
+        resultsCount+=1;
+
+    }
+
+    public void printResult(Result result, PrintWriter out) {
         long timeRunning = this.getTimeRunning();
         long timeRemaining = this.getTimeRemaining();
 
-         out.println("#" + this.getResultsCount());
-         //n_jobs
-         out.println(this.problemManager.getN_JOBS());
-         //n_tools
-         out.println(this.problemManager.getN_TOOLS());
-         //magazine_size
-         out.println(this.problemManager.getMAGAZINE_SIZE());
-         //switches
-         out.println(result.getCost());
-         //tool_hops
-         out.println(-1);
-         //tool_add_distance
-         out.println(-1);
-         //tool_remove_distance
-         out.println(-1);
-         //run_time
-         out.println(timeRunning);
-         //sequence
-         out.println(Arrays.toString(result.getSequence()));
-         //tool_hops_sequence
-         out.println(-1);
-         //tool_add_distance_sequence
-         out.println(-1);
-         //tool_remove_distance_sequence
-         out.println(-1);
-         //matrix
+        //n_jobs
+        out.println(this.problemManager.getN_JOBS());
+        //n_tools
+        out.println(this.problemManager.getN_TOOLS());
+        //magazine_size
+        out.println(this.problemManager.getMAGAZINE_SIZE());
+        //switches
+        out.println(result.getCost());
+        //tool_hops
+        out.println(-1);
+        //tool_add_distance
+        out.println(-1);
+        //tool_remove_distance
+        out.println(-1);
+        //run_time
+        out.println(timeRunning);
+        //sequence
+        out.println(Arrays.toString(result.getSequence()));
+        //tool_hops_sequence
+        out.println(-1);
+        //tool_add_distance_sequence
+        out.println(-1);
+        //tool_remove_distance_sequence
+        out.println(-1);
+        //matrix
         for (int i = 0; i < this.problemManager.getN_JOBS(); i++) {
             for (int j = 0; j < this.problemManager.getN_TOOLS(); j++) {
                 out.print(result.getJobToolMatrix()[i][j]);
@@ -284,93 +285,25 @@ public class Logger {
             }
             out.println();
         }
+    }
 
-        resultsCount+=1;
+    //Costly operation use only f
+    public void writeLiveResult(Result result) {
+        try(
+                FileWriter lfw = new FileWriter(this.problemManager.getParameters().getLIVE_RESULT_PATH(), false);
+                BufferedWriter lbw = new BufferedWriter(lfw);
+                PrintWriter liveWriter = new PrintWriter(lbw);
+        ){
+            liveWriter.println(this.problemManager.getParameters().getINSTANCE());
+            this.printResult(result, liveWriter);
+        }catch (IOException io) {
+            System.out.println("error writing update");
+        }
 
     }
 
-    public void printSolution(PrintStream printStream, Result result)  {
-        PrintStream console = System.out;
-        System.setOut(printStream);
-
-        System.out.println(result.getCost());
-
-        /*//TODO
-        int[][] result = solution.getResult();
-        int[][] ktns = solution.getKtns();
-        int[] sequence = solution.getSequence();
-        int[] switches = solution.getSwitches();
-
-        for (int i = 0; i < sequence.length; i++) {
-            int jobId = sequence[i];
-            System.out.print(jobId + "\t");
-
-            for (int j = 0; j < result[jobId].length; j++) {
-                System.out.print(result[jobId][j] + " ");
-            }
-
-            System.out.print("\t" + switches[i]);
-            System.out.println("");
-        }
-
-        System.out.print(" \t");
-        for (int j = 0; j < result[0].length; j++) {
-            System.out.print("  ");
-        }
-        System.out.print("\t" + "---");
-        System.out.println("");
-
-        System.out.print(" \t");
-
-        for (int j = 0; j < result[0].length; j++) {
-            System.out.print("  ");
-        }
-        System.out.print("\t" + solution.getCost());
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        //
-        //
 
 
-        for (int i = 0; i < ktns.length; i++) {
-            int jobId = sequence[i];
-            System.out.print(jobId + "\t");
-
-            for (int j = 0; j < ktns[jobId].length; j++) {
-                System.out.print(ktns[jobId][j] + " ");
-            }
-
-            System.out.print("\t" + "/");
-            System.out.println("");
-        }
-
-        System.out.print(" \t");
-        for (int j = 0; j < ktns[0].length; j++) {
-            System.out.print("  ");
-        }
-        System.out.print("\t" + "---");
-        System.out.println("");
-
-        System.out.print(" \t");
-
-        for (int j = 0; j < ktns[0].length; j++) {
-            System.out.print("  ");
-        }
-        System.out.print("\t" + "/");
-        System.out.println("");
-
-
-
-
-        System.out.println("");
-
-        System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
-
-        System.out.println("");*/
-
-        System.setOut(console);
-    }
 
 
     /* MESSAGES ------------------------------------------------------------------ */

@@ -13,13 +13,15 @@ public class Main {
         ParameterProcessor params = new ParameterProcessor(args);
 
         //PARAMS
-        String DEFAULT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/crama";
+        String DEFAULT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro";
+        String PROJECT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP";
         String ROOT_FOLDER = (params.getNamed().getOrDefault("root_folder", DEFAULT_ROOT));
-        String INSTANCE = (params.getNamed().getOrDefault("instance", "cram_10_10_4_1"));
+        String PROJECT_FOLDER = (params.getNamed().getOrDefault("project_folder", PROJECT_ROOT));
+        String INSTANCE = (params.getNamed().getOrDefault("instance", "cat_30_40_15_1"));
         System.out.println(params.getNamed().get("instance"));
         String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "ran_swap-2job_full_sd_sw_v1_none_TESTING"));
         long RUN_TIME =  params.getNamed().containsKey("run_time") ? Integer.parseInt(params.getNamed().get(
-                "run_time")) : 7;
+                "run_time")) : 70;
         int SEED = params.getNamed().containsKey("seed") ? Integer.parseInt(params.getNamed().get(
                 "seed")) : 7;
         double START_TEMP = params.getNamed().containsKey("start_temp") ? Double.parseDouble(params.getNamed().get(
@@ -32,7 +34,7 @@ public class Main {
         long START_TIME = System.currentTimeMillis();
 
         DataProcessing dataProcessing = new DataProcessing();
-        Parameters parameters = new Parameters(ROOT_FOLDER,INSTANCE, RUN_TYPE,RUN_TIME,START_TIME,SEED, START_TEMP, END_TEMP, DECAY_RATE);
+        Parameters parameters = new Parameters(PROJECT_ROOT,ROOT_FOLDER,INSTANCE, RUN_TYPE,RUN_TIME,START_TIME,SEED, START_TEMP, END_TEMP, DECAY_RATE);
         InputData inputData = dataProcessing.instantiateProblem(parameters);
 
         ProblemManager problemManager;

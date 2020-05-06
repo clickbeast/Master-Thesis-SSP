@@ -2,6 +2,7 @@ package data_processing;
 
 public class Parameters {
 
+    private String PROJECT_ROOT;
     private String ROOT_FOLDER;
     private String INSTANCE_FOLDER;
     private String INSTANCE;
@@ -10,6 +11,7 @@ public class Parameters {
     private String LOG_PATH;
     private String RESULTS_PATH;
     private String SOLUTION_PATH;
+    private String LIVE_RESULT_PATH;
 
     private  long RUN_TIME;
     private  long START_TIME;
@@ -19,11 +21,13 @@ public class Parameters {
     private  double END_TEMP;
     private  double DECAY_RATE;
 
-    public Parameters(String ROOT_FOLDER, String INSTANCE, String RUN_TYPE, long RUN_TIME, long START_TIME, int SEED, double START_TEMP, double END_TEMP, double DECAY_RATE) {
+    public Parameters(String PROJECT_ROOT,String ROOT_FOLDER, String INSTANCE, String RUN_TYPE, long RUN_TIME, long START_TIME, int SEED, double START_TEMP, double END_TEMP, double DECAY_RATE) {
+        this.PROJECT_ROOT = PROJECT_ROOT;
         this.ROOT_FOLDER = ROOT_FOLDER;
         this.INSTANCE = INSTANCE;
         this.INSTANCE_FOLDER = ROOT_FOLDER + "/" + INSTANCE;
         this.INPUT_FILE_PATH = ROOT_FOLDER + "/" +  INSTANCE  + "/"  + INSTANCE + ".json";
+        this.LIVE_RESULT_PATH = PROJECT_ROOT + "/data/instances/live.txt";
         this.RUN_TYPE = RUN_TYPE;
         this.RUN_TIME = RUN_TIME;
         this.START_TIME = START_TIME;
@@ -141,6 +145,14 @@ public class Parameters {
 
     public long getSTART_TIME() {
         return START_TIME;
+    }
+
+    public String getLIVE_RESULT_PATH() {
+        return LIVE_RESULT_PATH;
+    }
+
+    public void setLIVE_RESULT_PATH(String LIVE_RESULT_PATH) {
+        this.LIVE_RESULT_PATH = LIVE_RESULT_PATH;
     }
 
     public void setSTART_TIME(long START_TIME) {

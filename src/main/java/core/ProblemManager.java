@@ -102,7 +102,7 @@ public class ProblemManager {
         this.initialize();
 
         General.printGrid(this.getJOB_TOOL_MATRIX());
-        General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
+        //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
         //this.initialSolution();
         //this.initialOrderedSolution();
         this.initialRandomSolution();
@@ -114,12 +114,12 @@ public class ProblemManager {
 
         //this.logger.writeResult(this.bestResult);
         //General.printGrid(this.currentResult.getJobToolMatrix());
-        this.steepestDescent();
 
+        //this.steepestDescent();
         //General.printGrid(this.getBestResult().getJobToolMatrix());
 
         //this.hillClimbing();
-        //this.simulatedAnnealing();
+        this.simulatedAnnealing();
         this.logger.writeResult(bestResult);
         this.logger.writeSolution(this.bestResult);
 
@@ -325,6 +325,7 @@ public class ProblemManager {
 
                     }
 
+                    this.logger.writeLiveResult(this.workingResult);
                 }
             }
 
@@ -450,6 +451,9 @@ public class ProblemManager {
                 this.currentResult = this.workingResult;
                 this.workingResult = this.currentResult.getCopy();
                 this.bestResult = this.currentResult.getCopy();
+
+
+                this.logger.writeLiveResult(this.currentResult);
 
                 improved+=1;
             }
