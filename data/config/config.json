@@ -1,7 +1,7 @@
 {
     "files_folder_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances",
-    "files_name": "crama_files.json",
-    "title": "Crama1",
+    "files_name": "yanasse_A_1.json",
+    "title": "Yanasse A1",
     "params": {
         "root_folder": "",
         "instance": "",
@@ -15,12 +15,12 @@
     },
     "filter": {
         "n_jobs": [
-            10,
-            10
+            8,
+            8
         ],
         "n_tools": [
-            10,
-            10
+            15,
+            15
         ],
         "magazine_size": [
             5,5

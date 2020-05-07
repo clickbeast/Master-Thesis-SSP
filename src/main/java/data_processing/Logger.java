@@ -97,6 +97,14 @@ public class Logger {
         this.log(switches, bestSwitches,accepted,rejected,improved,-1, sequence);
     }
 
+    public void log(Result result) throws IOException {
+        this.log(result, -1);
+    }
+
+    public void log(Result result, double temperature) throws IOException {
+        this.log(result.getnSwitches(),this.problemManager.getBestResult().getnSwitches(), this.problemManager.getAccepted(),this.problemManager.getRejected(), this.problemManager.getImproved(), temperature, result.getSequence());
+    }
+
     public void log( int switches, int bestSwitches, long accepted, long rejected, long improved, double temperature, int[] sequence ) throws IOException {
         PrintWriter out = this.getLogWriter();
         long timeRunning = this.getTimeRunning();

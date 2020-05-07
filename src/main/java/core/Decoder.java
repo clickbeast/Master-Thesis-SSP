@@ -1,6 +1,13 @@
 package core;
 
 import models.Solution;
+import models.elemental.Job;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Stack;
 
 /**
  *  Decoder is able to decode solutions by using the KTNS mechanism in a fast and efficient way
@@ -36,13 +43,87 @@ public class Decoder {
 
     /* EVALUATION ------------------------------------------------------------------ */
 
-
-
-    public Result decodeV2(Result result) {
-
-
-        return result;
+    public void decode(Result result) throws IOException {
+        this.decodeV2(result);
     }
+
+    public void decodeV2(Result result) throws IOException {
+        int[][] resultJobToolMatrix = result.getJobToolMatrix();
+
+
+        //for all jobs
+        for (int seqPos = 0; seqPos < result.getSequence().length; seqPos++) {
+
+            Job job = result.getJobSeqPos(seqPos);
+
+            //base case
+            if (seqPos == 0) {
+                resultJobToolMatrix[job.getId()] = Arrays.copyOf(job.getTOOLS(),job.getTOOLS().length);
+            }else{
+
+                Job prevJob = result.prevJob(job);
+
+                LinkedList<Integer> diffPrevCurTools = this.getDifTools(resultJobToolMatrix[prevJob.getId()], job.getAntiSet());
+
+                //TODO: shortcut when there are no tools that need to be removed
+
+                int unionPrevCurJobSize = diffPrevCurTools.size() + job.getSet().length;
+                int nToolsDelete = Math.max(0, unionPrevCurJobSize - this.problemManager.getMAGAZINE_SIZE());
+                int nToolsKeep = unionPrevCurJobSize - nToolsDelete;
+                int nToolsAdd = nToolsKeep - job.getSet().length;
+
+
+                //Add the required tools //OPTIMIZE
+                resultJobToolMatrix[job.getId()] = Arrays.copyOf(job.getTOOLS(),job.getTOOLS().length);
+
+                Job nextJob = result.nextJob(job);
+                while(nToolsAdd != 0 & nextJob != null & diffPrevCurTools.size() > 0) {
+                    //System.out.printf("ntoolsadd: %s , nextjob : %s, diffprevsize: %s", nToolsAdd, nextJob, diffPrevCurTools.size());
+                    //System.out.println("LOCKED");
+                    ListIterator<Integer> iter = diffPrevCurTools.listIterator();
+                    //this.problemManager.getLogger().log(result);
+                    while (iter.hasNext() && nToolsAdd != 0) {
+                        int toolAddId = iter.next();
+
+                        if(resultJobToolMatrix[nextJob.getId()][toolAddId] == 1) {
+                            resultJobToolMatrix[job.getId()][toolAddId] = 1;
+                            nToolsAdd-=1;
+                            iter.remove();
+                        }
+                    }
+                    //System.out.println(nextJob.getId());
+                    nextJob = result.nextJob(nextJob);
+                    //System.out.println(nextJob.getId());
+                }
+
+
+            }
+
+        }
+
+        this.evaluate(result);
+    }
+
+
+    public LinkedList<Integer> getDifTools(int[] toolsA, int[] antiToolSetB) {
+
+        LinkedList<Integer> list = new LinkedList<>();
+
+        for(int i = 0; i < antiToolSetB.length; i++) {
+
+            int toolId = antiToolSetB[i];
+
+            if(toolsA[toolId] == 1) {
+                list.add(toolId);
+            }
+        }
+
+        return list;
+    }
+
+
+
+
 
 
     public Result shallowDecode(Result result) {
@@ -50,16 +131,18 @@ public class Decoder {
         return null;
     }
 
-    public Result evaluate(Result result) {
-
-        return result;
+    public void evaluate(Result result) {
+        int[] switches = this.count_version_simon(result.getSequence(),result.getJobToolMatrix());
+        result.setSwitches(switches);
+        result.setnSwitches(nSwitches(switches));
     }
 
-
-
-    public Solution decodeToSolution(Result result) {
-
-        return null;
+    public int nSwitches(int[] switches) {
+        int count = 0;
+        for (int i = 0; i < switches.length; i++) {
+            count+= switches[i];
+        }
+        return count;
     }
 
 

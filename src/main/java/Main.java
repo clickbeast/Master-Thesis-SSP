@@ -12,14 +12,18 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         ParameterProcessor params = new ParameterProcessor(args);
 
+
+        //cat_10_10_4_1
+        //cat_30_40_15_1
+
         //PARAMS
-        String DEFAULT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro";
+        String DEFAULT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/yanasse";
         String PROJECT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP";
         String ROOT_FOLDER = (params.getNamed().getOrDefault("root_folder", DEFAULT_ROOT));
         String PROJECT_FOLDER = (params.getNamed().getOrDefault("project_folder", PROJECT_ROOT));
-        String INSTANCE = (params.getNamed().getOrDefault("instance", "cat_30_40_15_1"));
+        String INSTANCE = (params.getNamed().getOrDefault("instance", "yan_25_25_20_30"));
         System.out.println(params.getNamed().get("instance"));
-        String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "ran_swap-2job_full_sd_sw_v1_none_TESTING"));
+        String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "A-LIVE"));
         long RUN_TIME =  params.getNamed().containsKey("run_time") ? Integer.parseInt(params.getNamed().get(
                 "run_time")) : 70;
         int SEED = params.getNamed().containsKey("seed") ? Integer.parseInt(params.getNamed().get(
