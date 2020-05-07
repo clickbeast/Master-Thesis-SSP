@@ -113,7 +113,7 @@ public class ProblemManager {
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
         //this.initialSolution();
         //this.initialOrderedSolution();
-        this.initialRandomSolution();
+        //this.initialRandomSolution();
 
         //General.printGrid(this.getBestResult().getJobToolMatrix());
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
@@ -135,7 +135,6 @@ public class ProblemManager {
         //this.simulatedAnnealing();
         this.logger.writeResult(bestResult);
         this.logger.writeSolution(this.bestResult);
-
 
 
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
@@ -325,7 +324,6 @@ public class ProblemManager {
         for (int i = 0; i < N_JOBS; i++) {
             Job job = this.getJobs()[i];
             sequence[i] = job.getId();
-            job.setPosition(i);
         }
         return sequence;
     }
@@ -471,37 +469,74 @@ public class ProblemManager {
     //TODO: THIS PERMUTATION IS NOT THE CORRECT ONE
     public void bruteForce() throws IOException {
         //Try all permutations of the string
-        int[] sequence = this.workingResult.getSequence();
+        //int[] sequence = Arrays.copyOf(this.getCurrentResult().getSequence(), this.getCurrentResult().getSequence().length);
+        //permutation(sequence, 0);
+        //this.orderedInitialSequence();
+        int[] seq = this.orderedInitialSequence();
+        this.workingResult = new Result(seq,this);
 
-        permutation("", seq);
+        //brute(seq);
+        this.permutation(seq, 0);
     }
 
 
-    private void permutation(int[] in) throws IOException {
+    private void permutation(int[] sequence, int offset) throws IOException {
+        if(offset == sequence.length - 1) {
+            brute(sequence);
+        }else {
 
-        for (int i = 0; i < in.length; i++) {
-            
+            for (int i = offset; i < sequence.length; i++) {
+                swap(sequence, offset, i);
+                permutation(sequence, offset + 1);
+                sequence = Arrays.copyOf(sequence, sequence.length);
+            }
         }
-
     }
 
 
 
 
+    //TODO: check for a swap in place
+    private int[] swap(int[] list, int a, int b) {
+        int temp = list[a];
+        list[a] = list[b];
+        list[b] = temp;
+        return list;
+    }
 
 
+    int bruteCount = 0;
 
     private void brute(int[] sequence) throws IOException {
+
+
         this.workingResult.setSequence(sequence);
         this.workingResult.reloadJobPositions();
 
         this.decoder.decode(this.workingResult);
 
-        if(this.workingResult.getCost() > this.bestResult.getCost()) {
+
+        if(this.bestResult == null) {
             this.bestResult = this.workingResult.getCopy();
         }
+
+
+        if(this.workingResult.getCost() < this.bestResult.getCost()) {
+            this.bestResult = this.workingResult.getCopy();
+            //this.logger.log(bestResult);
+        }
+
         this.logger.log(this.workingResult);
-        this.logger.writeLiveResult(this.workingResult);
+
+        if(bruteCount == 1000) {
+            bruteCount = 0;
+            this.logger.writeResult(this.workingResult);
+        }
+
+        bruteCount+=1;
+
+
+        //this.logger.writeLiveResult(this.workingResult);
     }
 
 
@@ -523,6 +558,8 @@ public class ProblemManager {
 
             //sequence = this.randomInitialSequence(sequence);
             this.workingResult.setJobToolMatrix(this.decode(seq));
+            
+
             this.workingResult.setSwitches(this.calculateSwitches(seq,this.workingResult.getJobToolMatrix()));
             this.workingResult.setnSwitches(this.evaluate(seq, this.workingResult.getJobToolMatrix(), this.workingResult.getSwitches()));
 
@@ -779,6 +816,11 @@ public class ProblemManager {
         return gridCopy;
     }
 
+
+
+    public Job getJob(int id) {
+        return this.getJobs()[id];
+    }
 
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
 

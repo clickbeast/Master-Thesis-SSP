@@ -55,6 +55,8 @@ public class Result {
         this.problemManager = problemManager;
         this.sequence = sequence;
 
+        this.jobToolMatrix = General.copyGrid(this.problemManager.getJOB_TOOL_MATRIX());
+
         this.jobPositions = new int[this.sequence.length];
         this.reloadJobPositions();
     }
@@ -78,7 +80,7 @@ public class Result {
         Result result = new Result(sequence, this.getProblemManager());
         result.setJobToolMatrix(jobToolMatrix);
         result.setSwitches(switches);
-        //result.setJobPositions(jobPositions);
+        result.setnSwitches(this.getnSwitches());
 
 
         return result;
@@ -122,10 +124,9 @@ public class Result {
         this.cost = cost;
     }
 
-    public int[] getToolsForJob(Job job) {
+    public int[] getTools(Job job) {
         return this.getJobToolMatrix()[job.getId()];
     }
-
 
 
 

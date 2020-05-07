@@ -21,9 +21,9 @@ public class Main {
         String PROJECT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP";
         String ROOT_FOLDER = (params.getNamed().getOrDefault("root_folder", DEFAULT_ROOT));
         String PROJECT_FOLDER = (params.getNamed().getOrDefault("project_folder", PROJECT_ROOT));
-        String INSTANCE = (params.getNamed().getOrDefault("instance", "yan_25_25_20_30"));
+        String INSTANCE = (params.getNamed().getOrDefault("instance", "yan_8_15_5_1"));
         System.out.println(params.getNamed().get("instance"));
-        String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "A-LIVE"));
+        String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "SA-TEST"));
         long RUN_TIME =  params.getNamed().containsKey("run_time") ? Integer.parseInt(params.getNamed().get(
                 "run_time")) : 70;
         int SEED = params.getNamed().containsKey("seed") ? Integer.parseInt(params.getNamed().get(
@@ -44,16 +44,16 @@ public class Main {
         ProblemManager problemManager;
 
         try(
-                FileWriter lfw = new FileWriter(parameters.getLOG_PATH(), true);
+                FileWriter lfw = new FileWriter(parameters.getLOG_PATH(), false);
                 BufferedWriter lbw = new BufferedWriter(lfw);
                 PrintWriter logWriter = new PrintWriter(lbw);
 
 
-                FileWriter rfw = new FileWriter(parameters.getRESULTS_PATH(), true);
+                FileWriter rfw = new FileWriter(parameters.getRESULTS_PATH(), false);
                 BufferedWriter rbw = new BufferedWriter(rfw);
                 PrintWriter resultsWriter = new PrintWriter(rbw);
 
-                FileWriter sfw = new FileWriter(parameters.getSOLUTION_PATH(), true);
+                FileWriter sfw = new FileWriter(parameters.getSOLUTION_PATH(), false);
                 BufferedWriter sbw = new BufferedWriter(sfw);
                 PrintWriter solutionWriter = new PrintWriter(sbw)
 

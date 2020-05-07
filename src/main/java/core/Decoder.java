@@ -1,13 +1,11 @@
 package core;
 
-import models.Solution;
 import models.elemental.Job;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.Stack;
 
 /**
  *  Decoder is able to decode solutions by using the KTNS mechanism in a fast and efficient way
@@ -48,8 +46,8 @@ public class Decoder {
     }
 
     public void decodeV2(Result result) throws IOException {
-        int[][] resultJobToolMatrix = result.getJobToolMatrix();
 
+        int[][] resultJobToolMatrix = result.getJobToolMatrix();
 
         //for all jobs
         for (int seqPos = 0; seqPos < result.getSequence().length; seqPos++) {
@@ -78,10 +76,9 @@ public class Decoder {
 
                 Job nextJob = result.nextJob(job);
                 while(nToolsAdd != 0 & nextJob != null & diffPrevCurTools.size() > 0) {
-                    //System.out.printf("ntoolsadd: %s , nextjob : %s, diffprevsize: %s", nToolsAdd, nextJob, diffPrevCurTools.size());
-                    //System.out.println("LOCKED");
+
                     ListIterator<Integer> iter = diffPrevCurTools.listIterator();
-                    //this.problemManager.getLogger().log(result);
+
                     while (iter.hasNext() && nToolsAdd != 0) {
                         int toolAddId = iter.next();
 
@@ -91,9 +88,18 @@ public class Decoder {
                             iter.remove();
                         }
                     }
-                    //System.out.println(nextJob.getId());
+
+
                     nextJob = result.nextJob(nextJob);
-                    //System.out.println(nextJob.getId());
+                }
+
+                //Fill remaining nToolsAdd with any tool
+                ListIterator<Integer> remainingIter = diffPrevCurTools.listIterator();
+                while(nToolsAdd != 0) {
+                    int toolAddId = remainingIter.next();
+                    resultJobToolMatrix[job.getId()][toolAddId] = 1;
+                    remainingIter.remove();
+                    nToolsAdd-=1;
                 }
 
 
@@ -103,6 +109,7 @@ public class Decoder {
 
         this.evaluate(result);
     }
+
 
 
     public LinkedList<Integer> getDifTools(int[] toolsA, int[] antiToolSetB) {
@@ -132,7 +139,7 @@ public class Decoder {
     }
 
     public void evaluate(Result result) {
-        int[] switches = this.count_version_simon(result.getSequence(),result.getJobToolMatrix());
+        int[] switches = this.count_switches(result);
         result.setSwitches(switches);
         result.setnSwitches(nSwitches(switches));
     }
@@ -147,7 +154,45 @@ public class Decoder {
 
 
     public int[] count_switches(Result result) {
-        return null;
+
+        //Count first tool loadings
+
+        int[] switches = new int[result.getSequence().length];
+
+        Job jobPos1 = result.getJobSeqPos(0);
+
+        //Inserstions
+        int insertionCount = 0;
+        for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
+            if (result.getJobToolMatrix()[jobPos1.getId()][i] == 1) {
+                insertionCount += 1;
+            }
+        }
+
+
+        insertionCount = 0;
+        switches[0] = insertionCount;
+
+
+
+        for (int seqPos = 1; seqPos < result.getSequence().length; seqPos++) {
+            int swapCount = 0;
+
+            Job job = result.getJobSeqPos(seqPos);
+            Job prevJob = result.prevJob(job);
+
+
+            for (int j = 0; j < result.getTools(job).length; j++) {
+                //CHECK: current implementation: when a tool gets loaded a "switch" is performed
+                if (result.getTools(prevJob)[j] ==  0 &  result.getTools(job)[j] ==  1) {
+                    swapCount+=1;
+                }
+            }
+
+            switches[seqPos] = swapCount;
+        }
+
+        return switches;
     }
 
 
@@ -183,6 +228,7 @@ public class Decoder {
             switches[i] = swapCount;
         }
 
+        System.out.println(Arrays.toString(switches));
         return switches;
     }
 

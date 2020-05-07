@@ -1,12 +1,16 @@
 package core;
 
+import models.elemental.Job;
+
+
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class MoveManager {
 
     private final Random random;
     ProblemManager problemManager;
-
 
 
     public MoveManager(ProblemManager problemManager) {
@@ -31,6 +35,7 @@ public class MoveManager {
         }
 
     }
+
 
 
     /* MOVES ------------------------------------------------------------------ */
@@ -64,12 +69,12 @@ public class MoveManager {
         return result;
     }
 
+
+
     //TODO:
     public Result jobPairSwap(Result result) {
 
         //int jobA = this.random.nextInt(sequence.length);
-
-
         return null;
 
     }
@@ -77,7 +82,6 @@ public class MoveManager {
 
     //TODO:
     public Result inversionBetweenTwoJobs(Result result) {
-
         return null;
     }
 
@@ -118,15 +122,97 @@ public class MoveManager {
     /* RUIN + RECREATE ------------------------------------------------------------------ */
 
 
-    public Result ruin(Result result) {
+    public Result ruinAndRecreate(Result result) {
+        Ruin ruined = ruin(result);
+        recreate(result, ruined);
 
-        return null;
+        return result;
+    }
+
+    public Ruin ruin(Result result) {
+
+        Ruin ruined = new Ruin();
+
+        LinkedList<Integer>[] out = new LinkedList[2];
+
+
+        //Choose random tool
+        int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
+
+        int[] removed = new int[this.problemManager.getN_JOBS()];
+
+        //Remove associated tools -> currently: ONLY NON KTNS TOOLS
+        for (int i = 0; i < this.problemManager.getN_JOBS(); i++) {
+            Job job = this.problemManager.getJob(i);
+
+            for (int j = 0; j < job.getSet().length; j++) {
+                int toolId = job.getSet()[j];
+
+                if(selectedToolId == toolId) {
+                    //CASE 1: job to be removed
+                    ruined.getRemove().add(job.getId());
+                    break;
+                }
+
+            }
+
+            ruined.getKeep().add(job.getId());
+            //CASE 2: job to be kept
+
+        }
+
+        return ruined;
     }
 
 
-    public Result recreate(Result result) {
+    class Ruin {
+        LinkedList<Integer> remove;
+        LinkedList<Integer> keep;
 
-        return null;
+        public Ruin() {
+
+            remove = new LinkedList<>();
+            keep = new LinkedList<>();
+        }
+
+        public LinkedList<Integer> getRemove() {
+            return remove;
+        }
+
+        public void setRemove(LinkedList<Integer> remove) {
+            this.remove = remove;
+        }
+
+        public LinkedList<Integer> getKeep() {
+            return keep;
+        }
+
+        public void setKeep(LinkedList<Integer> keep) {
+            this.keep = keep;
+        }
+    }
+
+    public Result recreate(Result result, Ruin ruined) {
+
+
+        for(Integer jobId: ruined.getRemove()) {
+
+            //Try every position
+            for (int i = 0; i <  ruined.getKeep().size(); i++) {
+                //USE BLINKS HERE
+                ruined.getKeep().add(i, jobId);
+
+            }
+
+           // sequence.add()
+
+        }
+
+
+        //result.setSequence();
+
+        return result;
+
     }
 
 

@@ -192,42 +192,7 @@ public class Logger {
     public void writeSolution(Result result) throws IOException {
 
         PrintWriter out = this.getSolutionWriter();
-
-        long timeRunning = this.getTimeRunning();
-        long timeRemaining = this.getTimeRemaining();
-
-        //n_jobs
-        out.println(this.problemManager.getN_JOBS());
-        //n_tools
-        out.println(this.problemManager.getN_TOOLS());
-        //magazine_size
-        out.println(this.problemManager.getMAGAZINE_SIZE());
-        //switches
-        out.println(result.getCost());
-        //tool_hops
-        out.println(-1);
-        //tool_add_distance
-        out.println(-1);
-        //tool_remove_distance
-        out.println(-1);
-        //run_time
-        out.println(timeRunning);
-        //sequence
-        out.println(Arrays.toString(result.getSequence()));
-        //tool_hops_sequence
-        out.println(-1);
-        //tool_add_distance_sequence
-        out.println(-1);
-        //tool_remove_distance_sequence
-        out.println(-1);
-        //matrix
-        for (int i = 0; i < this.problemManager.getN_JOBS(); i++) {
-            for (int j = 0; j < this.problemManager.getN_TOOLS(); j++) {
-                out.print(result.getJobToolMatrix()[i][j]);
-                out.print(" ");
-            }
-            out.println();
-        }
+        this.printResult(result, out);
 
     }
 
@@ -279,6 +244,7 @@ public class Logger {
         out.println(timeRunning);
         //sequence
         out.println(Arrays.toString(result.getSequence()));
+        //printArray(result.getSequence(),out);
         //tool_hops_sequence
         out.println(-1);
         //tool_add_distance_sequence
@@ -310,6 +276,15 @@ public class Logger {
 
     }
 
+
+
+    public void printArray(int[] ar , PrintWriter out) {
+        for (int i = 0; i < ar.length; i++) {
+            out.print(ar[i]);
+            out.print(" ");
+        }
+        out.println("");
+    }
 
 
 
