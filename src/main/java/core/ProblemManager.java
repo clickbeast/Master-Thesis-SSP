@@ -113,7 +113,7 @@ public class ProblemManager {
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
         //this.initialSolution();
         //this.initialOrderedSolution();
-        //this.initialRandomSolution();
+        this.initialRandomSolution();
 
         //General.printGrid(this.getBestResult().getJobToolMatrix());
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
@@ -293,26 +293,18 @@ public class ProblemManager {
         sequence = this.randomInitialSequence(sequence);
         //sequence = this.randomInitialSequence(sequence);
         int[][] jobToolMatrix = this.decode(sequence);
-        //int[][] jobToolMatrix = this.copyGrid(this.getJOB_TOOL_MATRIX());
-
-        //TODO: start using the job position...
-        //int[] jobPosition = Arrays.copyOf(sequence,sequence.length);
-        int[] switches = this.calculateSwitches(sequence,jobToolMatrix);
-        int cost = this.evaluate(sequence, jobToolMatrix, switches);
 
         this.currentResult = new Result(sequence, this);
-        this.currentResult.setnSwitches(cost);
-        this.currentResult.setJobToolMatrix(jobToolMatrix);
-        this.currentResult.setSwitches(switches);
+        this.getDecoder().decodeV2(this.currentResult);
 
 
         this.workingResult = this.currentResult.getCopy();
         this.bestResult = this.currentResult.getCopy();
 
-        this.logger.logInfo(String.valueOf(cost));
+        this.logger.logInfo(String.valueOf(this.workingResult.getCost()));
         this.logger.logInfo("Initial Solution Created");
 
-        this.logger.log(cost, cost, sequence);
+        this.logger.log(this.workingResult);
         //this.logger.writeSolution(this.bestResult);
 
     }
@@ -482,17 +474,16 @@ public class ProblemManager {
 
     private void permutation(int[] sequence, int offset) throws IOException {
         if(offset == sequence.length - 1) {
-            brute(sequence);
+            brute(Arrays.copyOf(sequence, sequence.length));
         }else {
 
             for (int i = offset; i < sequence.length; i++) {
-                swap(sequence, offset, i);
+                swap(sequence, i, offset);
                 permutation(sequence, offset + 1);
-                sequence = Arrays.copyOf(sequence, sequence.length);
+                swap(sequence, offset ,i);
             }
         }
     }
-
 
 
 
@@ -503,6 +494,7 @@ public class ProblemManager {
         list[b] = temp;
         return list;
     }
+
 
 
     int bruteCount = 0;
@@ -531,6 +523,7 @@ public class ProblemManager {
         if(bruteCount == 1000) {
             bruteCount = 0;
             this.logger.writeResult(this.workingResult);
+            this.logger.writeLiveResult(this.workingResult);
         }
 
         bruteCount+=1;
@@ -553,15 +546,9 @@ public class ProblemManager {
 
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
 
-            int[] seq = this.workingResult.getSequence();
             this.getMoveManager().swap(this.workingResult);
 
-            //sequence = this.randomInitialSequence(sequence);
-            this.workingResult.setJobToolMatrix(this.decode(seq));
-            
-
-            this.workingResult.setSwitches(this.calculateSwitches(seq,this.workingResult.getJobToolMatrix()));
-            this.workingResult.setnSwitches(this.evaluate(seq, this.workingResult.getJobToolMatrix(), this.workingResult.getSwitches()));
+            this.getDecoder().decodeV2(this.workingResult);
 
 
             int deltaE = this.workingResult.getnSwitches() - this.bestResult.getnSwitches();
@@ -592,7 +579,7 @@ public class ProblemManager {
                 this.bestResult = this.currentResult.getCopy();
 
 
-                this.logger.writeLiveResult(this.currentResult);
+                //this.logger.writeLiveResult(this.currentResult);
 
                 improved+=1;
             }
@@ -612,7 +599,12 @@ public class ProblemManager {
 
             //LOGGING
             if (steps % 1000 == 0) {
-                this.logger.log(this.currentResult.getnSwitches(), this.bestResult.getnSwitches(), accepted, rejected, improved,temperature, this.currentResult.getSequence());
+                System.out.println("kiekie");
+                this.logger.log(this.getCurrentResult(), temperature);
+            }
+
+            if(steps % 10000 == 0) {
+                this.logger.writeResult(this.getCurrentResult());
             }
 
             if(temperature < 0.007) {

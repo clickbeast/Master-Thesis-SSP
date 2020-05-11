@@ -1,11 +1,11 @@
 {
     "files_folder_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances",
-    "files_name": "yanasse_A_3.json",
+    "files_name": "yanasse_A_2.json",
     "title": "Yanasse A1",
     "params": {
         "root_folder": "",
         "instance": "",
-        "run_type": "BRUTE-C",
+        "run_type": "BRUTE-F",
         "run_time": "700",
         "seed": "7",
         "start_temp": "100",

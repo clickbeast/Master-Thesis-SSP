@@ -184,7 +184,7 @@ public class Decoder {
 
             for (int j = 0; j < result.getTools(job).length; j++) {
                 //CHECK: current implementation: when a tool gets loaded a "switch" is performed
-                if (result.getTools(prevJob)[j] ==  0 &  result.getTools(job)[j] ==  1) {
+                if (result.getTools(prevJob)[j] ==  1 &  result.getTools(job)[j] ==  0) {
                     swapCount+=1;
                 }
             }

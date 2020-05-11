@@ -66,6 +66,9 @@ public class MoveManager {
         sequence[jobA] = sequence[jobB];
         sequence[jobB] =  tmp;
 
+        //TODO: optimize
+        result.reloadJobPositions();
+
         return result;
     }
 

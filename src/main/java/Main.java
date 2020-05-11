@@ -17,13 +17,13 @@ public class Main {
         //cat_30_40_15_1
 
         //PARAMS
-        String DEFAULT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/yanasse";
+        String DEFAULT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/mecler";
         String PROJECT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP";
         String ROOT_FOLDER = (params.getNamed().getOrDefault("root_folder", DEFAULT_ROOT));
         String PROJECT_FOLDER = (params.getNamed().getOrDefault("project_folder", PROJECT_ROOT));
-        String INSTANCE = (params.getNamed().getOrDefault("instance", "yan_8_15_5_1"));
+        String INSTANCE = (params.getNamed().getOrDefault("instance", "mec_70_105_40_1"));
         System.out.println(params.getNamed().get("instance"));
-        String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "SA-TEST"));
+        String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "TEST-1"));
         long RUN_TIME =  params.getNamed().containsKey("run_time") ? Integer.parseInt(params.getNamed().get(
                 "run_time")) : 70;
         int SEED = params.getNamed().containsKey("seed") ? Integer.parseInt(params.getNamed().get(
