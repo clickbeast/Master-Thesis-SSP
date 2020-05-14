@@ -5,7 +5,7 @@
     "params": {
         "root_folder": "",
         "instance": "",
-        "run_type": "DEBUG-A",
+        "run_type": "DEBUG-B",
         "run_time": "700",
         "seed": "7",
         "start_temp": "100",

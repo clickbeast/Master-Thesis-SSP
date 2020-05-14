@@ -39,6 +39,8 @@ class Runner:
 
     def run(self):
 
+        os.system(command)
+
         # self.params["run_type"] = self.files["run_type"]
         jar_file = self.base + "-" + self.params["run_type"] + ".jar"
 
