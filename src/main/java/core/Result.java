@@ -251,7 +251,6 @@ public class Result {
     @Override
     public String toString() {
         return "Result{" +
-                "problemManager=" + problemManager +
                 ", jobToolMatrix=" + Arrays.toString(jobToolMatrix) +
                 ", sequence=" + Arrays.toString(sequence) +
                 ", jobPositions=" + Arrays.toString(jobPositions) +

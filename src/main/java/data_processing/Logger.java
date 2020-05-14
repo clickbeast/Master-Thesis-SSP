@@ -2,6 +2,7 @@ package data_processing;
 
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
+import com.google.gson.Gson;
 import core.ProblemManager;
 import core.Result;
 import java.io.*;
@@ -273,7 +274,6 @@ public class Logger {
         }catch (IOException io) {
             System.out.println("error writing update");
         }
-
     }
 
 
