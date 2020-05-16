@@ -6,13 +6,14 @@ import util.General;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
+
 public class Result {
 
     private ProblemManager problemManager;
 
     //General
     private int cost;
-
     //-- full perspective --
     //The tool matrix
     private int[][] jobToolMatrix;
@@ -38,6 +39,7 @@ public class Result {
     private int nToolHops;
     private int nKtnsToolHops;
 
+    private String type;
 
     //private int[][] magazineState;
 
@@ -54,9 +56,9 @@ public class Result {
     public Result(int[] sequence, ProblemManager problemManager) {
         this.problemManager = problemManager;
         this.sequence = sequence;
-
-        this.jobToolMatrix = General.copyGrid(this.problemManager.getJOB_TOOL_MATRIX());
-
+        if (problemManager != null) {
+            this.jobToolMatrix = General.copyGrid(this.problemManager.getJOB_TOOL_MATRIX());
+        }
         this.jobPositions = new int[this.sequence.length];
         this.reloadJobPositions();
     }
@@ -81,13 +83,15 @@ public class Result {
         result.setJobToolMatrix(jobToolMatrix);
         result.setSwitches(switches);
         result.setnSwitches(this.getnSwitches());
-
+        result.setType(this.getType());
 
         return result;
     }
 
 
     /* DATA MODEL SETUP ------------------------------------------------------------------ */
+
+
 
 
     public Job getJobSeqPos(int i) {
@@ -132,6 +136,38 @@ public class Result {
 
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
 
+    public void setImproved() {
+        this.setType("improved");
+
+    }
+
+    public void setAccepted() {
+        this.setType("accepted");
+
+    }
+
+    public void setRejected() {
+        this.setType("rejected");
+
+    }
+
+    public void setTrial() {
+        this.setType("trial");
+    }
+
+    public void setInitial() {
+        this.setType("Initial");
+    }
+
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public int[] getSequence() {
         return sequence;
@@ -139,6 +175,7 @@ public class Result {
 
     public void setSequence(int[] sequence) {
         this.sequence = sequence;
+        this.reloadJobPositions();
     }
 
     public int[][] getJobToolMatrix() {

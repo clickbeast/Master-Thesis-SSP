@@ -1,8 +1,10 @@
 package core;
 
 import models.elemental.Job;
+import util.General;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -127,6 +129,215 @@ public class Decoder {
 
         return list;
     }
+
+
+
+    //- - - - - - - - - - - - -
+    // DECODE Ground Truth 1
+    //- - - - - - - - - - - - -
+
+
+
+    //GROUND-TRUTH
+    public void decodeGroundTruth(Result result) throws IOException {
+
+        int[][] resultJobToolMatrix = result.getJobToolMatrix();
+        resultJobToolMatrix  = new int[this.problemManager.getN_JOBS()][this.problemManager.getN_TOOLS()];
+
+        int n = 0;
+
+        int[] toolRowJob = new int[this.problemManager.getN_TOOLS()];
+
+        int C = 0;
+        //Step 1
+        for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
+            if(L(i,n, result) == 0) {
+                toolRowJob[i] = 1;
+                C+=1;
+            }
+            if(C == this.problemManager.getMAGAZINE_SIZE()) {
+                break;
+            }
+        }
+
+        //Step1.2
+
+        n = 1;
+        step2(n,toolRowJob,result);
+
+    }
+
+
+
+    public void step2(int n, int[] toolRowJob, Result result) {
+        result.getJobToolMatrix()[n] = toolRowJob;
+        if(n != this.problemManager.getN_JOBS()) {
+            step3(n, toolRowJob,result);
+        }else{
+            stop(n, toolRowJob,result);
+        }
+    }
+
+    //STEP 3 : If each i having L(i, n) = n also has Ji = 1, set n = n + 1 and go to Step 2.
+    public void step3(int n,int[] toolRowJob , Result result) {
+
+        for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
+            if(L(i,n,result) ==  n) {
+                if(toolRowJob[i] != 1) {
+
+                }
+            }
+        }
+
+        step4(n, toolRowJob, result);
+
+
+        n = n + 1;
+        step2(n, toolRowJob, result);
+
+    }
+
+    public void step4(int n, int[] toolRowJob, Result result) {
+
+        step5(n, toolRowJob, result);
+    }
+
+
+    //Set Jk = 0 for a k that maximizes L(p, n) over {p: Jp = 1}. Go to Step 3.
+    public void step5(int n , int[] toolRowJob, Result result) {
+
+
+
+        step3(n, toolRowJob, result);
+    }
+
+
+
+    public void stop(int n, int[] toolRowJob, Result result) {
+
+
+        //Evaluate
+        this.evaluate(result);
+
+    }
+
+
+
+    public int L(int toolId, int instant, Result result) {
+        for (int i = 0; i < result.getSequence().length; i++) {
+            Job job = result.getJobSeqPos(i);
+            if(this.problemManager.getJOB_TOOL_MATRIX()[job.getId()][toolId] == 1) {
+                return i;
+            }
+        }
+
+        return this.problemManager.getN_JOBS() - 1;
+    }
+
+
+
+    public void decodeV3(Result result) throws IOException{
+
+    }
+
+    //- - - - - - - - - - - - -
+    // DECODE Version 1
+    //- - - - - - - - - - - - -
+
+
+    public void decodeV1(Result result) throws IOException {
+
+        this.evaluate(result);
+    }
+
+
+
+
+    public int[][] decode(int[] sequence) {
+        ArrayList<LinkedList<Integer>> toolPrioritySequence = determineToolPriority(sequence);
+        int[][] augmentedJobToolMatrix = new int[this.problemManager.getN_JOBS()][this.problemManager.getN_TOOLS()];
+
+        //Set tools
+        int[] prev = new int[this.problemManager.getN_TOOLS()];
+
+        for (int i = 0; i < sequence.length; i++) {
+
+            //Set tools
+            int numberOfToolsSet = 0;
+            for (int j = 0; j < this.problemManager.getN_TOOLS(); j++) {
+                augmentedJobToolMatrix[i][j] = this.problemManager.getJOB_TOOL_MATRIX()[i][j];
+                if (prev[j] == 1 || this.problemManager.getJOB_TOOL_MATRIX()[i][j] == 1) {
+                    augmentedJobToolMatrix[i][j] = 1;
+                    numberOfToolsSet += 1;
+                }
+            }
+
+            System.out.println("Decode");
+            General.printGrid(augmentedJobToolMatrix);
+
+            int numberOfToolsToRemove = Math.max(0,numberOfToolsSet - this.problemManager.getMAGAZINE_SIZE());
+            //System.out.println(numberOfToolsToRemove);
+            LinkedList<Integer> toolPriority = toolPrioritySequence.get(i);
+            //remove unwanted tools
+            for (int j = 0; j < numberOfToolsToRemove; j++) {
+                while(true) {
+                    int toolId = toolPriority.removeLast();
+                    if(augmentedJobToolMatrix[i][toolId] == 1 && this.problemManager.getJOB_TOOL_MATRIX()[i][toolId] != 1) {
+                        augmentedJobToolMatrix[i][toolId] = 0;
+                        break;
+                    }
+                }
+            }
+
+            prev = augmentedJobToolMatrix[i];
+        }
+
+        //General.printGrid(augmentedJobToolMatrix);
+
+        return augmentedJobToolMatrix;
+    }
+
+
+    //TODO:
+    public ArrayList<LinkedList<Integer>> determineToolPriority(int[] sequence) {
+        ArrayList<LinkedList<Integer>> toolPrioritySequence = new ArrayList<>(sequence.length);
+        for(int i = 0; i < sequence.length; i++) {
+            int[] visited = new int[this.problemManager.getN_TOOLS()];
+            int jobId = sequence[i];
+            LinkedList<Integer> toolPriority = new LinkedList<>();
+            for (int j = i + 1; j < sequence.length; j++) {
+                for (int k = 0; k < visited.length; k++) {
+                    // visiter, belongs to current job, is used here
+                    if(visited[k] == 0  && this.problemManager.getJOB_TOOL_MATRIX()[j][k] == 1){
+                        toolPriority.add(k);
+                        visited[k] = 1;
+                    }
+                }
+            }
+
+            //Add the remaining tools
+            //TODO: optimize collect remaining tools
+            for (int j = 0; j < visited.length; j++) {
+                if(visited[j] == 0) {
+                    toolPriority.add(j);
+                }
+            }
+
+
+            toolPrioritySequence.add(toolPriority);
+        }
+
+        return toolPrioritySequence;
+    }
+
+
+
+
+
+
+
+
+
 
 
 

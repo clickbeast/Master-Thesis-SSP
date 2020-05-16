@@ -15,9 +15,9 @@ public class Logger {
     //CsvWriter csvWriter;
     ColoredPrinter cp;
 
-    String spacing = "%-5s %-15s %-5s %-15s %-5s %-15s %-5s %-20s %-10s %-10s %-20s %-10s %-10s %-15s %-10s %-30s \n";
+    String spacing = "%-5s %-15s %-5s %-15s %-5s %-15s %-5s %-20s %-10s %-10s %-20s %-10s %-10s %-15s %-10s %-30s %-20s \n";
     //String[] logTitles2 = {"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"};
-    String[] logTitles = {"SW", "B_SW", "THOP" , "B_THOP" , "TAD", "B_TAD" , "TRD", "B_TRD" , "ACCEPT" , "REJECT", "IMPROVE", "STEP", "T_RUN","T_REM", "TEMP", "SEQ"};
+    String[] logTitles = {"SW", "B_SW", "THOP" , "B_THOP" , "TAD", "B_TAD" , "TRD", "B_TRD" , "ACCEPT" , "REJECT", "IMPROVE", "STEP", "T_RUN","T_REM", "TEMP", "SEQ","TYPE","TYPEID"};
 
 
     private PrintWriter logWriter;
@@ -25,6 +25,8 @@ public class Logger {
     private PrintWriter solutionWriter;
 
     private long resultsCount = 0;
+    private OutputData outputData;
+    private Gson gson;
 
 
     /* SETUP ------------------------------------------------------------------ */
@@ -50,6 +52,18 @@ public class Logger {
         this.logWriter = logWriter;
         this.resultsWriter = resultsWriter;
         this.solutionWriter = solutionWriter;
+        this.gson = new Gson();
+
+        this.outputData = new OutputData(
+                this.getProblemManager().getMAGAZINE_SIZE(),
+                this.getProblemManager().getN_TOOLS(),
+                this.getProblemManager().getN_JOBS(),
+                this.getProblemManager().getJOB_TOOL_MATRIX(),
+                this.getProblemManager().getDIFFERENCE_MATRIX(),
+                this.getProblemManager().getSHARED_TOOLS_MATRIX(),
+                this.getProblemManager().getSWITCHES_LB_MATRIX(),
+                this.getProblemManager().getTOOL_PAIR_MATRIX()
+        );
 
     }
 
@@ -84,18 +98,18 @@ public class Logger {
         System.out.printf(spacing, (Object[]) logTitles);
         System.out.println();
 
-        String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s";
+        String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s";
         out.printf(logSpacing, (Object[]) logTitles);
         out.println();
 
     }
 
     public void log( int switches, int bestSwitches, int[] sequence ) throws IOException {
-        this.log(switches, bestSwitches,-1,-1,-1,-1, sequence);
+        this.log(switches, bestSwitches,-1,-1,-1,-1, sequence,"");
     }
 
     public void log( int switches, int bestSwitches, long accepted, long rejected, long improved,int[] sequence ) throws IOException {
-        this.log(switches, bestSwitches,accepted,rejected,improved,-1, sequence);
+        this.log(switches, bestSwitches,accepted,rejected,improved,-1, sequence,"");
     }
 
     public void log(Result result) throws IOException {
@@ -103,10 +117,10 @@ public class Logger {
     }
 
     public void log(Result result, double temperature) throws IOException {
-        this.log(result.getnSwitches(),this.problemManager.getBestResult().getnSwitches(), this.problemManager.getAccepted(),this.problemManager.getRejected(), this.problemManager.getImproved(), temperature, result.getSequence());
+        this.log(result.getnSwitches(),this.problemManager.getBestResult().getnSwitches(), this.problemManager.getAccepted(),this.problemManager.getRejected(), this.problemManager.getImproved(), temperature, result.getSequence(), result.getType());
     }
 
-    public void log( int switches, int bestSwitches, long accepted, long rejected, long improved, double temperature, int[] sequence ) throws IOException {
+    public void log( int switches, int bestSwitches, long accepted, long rejected, long improved, double temperature, int[] sequence, String type) throws IOException {
         PrintWriter out = this.getLogWriter();
         long timeRunning = this.getTimeRunning();
         long timeRemaining = this.getTimeRemaining();
@@ -142,10 +156,13 @@ public class Logger {
                 // TEMP
                 temperature ,
                 // SEQ
-                Arrays.toString(sequence)
+                Arrays.toString(sequence),
+                //TYPE
+                type
+
         );
 
-        String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,\"%s\"";
+        String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,\"%s\"j,%s";
         out.printf(logSpacing,
                 //SW
                 switches,
@@ -178,7 +195,9 @@ public class Logger {
                 // TEMP
                 temperature ,
                 // SEQ
-                Arrays.toString(sequence)
+                Arrays.toString(sequence),
+                //TYPE
+                type
         );
 
         out.println();
@@ -193,8 +212,13 @@ public class Logger {
     public void writeSolution(Result result) throws IOException {
 
         PrintWriter out = this.getSolutionWriter();
-        this.printResult(result, out);
 
+        result.setProblemManager(null);
+        outputData.updateData(-1, this.getTimeRunning(), this.getTimeRemaining(),result);
+        String a = gson.toJson(outputData);
+
+        out.println(a);
+        //this.printResult(result, out);
     }
 
 
@@ -216,8 +240,15 @@ public class Logger {
         }*/
 
          PrintWriter out = this.getResultsWriter();
-         out.println("#" + this.getResultsCount());
-         this.printResult(result, out);
+
+
+         result.setProblemManager(null);
+         outputData.updateData(this.getResultsCount(), this.getTimeRunning(), this.getTimeRemaining(),result);
+         String a = gson.toJson(outputData);
+         out.println(a);
+         result.setProblemManager(this.getProblemManager());
+         ////out.println("#" + this.getResultsCount());
+         //this.printResult(result, out);
 
         resultsCount+=1;
 
@@ -233,7 +264,7 @@ public class Logger {
         out.println(this.problemManager.getN_TOOLS());
         //magazine_size
         out.println(this.problemManager.getMAGAZINE_SIZE());
-        //switches
+        //n_switches
         out.println(result.getCost());
         //tool_hops
         out.println(-1);
@@ -248,7 +279,7 @@ public class Logger {
         //printArray(result.getSequence(),out);
         //tool_hops_sequence
         out.println(-1);
-        //tool_add_distance_sequence
+        //tool_distance
         out.println(-1);
         //tool_remove_distance_sequence
         out.println(-1);
@@ -378,6 +409,23 @@ public class Logger {
 
     public void setResultsCount(long resultsCount) {
         this.resultsCount = resultsCount;
+    }
+
+
+    public OutputData getOutputData() {
+        return outputData;
+    }
+
+    public void setOutputData(OutputData outputData) {
+        this.outputData = outputData;
+    }
+
+    public Gson getGson() {
+        return gson;
+    }
+
+    public void setGson(Gson gson) {
+        this.gson = gson;
     }
 }
 

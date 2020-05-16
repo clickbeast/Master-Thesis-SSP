@@ -26,6 +26,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'de.siegmar:fastcsv:1.0.3'
     implementation 'com.diogonunes:JCDP:4.0.1'
+    implementation "com.google.guava:guava:29.0-jre"
+
 }
 
 jar {

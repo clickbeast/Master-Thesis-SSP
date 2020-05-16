@@ -1,11 +1,12 @@
 {
     "files_folder_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances",
-    "files_name": "yanasse_A_2.json",
+    "project_root": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP",
+    "files_name": "yanasse_A_1-4.json",
     "title": "Yanasse A1",
     "params": {
         "root_folder": "",
         "instance": "",
-        "run_type": "DEBUG-B",
+        "run_type": "SA-C",
         "run_time": "700",
         "seed": "7",
         "start_temp": "100",
@@ -70,9 +71,11 @@
         "n_tools": 0,
         "magazine_size": 0,
         "variations": 0,
-        "switches": 0,
-        "run_time": 0,
+        "n_switches": 0,
+        "time_running": 0,
         "run_type": "",
-        "sequence": []
+        "sequence": [],
+        "switches": []
+
     }
 }

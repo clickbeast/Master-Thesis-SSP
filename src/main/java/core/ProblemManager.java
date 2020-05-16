@@ -38,7 +38,7 @@ public class ProblemManager {
     private int[][][] SHARED_TOOLS_MATRIX;
 
     private int[][] SWITCHES_LB_MATRIX;
-    private int[][] TOOL_PAIR_COUNT_MATRIX;
+    private int[][] TOOL_PAIR_MATRIX;
 
     //MANAGERS
     private MoveManager moveManager;
@@ -100,20 +100,26 @@ public class ProblemManager {
         this.decoder = new Decoder(this);
 
         this.steps = 0;
+        this.initialize();
+
         this.logger = new Logger(this, inputData.getLogWriter(),inputData.getResultsWriter(), inputData.getSolutionWriter());
 
     }
 
     public void optimize() throws IOException {
         this.logger.logLegend(logTitles);
-
-        this.initialize();
+        //this.initialize();
 
         General.printGrid(this.getJOB_TOOL_MATRIX());
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
         //this.initialSolution();
         //this.initialOrderedSolution();
         this.initialRandomSolution();
+
+
+
+        //String hello = gson.toJson(result);
+        //System.out.println(hello);
 
         //General.printGrid(this.getBestResult().getJobToolMatrix());
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
@@ -127,15 +133,20 @@ public class ProblemManager {
         //General.printGrid(this.getBestResult().getJobToolMatrix());
 
 
+        //[2, 7, 4, 6, 5, 3, 1, 0] answer
+
         //Used for confirming algorithm
-        this.bruteForce();
+
+        this.simulatedAnnealing();
+        //this.steepestDescent();
+        //this.bruteForce();
 
 
         //this.hillClimbing();
         //this.simulatedAnnealing();
+
         this.logger.writeResult(bestResult);
         this.logger.writeSolution(this.bestResult);
-
 
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
 
@@ -151,7 +162,7 @@ public class ProblemManager {
         this.DIFFERENCE_MATRIX = this.initializeDifferenceMatrix();
         this.SHARED_TOOLS_MATRIX = initializeSharedToolsMatrix();
         this.SWITCHES_LB_MATRIX = this.initializeSwitchesLowerBoundMatrix();
-        this.TOOL_PAIR_COUNT_MATRIX = this.initializeToolPairCountMatrix();
+        this.TOOL_PAIR_MATRIX = this.initializeToolPairMatrix();
     }
 
 
@@ -169,7 +180,6 @@ public class ProblemManager {
     }
 
     public void initializeTools() {
-
 
     }
 
@@ -226,8 +236,6 @@ public class ProblemManager {
                     }
                 }
 
-
-
                 //Assign to both sides
                 sharedTools[job1Id][job2Id] = shared.stream().mapToInt(i->i).toArray();
                 sharedTools[job2Id][job1Id]= shared.stream().mapToInt(i->i).toArray();
@@ -248,12 +256,41 @@ public class ProblemManager {
     }
 
     //TODO: initializeToolPairMatrix
-    public int[][] initializeToolPairCountMatrix() {
+    public int[][] initializeToolPairMatrix() {
 
+        int[][] matrix = new int[this.getN_TOOLS()][this.getN_TOOLS()];
 
-        return null;
+        for (int toolId1 = 0; toolId1 < this.getN_TOOLS() ; toolId1++) {
+            for (int toolId2 = toolId1; toolId2 < this.getN_TOOLS(); toolId2++) {
+                int value = this.toolPairOccurences(toolId1, toolId2);
+                matrix[toolId1][toolId2] = value;
+                matrix[toolId2][toolId1] = value;
+            }
+        }
+
+        return matrix;
+    }
+
+    //Make A graph
+
+    public void initalizeToolPairGraph() {
+
 
     }
+
+
+
+    public int toolPairOccurences(int toolId1, int toolId2) {
+        int count = 0;
+        for (int jobId = 0; jobId < this.getN_JOBS(); jobId++) {
+            if(this.getJOB_TOOL_MATRIX()[jobId][toolId1] == 1 && this.getJOB_TOOL_MATRIX()[jobId][toolId2] == 1) {
+                count+=1;
+            }
+        }
+
+        return count;
+    }
+
 
 
     /* INITIAL SOLUTION ------------------------------------------------------------------ */
@@ -296,6 +333,7 @@ public class ProblemManager {
 
         this.currentResult = new Result(sequence, this);
         this.getDecoder().decodeV2(this.currentResult);
+        this.currentResult.setInitial();
 
 
         this.workingResult = this.currentResult.getCopy();
@@ -306,7 +344,6 @@ public class ProblemManager {
 
         this.logger.log(this.workingResult);
         //this.logger.writeSolution(this.bestResult);
-
     }
 
 
@@ -338,7 +375,9 @@ public class ProblemManager {
      * Gustavo Silva Paiva, et al.
      */
     //TODO : toolJobRelationBFSInitialSequence
-    public void toolJobRelationBFSInitialSequence() {
+    public void toolSequencingInitialSequence() {
+        int[] toolSequence = new int[this.getN_TOOLS()];
+
 
     }
 
@@ -347,8 +386,14 @@ public class ProblemManager {
      */
     //TODO: TSPInitialSequence
     public void TSPInitialSequence() {
+        for (int toolId1 = 0; toolId1 < this.N_TOOLS; toolId1++) {
+            for (int toolId2 = toolId1; toolId2 < this.N_TOOLS; toolId2++) {
 
+            }
+        }
     }
+
+
 
 
 
@@ -357,33 +402,37 @@ public class ProblemManager {
     //Best Improvement
     public void steepestDescent() throws IOException {
         boolean improved = false;
+
+
+
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
+            //Visit the whole neighberhoud
+
+            this.workingResult = this.bestResult.getCopy();
 
             for (int i = 0; i < this.workingResult.getSequence().length; i++) {
                 for (int j = i + 1 ; j < this.workingResult.getSequence().length; j++) {
+
                     int[] seq = this.workingResult.getSequence();
                     int temp = seq[i];
                     seq[i] = seq[j];
                     seq[j] = temp;
 
-                    //sequence = this.randomInitialSequence(sequence);
-                    this.workingResult.setJobToolMatrix(this.decode(seq));
-                    this.workingResult.setSwitches(this.calculateSwitches(seq,this.workingResult.getJobToolMatrix()));
-                    this.workingResult.setnSwitches(this.evaluate(seq, this.workingResult.getJobToolMatrix(), this.workingResult.getSwitches()));
+                    this.workingResult.reloadJobPositions();
+                    this.decoder.decodeV2(this.workingResult);
 
 
                     if(this.workingResult.getnSwitches() < this.bestResult.getnSwitches()) {
                         improved = true;
                         this.bestResult = this.workingResult.getCopy();
-
-
-                        this.logger.log(this.workingResult.getnSwitches(), this.bestResult.getnSwitches(), this.workingResult.getSequence());
+                        this.logger.log(this.workingResult);
 
                     }
 
                     this.logger.writeLiveResult(this.workingResult);
                 }
             }
+
 
             this.logger.logInfo("next neighbourhoud");
 
@@ -501,10 +550,12 @@ public class ProblemManager {
 
     private void brute(int[] sequence) throws IOException {
 
+        int[] refer = {2, 7, 4, 6, 5, 3, 1, 0};
+        if(sequence.equals(refer)) {
+            this.logger.logInfo("GEVONDEN GEVONDEN GEVONDEN");
+        }
 
         this.workingResult.setSequence(sequence);
-        this.workingResult.reloadJobPositions();
-
         this.decoder.decode(this.workingResult);
 
 
@@ -518,9 +569,10 @@ public class ProblemManager {
             //this.logger.log(bestResult);
         }
 
-        this.logger.log(this.workingResult);
 
         if(bruteCount == 1000) {
+            this.logger.log(this.workingResult);
+
             bruteCount = 0;
             this.logger.writeResult(this.workingResult);
             this.logger.writeLiveResult(this.workingResult);
@@ -560,29 +612,44 @@ public class ProblemManager {
                 if(acceptance > ran) {
 
                     //accept move -> not the best solution
+                    this.workingResult.setAccepted();
                     this.currentResult = this.workingResult;
-                    this.workingResult = this.currentResult.getCopy();
 
                     accepted+=1;
 
                 }else{
                     rejected+=1;
+                    this.workingResult.setRejected();
                     //cancel move
-                    this.workingResult = this.currentResult.getCopy();
                 }
             }else{
                 //accept & best solution now
                 //this.logger.logInfo("New best solution found");
 
+                this.workingResult.setImproved();
                 this.currentResult = this.workingResult;
-                this.workingResult = this.currentResult.getCopy();
                 this.bestResult = this.currentResult.getCopy();
 
 
-                //this.logger.writeLiveResult(this.currentResult);
-
                 improved+=1;
             }
+
+
+            //LOGGING
+            if (steps % 1000 == 0) {
+                this.logger.log(this.getWorkingResult(), temperature);
+            }
+
+            if(steps % 10000 == 0) {
+                this.logger.writeResult(this.getWorkingResult());
+            }
+
+            // - PREPARE FOR NEW ITERATION - -
+
+            //Copy for new iteration
+            this.workingResult = this.currentResult.getCopy();
+
+
 
             //Keep temperature steady for a few steps before dropping
             if(steady > 70) {
@@ -595,16 +662,6 @@ public class ProblemManager {
             //Reheating
             if (temperature < 1.5) {
                 //temperature = 10.0 + random.nextDouble() * 40;
-            }
-
-            //LOGGING
-            if (steps % 1000 == 0) {
-                System.out.println("kiekie");
-                this.logger.log(this.getCurrentResult(), temperature);
-            }
-
-            if(steps % 10000 == 0) {
-                this.logger.writeResult(this.getCurrentResult());
             }
 
             if(temperature < 0.007) {
@@ -957,12 +1014,12 @@ public class ProblemManager {
         this.SWITCHES_LB_MATRIX = SWITCHES_LB_MATRIX;
     }
 
-    public int[][] getTOOL_PAIR_COUNT_MATRIX() {
-        return TOOL_PAIR_COUNT_MATRIX;
+    public int[][] getTOOL_PAIR_MATRIX() {
+        return TOOL_PAIR_MATRIX;
     }
 
-    public void setTOOL_PAIR_COUNT_MATRIX(int[][] TOOL_PAIR_COUNT_MATRIX) {
-        this.TOOL_PAIR_COUNT_MATRIX = TOOL_PAIR_COUNT_MATRIX;
+    public void setTOOL_PAIR_MATRIX(int[][] TOOL_PAIR_MATRIX) {
+        this.TOOL_PAIR_MATRIX = TOOL_PAIR_MATRIX;
     }
 
     public Tool[] getTools() {

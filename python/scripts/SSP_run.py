@@ -29,6 +29,8 @@ class Runner:
         self.files_path_base = os.path.join(root_project_path, self.files_path_base)
         self.files_path = os.path.join(root_project_path, self.files_path)
 
+        self.project_root = ""
+
         self.read_config_file()
         self.read_files()
 
@@ -39,7 +41,11 @@ class Runner:
 
     def run(self):
 
-        os.system(command)
+        cmd = "cd" + " " + self.project_root
+        os.chdir(self.project_root)
+        os.system("gradle jar")
+
+
 
         # self.params["run_type"] = self.files["run_type"]
         jar_file = self.base + "-" + self.params["run_type"] + ".jar"
@@ -63,6 +69,7 @@ class Runner:
     def read_config_file(self):
         with open(self.config_path) as f:
             d = json.load(f)
+            self.project_root = d["project_root"]
             self.files_path = d["files_folder_path"] + "/" + d["files_name"]
             self.files_folder_path = d["files_folder_path"]
             self.files_name = d["files_name"]

@@ -21,7 +21,7 @@ public class Main {
         String PROJECT_ROOT =  "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP";
         String ROOT_FOLDER = (params.getNamed().getOrDefault("root_folder", DEFAULT_ROOT));
         String PROJECT_FOLDER = (params.getNamed().getOrDefault("project_folder", PROJECT_ROOT));
-        String INSTANCE = (params.getNamed().getOrDefault("instance", "yan_8_15_5_1"));
+        String INSTANCE = (params.getNamed().getOrDefault("instance", "yan_8_15_10_29"));
         System.out.println(params.getNamed().get("instance"));
         String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "TEST-1"));
         long RUN_TIME =  params.getNamed().containsKey("run_time") ? Integer.parseInt(params.getNamed().get(
