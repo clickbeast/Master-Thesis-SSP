@@ -3,6 +3,7 @@ package core;
 import models.elemental.Job;
 import util.General;
 
+import javax.xml.stream.FactoryConfigurationError;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,12 +41,15 @@ public class Decoder {
     }
 
 
-
     /* EVALUATION ------------------------------------------------------------------ */
 
-    public void decode(Result result) throws IOException {
+    public void decode(Result result) throws IOException{
+        //this.decodeGroundTruth(result);
+        //this.decodeV1(result);
         this.decodeV2(result);
+        //this.decodeV3(result);
     }
+
 
     public void decodeV2(Result result) throws IOException {
 
@@ -91,7 +95,6 @@ public class Decoder {
                         }
                     }
 
-
                     nextJob = result.nextJob(nextJob);
                 }
 
@@ -113,13 +116,11 @@ public class Decoder {
     }
 
 
-
     public LinkedList<Integer> getDifTools(int[] toolsA, int[] antiToolSetB) {
 
         LinkedList<Integer> list = new LinkedList<>();
 
         for(int i = 0; i < antiToolSetB.length; i++) {
-
             int toolId = antiToolSetB[i];
 
             if(toolsA[toolId] == 1) {
@@ -133,7 +134,7 @@ public class Decoder {
 
 
     //- - - - - - - - - - - - -
-    // DECODE Ground Truth 1
+    // DECODE Ground Truth 1 : ORDER: NM Tang and Denaro
     //- - - - - - - - - - - - -
 
 
@@ -149,6 +150,7 @@ public class Decoder {
         int[] toolRowJob = new int[this.problemManager.getN_TOOLS()];
 
         int C = 0;
+
         //Step 1
         for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
             if(L(i,n, result) == 0) {
@@ -161,17 +163,15 @@ public class Decoder {
         }
 
         //Step1.2
-
         n = 1;
         step2(n,toolRowJob,result);
-
     }
 
 
 
-    public void step2(int n, int[] toolRowJob, Result result) {
-        result.getJobToolMatrix()[n] = toolRowJob;
+    public void step2(int n, int[] toolRowJob, Result result) throws IOException {
         if(n != this.problemManager.getN_JOBS()) {
+            result.getJobToolMatrix()[n-1] = toolRowJob.clone();
             step3(n, toolRowJob,result);
         }else{
             stop(n, toolRowJob,result);
@@ -179,32 +179,83 @@ public class Decoder {
     }
 
     //STEP 3 : If each i having L(i, n) = n also has Ji = 1, set n = n + 1 and go to Step 2.
-    public void step3(int n,int[] toolRowJob , Result result) {
+    public void step3(int n, int[] toolRowJob , Result result) throws IOException {
 
+        boolean goToStep2 = true;
         for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
             if(L(i,n,result) ==  n) {
                 if(toolRowJob[i] != 1) {
-
+                     goToStep2 = false;
+                     break;
                 }
             }
         }
 
-        step4(n, toolRowJob, result);
-
-
-        n = n + 1;
-        step2(n, toolRowJob, result);
-
+        if(goToStep2) {
+            n = n + 1;
+            step2(n, toolRowJob, result);
+        }else{
+            step4(n, toolRowJob, result);
+        }
     }
 
-    public void step4(int n, int[] toolRowJob, Result result) {
+
+    //TODO: convertable to induvidual steps possible
+
+
+    //Pick i having L(i, n) = n and Ji = 0. Set Ji = 1. IE INSERT THE REQUIRED TOOLS
+    public void step4(int n, int[] toolRowJob, Result result) throws IOException {
+
+        //Maybe for only 1 tool
+        for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
+            if(L(i,n, result) == n & toolRowJob[i] == 0) {
+                toolRowJob[i] = 1;
+            }
+        }
+
 
         step5(n, toolRowJob, result);
     }
 
 
-    //Set Jk = 0 for a k that maximizes L(p, n) over {p: Jp = 1}. Go to Step 3.
-    public void step5(int n , int[] toolRowJob, Result result) {
+    //Set Jk = 0 for a k that maximizes L(p, n) over {p: Jp = 1}. Go to Step 3. IE DELETE THE LEAST IMPORTANT TOOL
+
+    public void step5(int n , int[] toolRowJob, Result result) throws IOException {
+
+        //Step How many tools to remove?
+            //Not explicitlely mentioned??
+        int count = 0;
+        for (int i = 0; i < toolRowJob.length; i++) {
+            if(toolRowJob[i] ==  1) {
+                count+=1;
+            }
+        }
+
+        int nDelete = Math.max(0,count - this.problemManager.getMAGAZINE_SIZE());
+
+        //TODO: possible to optimize
+
+        while(nDelete != 0) {
+
+            int maxL = -1;
+            int id = -1;
+
+            for (int i = 0; i < toolRowJob.length; i++) {
+                if (toolRowJob[i] == 1) {
+                    int value = L(i, n, result);
+                    if (value > maxL) {
+                        id = i;
+                        maxL = value;
+                    }
+                }
+            }
+
+            if(id != -1) {
+                //Set to Jk = O
+                toolRowJob[id] = 0;
+                nDelete--;
+            }
+        }
 
 
 
@@ -213,25 +264,28 @@ public class Decoder {
 
 
 
-    public void stop(int n, int[] toolRowJob, Result result) {
-
-
+    public void stop(int n, int[] toolRowJob, Result result) throws IOException {
         //Evaluate
         this.evaluate(result);
-
+        //this.problemManager.getLogger().writeResult(result);
     }
 
 
 
-    public int L(int toolId, int instant, Result result) {
-        for (int i = 0; i < result.getSequence().length; i++) {
+    public int L(int toolId, int n, Result result) {
+
+        if(result.getSequence()[0] == 0) {
+            //System.out.println("helloo");
+        }
+
+        for (int i = n; i < result.getSequence().length; i++) {
             Job job = result.getJobSeqPos(i);
             if(this.problemManager.getJOB_TOOL_MATRIX()[job.getId()][toolId] == 1) {
                 return i;
             }
         }
 
-        return this.problemManager.getN_JOBS() - 1;
+        return this.problemManager.getN_JOBS();
     }
 
 
@@ -246,14 +300,12 @@ public class Decoder {
 
 
     public void decodeV1(Result result) throws IOException {
-
+        result.setJobToolMatrix(decodeV1GetAugmentedJobToolMatrix(result.getSequence()));
         this.evaluate(result);
     }
 
 
-
-
-    public int[][] decode(int[] sequence) {
+    public int[][] decodeV1GetAugmentedJobToolMatrix(int[] sequence) {
         ArrayList<LinkedList<Integer>> toolPrioritySequence = determineToolPriority(sequence);
         int[][] augmentedJobToolMatrix = new int[this.problemManager.getN_JOBS()][this.problemManager.getN_TOOLS()];
 
@@ -272,8 +324,8 @@ public class Decoder {
                 }
             }
 
-            System.out.println("Decode");
-            General.printGrid(augmentedJobToolMatrix);
+            //System.out.println("Decode");
+            //General.printGrid(augmentedJobToolMatrix);
 
             int numberOfToolsToRemove = Math.max(0,numberOfToolsSet - this.problemManager.getMAGAZINE_SIZE());
             //System.out.println(numberOfToolsToRemove);
@@ -329,16 +381,6 @@ public class Decoder {
 
         return toolPrioritySequence;
     }
-
-
-
-
-
-
-
-
-
-
 
 
 

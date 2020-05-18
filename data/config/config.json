@@ -6,8 +6,8 @@
     "params": {
         "root_folder": "",
         "instance": "",
-        "run_type": "SA-C",
-        "run_time": "700",
+        "run_type": "SA-DECODE-GT-B",
+        "run_time": "180",
         "seed": "7",
         "start_temp": "100",
         "end_temp": "0.000097",

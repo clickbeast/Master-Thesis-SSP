@@ -119,34 +119,35 @@ public class ProblemManager {
 
 
         //String hello = gson.toJson(result);
-        //System.out.println(hello);
 
-        //General.printGrid(this.getBestResult().getJobToolMatrix());
-        //General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
-
-        //General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
-
-        //this.logger.writeResult(this.bestResult);
-        //General.printGrid(this.currentResult.getJobToolMatrix());
 
         //this.steepestDescent();
-        //General.printGrid(this.getBestResult().getJobToolMatrix());
-
 
         //[2, 7, 4, 6, 5, 3, 1, 0] answer
 
         //Used for confirming algorithm
 
-        this.simulatedAnnealing();
+        //this.simulatedAnnealing();
         //this.steepestDescent();
         //this.bruteForce();
 
-
         //this.hillClimbing();
-        //this.simulatedAnnealing();
+        ///
 
+
+        //this.simulatedAnnealing();
+        this.logger.logInfo("BONSOIR");
+        this.logger.log(this.bestResult);
+        int[] sequence = {2, 7, 4, 6, 5, 3, 1, 0};
+
+        //2,7 ,4 ,6 ,5 ,3,1 ,0
+        this.forceSequence(sequence);
+        this.logger.logInfo("BONSOIR");
+        this.logger.log(this.bestResult);
         this.logger.writeResult(bestResult);
         this.logger.writeSolution(this.bestResult);
+
+
 
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
 
@@ -332,7 +333,7 @@ public class ProblemManager {
         int[][] jobToolMatrix = this.decode(sequence);
 
         this.currentResult = new Result(sequence, this);
-        this.getDecoder().decodeV2(this.currentResult);
+        this.getDecoder().decode(this.currentResult);
         this.currentResult.setInitial();
 
 
@@ -419,7 +420,7 @@ public class ProblemManager {
                     seq[j] = temp;
 
                     this.workingResult.reloadJobPositions();
-                    this.decoder.decodeV2(this.workingResult);
+                    this.decoder.decode(this.workingResult);
 
 
                     if(this.workingResult.getnSwitches() < this.bestResult.getnSwitches()) {
@@ -586,6 +587,17 @@ public class ProblemManager {
 
 
 
+    //FORCE SEQUENCE
+
+    public void forceSequence(int[] sequence) throws IOException {
+        //this.bestResult.setSequence(sequence);
+        this.bestResult.reloadJobPositions();
+        this.bestResult = this.bestResult.getCopy();
+        this.bestResult.setSequence(sequence);
+        this.bestResult.reloadJobPositions();
+        this.decoder.decode(this.bestResult);
+    }
+
 
     //SA
     public void simulatedAnnealing() throws IOException {
@@ -600,7 +612,7 @@ public class ProblemManager {
 
             this.getMoveManager().swap(this.workingResult);
 
-            this.getDecoder().decodeV2(this.workingResult);
+            this.getDecoder().decode(this.workingResult);
 
 
             int deltaE = this.workingResult.getnSwitches() - this.bestResult.getnSwitches();
@@ -627,16 +639,19 @@ public class ProblemManager {
                 //this.logger.logInfo("New best solution found");
 
                 this.workingResult.setImproved();
+
                 this.currentResult = this.workingResult;
                 this.bestResult = this.currentResult.getCopy();
 
+                this.logger.log(this.getWorkingResult(), temperature);
 
                 improved+=1;
             }
 
 
+
             //LOGGING
-            if (steps % 1000 == 0) {
+            if (steps % 330 == 0) {
                 this.logger.log(this.getWorkingResult(), temperature);
             }
 
@@ -686,6 +701,7 @@ public class ProblemManager {
 
         //Set tools
         int[] prev = new int[this.getN_TOOLS()];
+
 
         for (int i = 0; i < sequence.length; i++) {
 

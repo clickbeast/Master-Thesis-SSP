@@ -136,19 +136,16 @@ public class MoveManager {
 
         Ruin ruined = new Ruin();
 
-        LinkedList<Integer>[] out = new LinkedList[2];
-
-
         //Choose random tool
         int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
 
-        int[] removed = new int[this.problemManager.getN_JOBS()];
 
         //Remove associated tools -> currently: ONLY NON KTNS TOOLS
         for (int i = 0; i < this.problemManager.getN_JOBS(); i++) {
             Job job = this.problemManager.getJob(i);
 
-            for (int j = 0; j < job.getSet().length; j++) {
+            checkTool: for (int j = 0; j < job.getSet().length; j++) {
+
                 int toolId = job.getSet()[j];
 
                 if(selectedToolId == toolId) {
@@ -156,12 +153,13 @@ public class MoveManager {
                     ruined.getRemove().add(job.getId());
                     break;
                 }
-
             }
 
-            ruined.getKeep().add(job.getId());
-            //CASE 2: job to be kept
-
+            if(job.getTOOLS()[selectedToolId] == 1) {
+                ruined.getRemove().add(job.getId());
+            }else{
+                ruined.getKeep().add(job.getId());
+            }
         }
 
         return ruined;
@@ -173,7 +171,6 @@ public class MoveManager {
         LinkedList<Integer> keep;
 
         public Ruin() {
-
             remove = new LinkedList<>();
             keep = new LinkedList<>();
         }
@@ -197,26 +194,28 @@ public class MoveManager {
 
     public Result recreate(Result result, Ruin ruined) {
 
+        LinkedList<Integer> sequence = ruined.getKeep();
+
 
         for(Integer jobId: ruined.getRemove()) {
-
-            //Try every position
-            for (int i = 0; i <  ruined.getKeep().size(); i++) {
-                //USE BLINKS HERE
-                ruined.getKeep().add(i, jobId);
-
-            }
-
-           // sequence.add()
 
         }
 
 
-        //result.setSequence();
 
         return result;
 
     }
+
+
+    public void insertAtBestPosition() {
+
+        //TODO: decode has to work with an incomplete solution...
+
+    }
+
+
+
 
 
 

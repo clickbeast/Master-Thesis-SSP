@@ -23,9 +23,9 @@ public class Main {
         String PROJECT_FOLDER = (params.getNamed().getOrDefault("project_folder", PROJECT_ROOT));
         String INSTANCE = (params.getNamed().getOrDefault("instance", "yan_8_15_10_29"));
         System.out.println(params.getNamed().get("instance"));
-        String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "TEST-1"));
+        String RUN_TYPE = (params.getNamed().getOrDefault("run_type", "FORCE"));
         long RUN_TIME =  params.getNamed().containsKey("run_time") ? Integer.parseInt(params.getNamed().get(
-                "run_time")) : 70;
+                "run_time")) : 60;
         int SEED = params.getNamed().containsKey("seed") ? Integer.parseInt(params.getNamed().get(
                 "seed")) : 7;
         double START_TEMP = params.getNamed().containsKey("start_temp") ? Double.parseDouble(params.getNamed().get(
