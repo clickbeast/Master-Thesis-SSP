@@ -1,0 +1,5 @@
+instance,n_jobs,n_tools,magazine_size,variations,switches,run_time,run_type,sequence
+"('yan', 8, 15, 5)",8,15,5,10,12.0,2.5385,SA-A,[]
+"('yan', 8, 15, 10)",8,15,10,30,6.83,2.894,SA-A,[]
+"('yan', 8, 20, 10)",8,20,10,30,13.07,3.38237,SA-A,[]
+"('yan', 8, 20, 5)",8,20,5,10,16.8,3.3236999999999997,SA-A,[]
