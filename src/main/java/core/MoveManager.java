@@ -3,6 +3,7 @@ package core;
 import models.elemental.Job;
 
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
@@ -125,7 +126,7 @@ public class MoveManager {
     /* RUIN + RECREATE ------------------------------------------------------------------ */
 
 
-    public Result ruinAndRecreate(Result result) {
+    public Result ruinAndRecreate(Result result) throws IOException {
         Ruin ruined = ruin(result);
         recreate(result, ruined);
 
@@ -192,30 +193,53 @@ public class MoveManager {
         }
     }
 
-    public Result recreate(Result result, Ruin ruined) {
+    public Result recreate(Result result, Ruin ruined) throws IOException {
 
+        insertAtBestRandomPositionNoRelationOrdered(result, ruined);
+
+        return result;
+    }
+
+
+    public void insertAtBestRandomPositionNoRelationOrdered(Result result, Ruin ruined) throws IOException {
         LinkedList<Integer> sequence = ruined.getKeep();
+        int[] seq = sequence.stream().mapToInt(i->i).toArray();
+        Result temp = new Result(seq, problemManager);
 
 
         for(Integer jobId: ruined.getRemove()) {
 
+            int bestCost = 0;
+            int bestPosition = 0;
+            int nBestPositions = 0;
+
+            for (int index = 0; index < sequence.size(); index++) {
+
+                sequence.add(index, jobId);
+                //To Array -> optimize to linked list strucuture
+                temp.setSequence(sequence.stream().mapToInt(i->i).toArray());
+                this.problemManager.getDecoder().decode(temp);
+
+                if(temp.getCost() <= bestCost) {
+                    if(nBestPositions == 0) {
+                        bestPosition = index;
+                        bestCost =  temp.getCost();
+                        nBestPositions+=1;
+                    }else{
+                        float probability = 1/nBestPositions;
+                        if(random.nextDouble() <= probability) {
+                            bestPosition = index;
+                            bestCost =  temp.getCost();
+                        }
+                        nBestPositions+=1;
+
+                    }
+                }
+                sequence.remove(index);
+            }
+            sequence.add(bestPosition, jobId);
         }
-
-
-
-        return result;
-
-    }
-
-
-    public void insertAtBestPosition() {
-
-        //TODO: decode has to work with an incomplete solution...
-
-    }
-
-
-
+  }
 
 
 

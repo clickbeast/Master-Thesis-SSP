@@ -1,0 +1,12 @@
+title, description, files_name, run_type, run_time, seed, start_temp, end_temp, decay_rate, log
+DEBUG,,yanasse_files.json,DEBUG-PAR,180,7,100,0.000097,0.99900,
+DEBUG,,crama_files.json,DEBUG-PAR,180,7,100,0.000097,0.99900,
+DEBUG,,catanzaro_files.json,DEBUG-PAR,180,7,100,0.000097,0.99900,
+DEBUG,,mecler_files.json,DEBUG-PAR,180,7,100,0.000097,0.99900,
+,,"",,,,,,,
+,,"",,,,,,,
+,,"",,,,,,,
+,,"",,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,

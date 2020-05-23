@@ -121,7 +121,7 @@ public class ProblemManager {
         //String hello = gson.toJson(result);
 
 
-        //this.steepestDescent();
+        //this.steepestDescentRandomBest();
 
         //[2, 7, 4, 6, 5, 3, 1, 0] answer
 
@@ -135,13 +135,15 @@ public class ProblemManager {
         ///
 
 
-        //this.simulatedAnnealing();
-        this.logger.logInfo("BONSOIR");
-        this.logger.log(this.bestResult);
-        int[] sequence = {2, 7, 4, 6, 5, 3, 1, 0};
+        this.simulatedAnnealing();
+        //this.logger.logInfo("BONSOIR");
+        //this.logger.log(this.bestResult);
+        //int[] sequence = {2, 7, 4, 6, 5, 3, 1, 0};
 
         //2,7 ,4 ,6 ,5 ,3,1 ,0
-        this.forceSequence(sequence);
+        //this.forceSequence(sequence);
+
+
         this.logger.logInfo("BONSOIR");
         this.logger.log(this.bestResult);
         this.logger.writeResult(bestResult);
@@ -401,7 +403,69 @@ public class ProblemManager {
     /* LS ------------------------------------------------------------------ */
 
     //Best Improvement
-    public void steepestDescent() throws IOException {
+    public void steepestDescentRandomBest() throws IOException {
+        boolean improved = false;
+
+
+
+        while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
+            //Visit the whole neighberhoud
+
+            this.workingResult = this.bestResult.getCopy();
+            int nBestResults = 0;
+
+            for (int i = 0; i < this.workingResult.getSequence().length; i++) {
+                for (int j = i + 1 ; j < this.workingResult.getSequence().length; j++) {
+
+
+                    //PERFORM THE MOVE
+                    int[] seq = this.workingResult.getSequence();
+                    int temp = seq[i];
+                    seq[i] = seq[j];
+                    seq[j] = temp;
+
+
+                    this.workingResult.reloadJobPositions();
+                    this.decoder.decode(this.workingResult);
+
+
+                    if(this.workingResult.getnSwitches() <=  this.bestResult.getnSwitches()) {
+                        improved = true;
+
+                        if(nBestResults==0) {
+                            this.bestResult = this.workingResult.getCopy();
+                            nBestResults+=1;
+                        }else{
+                            float probability = 1/nBestResults;
+                            if(random.nextDouble() <= probability) {
+                                this.bestResult = this.workingResult.getCopy();
+                            }
+                            nBestResults+=1;
+                        }
+
+                        this.bestResult = this.workingResult.getCopy();
+                        this.logger.log(this.workingResult);
+
+                    }
+
+                    this.logger.writeLiveResult(this.workingResult);
+                }
+            }
+
+
+            this.logger.logInfo("next neighbourhoud");
+
+            if (!improved) {
+                this.logger.logInfo("local min reached, no improvement");
+                break;
+            }
+            improved = false;
+        }
+
+    }
+
+
+    public void steepestDescentBestFirst() throws IOException {
         boolean improved = false;
 
 
@@ -849,9 +913,6 @@ public class ProblemManager {
 
         return switches;
     }
-
-
-
 
 
     //TODO: can be made much better

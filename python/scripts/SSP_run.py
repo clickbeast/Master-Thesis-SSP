@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 from inspect import getsourcefile
 
 os.system("echo \"hello world\"")
@@ -45,8 +46,6 @@ class Runner:
         os.chdir(self.project_root)
         os.system("gradle jar")
 
-
-
         # self.params["run_type"] = self.files["run_type"]
         jar_file = self.base + "-" + self.params["run_type"] + ".jar"
 
@@ -56,8 +55,40 @@ class Runner:
             command = "java -jar" + " " + jar_file + " " + \
                       self.create_command_param()
 
-            print(command)
             os.system(command)
+
+    def create_commands_files(self):
+
+        cmd = "cd" + " " + self.project_root
+        os.chdir(self.project_root)
+        os.system("gradle jar")
+
+        # self.params["run_type"] = self.files["run_type"]
+        jar_file = self.base + "-" + self.params["run_type"] + ".jar"
+
+        with open(
+            "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/config/commands.txt",
+            mode='w') as command_file:
+
+            for file in self.files["files"]:
+                self.params["root_folder"] = self.files["root_path"] + file["root_folder"]
+                self.params["instance"] = file["instance"]
+                command = "java -jar" + " " + jar_file + " " + \
+                          self.create_command_param()
+
+                command += " > /dev/null"
+                print(command)
+                command_file.write(command)
+                command_file.write("\n")
+
+
+        pass
+
+    def run_parallel(self):
+        self.create_commands_files()
+        command = "parallel --jobs 16  --progress < /Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent" \
+                  "/MasterProef/Master-Thesis-SSP/data/config/commands.txt"
+        os.system(command)
 
     def create_command_param(self):
 
@@ -91,4 +122,8 @@ def create_project_root_path():
 
 
 runner = Runner(create_project_root_path())
-runner.run()
+
+if "parallel" in sys.argv:
+    runner.run_parallel()
+else:
+    runner.run()
