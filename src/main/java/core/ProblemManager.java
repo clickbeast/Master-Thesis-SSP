@@ -114,6 +114,8 @@ public class ProblemManager {
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
         //this.initialSolution();
         //this.initialOrderedSolution();
+
+
         this.initialRandomSolution();
 
 
@@ -121,7 +123,9 @@ public class ProblemManager {
         //String hello = gson.toJson(result);
 
 
-        //this.steepestDescentRandomBest();
+        this.steepestDescentRandomBest();
+        //this.steepestDescentBestFirst();
+
 
         //[2, 7, 4, 6, 5, 3, 1, 0] answer
 
@@ -135,7 +139,7 @@ public class ProblemManager {
         ///
 
 
-        this.simulatedAnnealing();
+        //this.simulatedAnnealing();
         //this.logger.logInfo("BONSOIR");
         //this.logger.log(this.bestResult);
         //int[] sequence = {2, 7, 4, 6, 5, 3, 1, 0};
@@ -144,16 +148,13 @@ public class ProblemManager {
         //this.forceSequence(sequence);
 
 
-        this.logger.logInfo("BONSOIR");
+        this.logger.logInfo("FINAL SOLUTION FOUND");
+
         this.logger.log(this.bestResult);
         this.logger.writeResult(bestResult);
         this.logger.writeSolution(this.bestResult);
 
 
-
-        //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
-
-        //General.printGrid(General.transposeMatrix(this.copyGrid(this.bestResult.getJobToolMatrix())));
 
     }
 
@@ -274,10 +275,10 @@ public class ProblemManager {
         return matrix;
     }
 
-    //Make A graph
+
+
 
     public void initalizeToolPairGraph() {
-
 
     }
 
@@ -290,7 +291,6 @@ public class ProblemManager {
                 count+=1;
             }
         }
-
         return count;
     }
 
@@ -302,28 +302,17 @@ public class ProblemManager {
         this.logger.logInfo("Creating initial solution");
 
         int[] sequence = this.orderedInitialSequence();
-        //sequence = this.randomInitialSequence(sequence);
-        int[][] jobToolMatrix = this.decode(sequence);
-        //int[][] jobToolMatrix = this.copyGrid(this.getJOB_TOOL_MATRIX());
 
-        //TODO: start using the job position...
-        //int[] jobPosition = Arrays.copyOf(sequence,sequence.length);
-        int[] switches = this.calculateSwitches(sequence,jobToolMatrix);
-        int cost = this.evaluate(sequence, jobToolMatrix, switches);
+        this.workingResult = new Result(sequence,this);
+        this.decoder.decode(workingResult);
 
-        this.currentResult = new Result(sequence,this);
-        this.currentResult.setnSwitches(cost);
-        this.currentResult.setJobToolMatrix(jobToolMatrix);
-        this.currentResult.setSwitches(switches);
-
-
-        this.workingResult = this.currentResult.getCopy();
+        this.currentResult = this.workingResult.getCopy();
         this.bestResult = this.currentResult.getCopy();
 
-        this.logger.logInfo(String.valueOf(cost));
-        this.logger.logInfo("Initial Solution Created");
+        this.logger.logInfo("Initial Solution Created : ordered");
 
-        this.logger.log(cost, cost, sequence);
+        this.logger.log(this.getWorkingResult());
+
     }
 
     public void initialRandomSolution() throws IOException {
@@ -331,13 +320,10 @@ public class ProblemManager {
 
         int[] sequence = this.orderedInitialSequence();
         sequence = this.randomInitialSequence(sequence);
-        //sequence = this.randomInitialSequence(sequence);
-        int[][] jobToolMatrix = this.decode(sequence);
 
         this.currentResult = new Result(sequence, this);
         this.getDecoder().decode(this.currentResult);
         this.currentResult.setInitial();
-
 
         this.workingResult = this.currentResult.getCopy();
         this.bestResult = this.currentResult.getCopy();
@@ -404,14 +390,12 @@ public class ProblemManager {
 
     //Best Improvement
     public void steepestDescentRandomBest() throws IOException {
-        boolean improved = false;
-
-
 
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
             //Visit the whole neighberhoud
 
-            this.workingResult = this.bestResult.getCopy();
+            this.workingResult = this.currentResult.getCopy();
+
             int nBestResults = 0;
 
             for (int i = 0; i < this.workingResult.getSequence().length; i++) {
@@ -429,37 +413,35 @@ public class ProblemManager {
                     this.decoder.decode(this.workingResult);
 
 
-                    if(this.workingResult.getnSwitches() <=  this.bestResult.getnSwitches()) {
-                        improved = true;
+                    if(this.workingResult.getnSwitches() <  this.currentResult.getnSwitches()) {
 
                         if(nBestResults==0) {
-                            this.bestResult = this.workingResult.getCopy();
+                            this.currentResult = this.workingResult.getCopy();
                             nBestResults+=1;
                         }else{
                             float probability = 1/nBestResults;
                             if(random.nextDouble() <= probability) {
-                                this.bestResult = this.workingResult.getCopy();
+                                this.currentResult = this.workingResult.getCopy();
                             }
                             nBestResults+=1;
                         }
 
-                        this.bestResult = this.workingResult.getCopy();
                         this.logger.log(this.workingResult);
 
                     }
 
-                    this.logger.writeLiveResult(this.workingResult);
                 }
             }
 
 
-            this.logger.logInfo("next neighbourhoud");
 
-            if (!improved) {
+            if (this.currentResult.getnSwitches() <  this.bestResult.getnSwitches()) {
+                this.bestResult = this.currentResult.getCopy();
+                this.logger.logInfo("next neighbourhood");
+            }else{
                 this.logger.logInfo("local min reached, no improvement");
                 break;
             }
-            improved = false;
         }
 
     }
@@ -467,7 +449,6 @@ public class ProblemManager {
 
     public void steepestDescentBestFirst() throws IOException {
         boolean improved = false;
-
 
 
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
@@ -510,13 +491,6 @@ public class ProblemManager {
 
     }
 
-
-    //Best Improvement
-    public void steepestDescentTournament() {
-
-    }
-
-
     //First improvement
     public void hillClimbing() throws IOException {
         boolean improved = false;
@@ -531,10 +505,8 @@ public class ProblemManager {
                     seq[i] = seq[j];
                     seq[j] = temp;
 
-                    //sequence = this.randomInitialSequence(sequence);
-                    this.workingResult.setJobToolMatrix(this.decode(seq));
-                    this.workingResult.setSwitches(this.calculateSwitches(seq,this.workingResult.getJobToolMatrix()));
-                    this.workingResult.setnSwitches(this.evaluate(seq, this.workingResult.getJobToolMatrix(), this.workingResult.getSwitches()));
+
+                    this.decoder.decode(this.workingResult);
 
 
                     if(this.workingResult.getnSwitches() < this.bestResult.getnSwitches()) {
@@ -549,7 +521,7 @@ public class ProblemManager {
                 }
             }
 
-            this.logger.logInfo("next neighbourhoud");
+            this.logger.logInfo("next neighbourhood");
 
             if (!improved) {
                 this.logger.logInfo("local min reached, no improvement");
@@ -559,17 +531,6 @@ public class ProblemManager {
         }
     }
 
-
-    //First improvement
-    public void hillClimbingTournament() {
-
-
-    }
-
-
-    public void acceptImproved() {
-
-    }
 
     //BRUTE FORCE
     //TODO: THIS PERMUTATION IS NOT THE CORRECT ONE
@@ -608,8 +569,6 @@ public class ProblemManager {
         list[b] = temp;
         return list;
     }
-
-
 
     int bruteCount = 0;
 
@@ -650,7 +609,6 @@ public class ProblemManager {
     }
 
 
-
     //FORCE SEQUENCE
 
     public void forceSequence(int[] sequence) throws IOException {
@@ -674,7 +632,9 @@ public class ProblemManager {
 
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
 
-            this.getMoveManager().swap(this.workingResult);
+            //this.getMoveManager().swap(this.workingResult);
+
+            this.getMoveManager().ruinAndRecreate(this.workingResult);
 
             this.getDecoder().decode(this.workingResult);
 
@@ -756,179 +716,13 @@ public class ProblemManager {
     }
 
 
-    /* EVALUATION ------------------------------------------------------------------ */
-
-
-    public int[][] decode(int[] sequence) {
-        ArrayList<LinkedList<Integer>> toolPrioritySequence = determineToolPriority(sequence);
-        int[][] augmentedJobToolMatrix = new int[this.getN_JOBS()][this.getN_TOOLS()];
-
-        //Set tools
-        int[] prev = new int[this.getN_TOOLS()];
-
-
-        for (int i = 0; i < sequence.length; i++) {
-
-            //Set tools
-            int numberOfToolsSet = 0;
-            for (int j = 0; j < this.N_TOOLS; j++) {
-                augmentedJobToolMatrix[i][j] = this.getJOB_TOOL_MATRIX()[i][j];
-                if (prev[j] == 1 || this.getJOB_TOOL_MATRIX()[i][j] == 1) {
-                    augmentedJobToolMatrix[i][j] = 1;
-                    numberOfToolsSet += 1;
-                }
-            }
-
-            System.out.println("Decode");
-            General.printGrid(augmentedJobToolMatrix);
-
-            int numberOfToolsToRemove = Math.max(0,numberOfToolsSet - getMAGAZINE_SIZE());
-            //System.out.println(numberOfToolsToRemove);
-            LinkedList<Integer> toolPriority = toolPrioritySequence.get(i);
-            //remove unwanted tools
-            for (int j = 0; j < numberOfToolsToRemove; j++) {
-                while(true) {
-                    int toolId = toolPriority.removeLast();
-                    if(augmentedJobToolMatrix[i][toolId] == 1 && this.getJOB_TOOL_MATRIX()[i][toolId] != 1) {
-                        augmentedJobToolMatrix[i][toolId] = 0;
-                        break;
-                    }
-                }
-            }
-
-            prev = augmentedJobToolMatrix[i];
-        }
-
-        //General.printGrid(augmentedJobToolMatrix);
-
-        return augmentedJobToolMatrix;
-    }
-
-
-    //TODO:
-    public ArrayList<LinkedList<Integer>> determineToolPriority(int[] sequence) {
-        ArrayList<LinkedList<Integer>> toolPrioritySequence = new ArrayList<>(sequence.length);
-        for(int i = 0; i < sequence.length; i++) {
-            int[] visited = new int[this.getN_TOOLS()];
-            int jobId = sequence[i];
-            LinkedList<Integer> toolPriority = new LinkedList<>();
-            for (int j = i + 1; j < sequence.length; j++) {
-                for (int k = 0; k < visited.length; k++) {
-                    // visiter, belongs to current job, is used here
-                    if(visited[k] == 0  && getJOB_TOOL_MATRIX()[j][k] == 1){
-                        toolPriority.add(k);
-                        visited[k] = 1;
-                    }
-                }
-            }
-
-            //Add the remaining tools
-            //TODO: optimize collect remaining tools
-            for (int j = 0; j < visited.length; j++) {
-                if(visited[j] == 0) {
-                    toolPriority.add(j);
-                }
-            }
-
-
-            toolPrioritySequence.add(toolPriority);
-        }
-
-        return toolPrioritySequence;
-    }
 
 
 
 
-    public int[] calculateSwitches(int[] sequence, int[][] jobToolMatrix) {
-        return count_version_simon(sequence,jobToolMatrix);
-    }
-
-    public int[] count_version_simon(int[] sequence, int[][] jobToolMatrix) {
-
-        //TODO: countSwitches : see if combination with KTNS is possible
-        int[] switches = new int[sequence.length];
-        //Inserstions
-        int insertionCount = 0;
-        for (int i = 0; i < jobToolMatrix[0].length; i++) {
-            if (jobToolMatrix[0][i] == 1) {
-                insertionCount += 1;
-            }
-        }
-
-        switches[0] = insertionCount;
-
-        //CHECK: a job switch is counted when one is SETUP, not when it is removed
-        //Or differently removing a tool is considered part of the setup process.
-
-        for (int i = 1; i < sequence.length; i++) {
-            int swapCount = 0;
-            int[] previous = jobToolMatrix[i-1];
-            int[] current = jobToolMatrix[i];
-            for (int j = 0; j < current.length; j++) {
-                //CHECK: current implementation: when a tool gets loaded a "switch" is performed
-                if (previous[j] ==  0 &  current[j] ==  1) {
-                    swapCount+=1;
-                }
-            }
-            switches[i] = swapCount;
-        }
-
-        return switches;
-    }
-
-    public int[] count_version_vidal(int[] sequence, int[][] jobToolMatrix) {
-
-        //COUNTING WHEN A 1 TURNS INTO A 0
-
-        //TODO: countSwitches : see if combination with KTNS is possible
-        int[] switches = new int[sequence.length];
 
 
-        //Inserstions
-        int insertionCount = 0;
-        for (int i = 0; i < jobToolMatrix[0].length; i++) {
-            if (jobToolMatrix[0][i] == 1) {
-                insertionCount += 1;
-            }
-        }
 
-        switches[0] = insertionCount;
-
-        //CHECK: a job switch is counted when one is SETUP, not when it is removed
-        //Or differently removing a tool is considered part of the setup process.
-
-        for (int i = 1; i < sequence.length; i++) {
-            int swapCount = 0;
-            int[] previous = jobToolMatrix[i-1];
-            int[] current = jobToolMatrix[i];
-            for (int j = 0; j < current.length; j++) {
-                //CHECK: current implementation: when a tool gets loaded a "switch" is performed
-                if (previous[j] ==  0 &  current[j] ==  1) {
-                    swapCount+=1;
-                }
-            }
-            switches[i] = swapCount;
-        }
-
-        return switches;
-    }
-
-
-    //TODO: can be made much better
-    public int evaluate(int[] sequence, int[][] jobToolMatrix, int[] switches) {
-        int count = 0;
-        for (int i = 0; i < switches.length; i++) {
-            count+= switches[i];
-        }
-        return count;
-    }
-
-
-    //TODO: countSwitchesBitVector
-    public int[] countSwitchesBitVector(int[] sequence, int[][] jobToolMatrix) {
-        return null;
-    }
 
 
 

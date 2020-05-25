@@ -40,17 +40,17 @@ public class Parameters {
 
 
     @Option(names = {"--w_s"})
-    private double w_s                      =   1;
+    private double W_S                      =   1;
     @Option(names = {"--w_hops"})
-    private double w_hops                   =   1;
+    private double W_HOPS                   =   1;
     @Option(names = {"--w_ktns_hops"})
-    private double w_ktns_hops              =   1;
+    private double W_KTNS_HOPS              =   1;
     @Option(names = {"--w_dist"})
-    private double w_dist                   =   1;
+    private double W_DIST                   =   1;
     @Option(names = {"--w_dist_min"})
-    private double w_dist_min               =   1;
+    private double W_DIST_MIN               =   1;
     @Option(names = {"--w_dist_max"})
-    private double w_dist_max               =   1;
+    private double W_DIST_MAX               =   1;
 
     //STOCHASTIC
     @Option(names = {"--seed"})
@@ -98,6 +98,8 @@ public class Parameters {
 
 
     //CONFIG
+    @Option(names = {"--log_info"})
+    private boolean LOG_INFO                = true;
     @Option(names = {"--log_verbose"})
     private boolean LOG_VERBOSE             = true;
     @Option(names = {"--log"})
@@ -117,7 +119,7 @@ public class Parameters {
 
     public Parameters(String PROJECT_ROOT, String ROOT_FOLDER, String INSTANCE, String RUN_TYPE, long RUN_TIME,
                       long START_TIME, int SEED, double START_TEMP, double END_TEMP, double DECAY_RATE) {
-        this.PROJECT_ROOT = PROJECT_ROOT;
+        this.setPROJECT_ROOT(PROJECT_ROOT);
         this.ROOT_FOLDER = ROOT_FOLDER;
         this.INSTANCE = INSTANCE;
         
@@ -140,7 +142,7 @@ public class Parameters {
                       boolean LOG, boolean WRITE_RESULTS, boolean LIVE_RESULT) {
 
 
-        this.PROJECT_ROOT = PROJECT_ROOT;
+        this.setPROJECT_ROOT(PROJECT_ROOT);
         this.ROOT_FOLDER = ROOT_FOLDER;
         this.INSTANCE = INSTANCE;
         this.RUN_TYPE = RUN_TYPE;
@@ -152,14 +154,6 @@ public class Parameters {
         this.DECAY_RATE = DECAY_RATE;
 
         this.createAdditionalFilePaths();
-
-
-        //PARAMS
-
-
-        //OBJECTIVE PARAMS
-
-
 
         //SA PARAMS
         this.setSA_TIMED(SA_TIMED);
@@ -243,7 +237,7 @@ public class Parameters {
 
         this.INSTANCE_FOLDER = ROOT_FOLDER + "/" + INSTANCE;
         this.INPUT_FILE_PATH = ROOT_FOLDER + "/" + INSTANCE + "/" + INSTANCE + ".json";
-        this.LIVE_RESULT_PATH = PROJECT_ROOT + "/data/instances/live.txt";
+        this.LIVE_RESULT_PATH = getPROJECT_ROOT() + "/data/instances/live.txt";
         
         String logPath = this.getINSTANCE_FOLDER() + "/" + "log_" + this.getRUN_TYPE() + ".csv";
         this.setLOG_PATH(logPath);
@@ -522,5 +516,77 @@ public class Parameters {
 
     public void setBETA(double BETA) {
         this.BETA = BETA;
+    }
+
+    public String getPROJECT_ROOT() {
+        return PROJECT_ROOT;
+    }
+
+    public void setPROJECT_ROOT(String PROJECT_ROOT) {
+        this.PROJECT_ROOT = PROJECT_ROOT;
+    }
+
+    public double getW_S() {
+        return W_S;
+    }
+
+    public void setW_S(double w_S) {
+        W_S = w_S;
+    }
+
+    public double getW_HOPS() {
+        return W_HOPS;
+    }
+
+    public void setW_HOPS(double w_HOPS) {
+        W_HOPS = w_HOPS;
+    }
+
+    public double getW_KTNS_HOPS() {
+        return W_KTNS_HOPS;
+    }
+
+    public void setW_KTNS_HOPS(double w_KTNS_HOPS) {
+        W_KTNS_HOPS = w_KTNS_HOPS;
+    }
+
+    public double getW_DIST() {
+        return W_DIST;
+    }
+
+    public void setW_DIST(double w_DIST) {
+        W_DIST = w_DIST;
+    }
+
+    public double getW_DIST_MIN() {
+        return W_DIST_MIN;
+    }
+
+    public void setW_DIST_MIN(double w_DIST_MIN) {
+        W_DIST_MIN = w_DIST_MIN;
+    }
+
+    public double getW_DIST_MAX() {
+        return W_DIST_MAX;
+    }
+
+    public void setW_DIST_MAX(double w_DIST_MAX) {
+        W_DIST_MAX = w_DIST_MAX;
+    }
+
+    public double getBLINK_RATE() {
+        return BLINK_RATE;
+    }
+
+    public void setBLINK_RATE(double BLINK_RATE) {
+        this.BLINK_RATE = BLINK_RATE;
+    }
+
+    public int getAVG_RUIN() {
+        return AVG_RUIN;
+    }
+
+    public void setAVG_RUIN(int AVG_RUIN) {
+        this.AVG_RUIN = AVG_RUIN;
     }
 }

@@ -43,8 +43,6 @@ public class Main {
 
         //OBJECTIVE FUNCTION
 
-
-
         //Algorithm
 
         //TODO

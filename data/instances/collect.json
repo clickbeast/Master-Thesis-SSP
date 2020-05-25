@@ -1,0 +1,107 @@
+{
+    "base": "SSP",
+    "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+    "root_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/",
+    "files": [
+        {
+            "original": "s3-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_1",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 1
+        },
+        {
+            "original": "s3-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_2",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 2
+        },
+        {
+            "original": "s3-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_3",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 3
+        },
+        {
+            "original": "s3-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_4",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 4
+        },
+        {
+            "original": "s3-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_5",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 5
+        },
+        {
+            "original": "s3-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_6",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 6
+        },
+        {
+            "original": "s3-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_7",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 7
+        },
+        {
+            "original": "s3-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_8",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 8
+        },
+        {
+            "original": "s3-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_9",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 9
+        },
+        {
+            "original": "s3-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_10",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 10
+        }
+    ]
+}

@@ -141,7 +141,6 @@ public class MoveManager {
         //Choose random tool
         int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
 
-
         //Remove associated tools -> currently: ONLY NON KTNS TOOLS
         for (int i = 0; i < this.problemManager.getN_JOBS(); i++) {
             Job job = this.problemManager.getJob(i);
@@ -166,7 +165,6 @@ public class MoveManager {
 
         return ruined;
     }
-
 
     class Ruin {
         LinkedList<Integer> remove;
@@ -195,11 +193,73 @@ public class MoveManager {
     }
 
     public Result recreate(Result result, Ruin ruined) throws IOException {
-
-        insertAtBestRandomPositionNoRelationOrdered(result, ruined);
-
+        insertJobsRandomBestPositionBlinks(result, ruined);
         return result;
     }
+
+    public void insertJobsRandomBestPositionBlinks(Result result , Ruin ruined) throws IOException{
+
+        LinkedList<Integer> sequence = ruined.getKeep();
+        int[] seq = sequence.stream().mapToInt(i -> i).toArray();
+        Result temp = new Result(seq, problemManager);
+
+
+        //Shuffle Randomly
+        Collections.shuffle(ruined.getRemove(), this.random);
+
+
+        for (Integer jobId : ruined.getRemove()) {
+
+            int bestCost = 0;
+            int bestPosition = 0;
+            int nBestPositions = 0;
+
+            for (int index = 0; index < sequence.size(); index++) {
+
+                //Blink
+                if (random.nextDouble() <= this.problemManager.getParameters().getBLINK_RATE()) {
+
+
+                    sequence.add(index, jobId);
+                    //To Array -> optimize to linked list strucuture
+                    temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
+                    this.problemManager.getDecoder().decode(temp);
+
+                    if (temp.getCost() <= bestCost) {
+
+                        if (nBestPositions == 0) {
+
+                            bestPosition = index;
+                            bestCost = temp.getCost();
+                            nBestPositions += 1;
+
+                        } else {
+
+                            float probability = 1 / nBestPositions;
+                            if (random.nextDouble() <= probability) {
+                                bestPosition = index;
+                                bestCost = temp.getCost();
+                            }
+                            nBestPositions += 1;
+
+                        }
+                    }
+
+                    sequence.remove(index);
+
+                }
+
+
+                sequence.remove(index);
+            }
+            sequence.add(bestPosition, jobId);
+        }
+
+    }
+
+
+
+
 
 
     public void insertAtBestRandomPositionNoRelationOrdered(Result result, Ruin ruined) throws IOException {
@@ -242,54 +302,6 @@ public class MoveManager {
         }
 
     }
-
-
-        public void insertJobsRandomBestPositionBlinks(Result result , Ruin ruined) throws IOException{
-
-
-
-            LinkedList<Integer> sequence = ruined.getKeep();
-            int[] seq = sequence.stream().mapToInt(i -> i).toArray();
-            Result temp = new Result(seq, problemManager);
-
-
-            //Shuffle Randomly
-            Collections.shuffle(ruined.getRemove(), this.random);
-
-
-            for (Integer jobId : ruined.getRemove()) {
-
-                int bestCost = 0;
-                int bestPosition = 0;
-                int nBestPositions = 0;
-
-                for (int index = 0; index < sequence.size(); index++) {
-
-                    sequence.add(index, jobId);
-                    //To Array -> optimize to linked list strucuture
-                    temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
-                    this.problemManager.getDecoder().decode(temp);
-
-
-
-
-
-
-
-                    sequence.remove(index);
-                }
-                sequence.add(bestPosition, jobId);
-            }
-
-        }
-
-
-
-
-
-
-
-
 
 
 }
