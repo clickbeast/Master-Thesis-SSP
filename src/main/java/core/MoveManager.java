@@ -5,6 +5,7 @@ import models.elemental.Job;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -203,11 +204,11 @@ public class MoveManager {
 
     public void insertAtBestRandomPositionNoRelationOrdered(Result result, Ruin ruined) throws IOException {
         LinkedList<Integer> sequence = ruined.getKeep();
-        int[] seq = sequence.stream().mapToInt(i->i).toArray();
+        int[] seq = sequence.stream().mapToInt(i -> i).toArray();
         Result temp = new Result(seq, problemManager);
 
 
-        for(Integer jobId: ruined.getRemove()) {
+        for (Integer jobId : ruined.getRemove()) {
 
             int bestCost = 0;
             int bestPosition = 0;
@@ -217,21 +218,21 @@ public class MoveManager {
 
                 sequence.add(index, jobId);
                 //To Array -> optimize to linked list strucuture
-                temp.setSequence(sequence.stream().mapToInt(i->i).toArray());
+                temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
                 this.problemManager.getDecoder().decode(temp);
 
-                if(temp.getCost() <= bestCost) {
-                    if(nBestPositions == 0) {
+                if (temp.getCost() <= bestCost) {
+                    if (nBestPositions == 0) {
                         bestPosition = index;
-                        bestCost =  temp.getCost();
-                        nBestPositions+=1;
-                    }else{
-                        float probability = 1/nBestPositions;
-                        if(random.nextDouble() <= probability) {
+                        bestCost = temp.getCost();
+                        nBestPositions += 1;
+                    } else {
+                        float probability = 1 / nBestPositions;
+                        if (random.nextDouble() <= probability) {
                             bestPosition = index;
-                            bestCost =  temp.getCost();
+                            bestCost = temp.getCost();
                         }
-                        nBestPositions+=1;
+                        nBestPositions += 1;
 
                     }
                 }
@@ -239,7 +240,52 @@ public class MoveManager {
             }
             sequence.add(bestPosition, jobId);
         }
-  }
+
+    }
+
+
+        public void insertJobsRandomBestPositionBlinks(Result result , Ruin ruined) throws IOException{
+
+
+
+            LinkedList<Integer> sequence = ruined.getKeep();
+            int[] seq = sequence.stream().mapToInt(i -> i).toArray();
+            Result temp = new Result(seq, problemManager);
+
+
+            //Shuffle Randomly
+            Collections.shuffle(ruined.getRemove(), this.random);
+
+
+            for (Integer jobId : ruined.getRemove()) {
+
+                int bestCost = 0;
+                int bestPosition = 0;
+                int nBestPositions = 0;
+
+                for (int index = 0; index < sequence.size(); index++) {
+
+                    sequence.add(index, jobId);
+                    //To Array -> optimize to linked list strucuture
+                    temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
+                    this.problemManager.getDecoder().decode(temp);
+
+
+
+
+
+
+
+                    sequence.remove(index);
+                }
+                sequence.add(bestPosition, jobId);
+            }
+
+        }
+
+
+
+
 
 
 

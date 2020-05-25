@@ -5,6 +5,8 @@ import com.diogonunes.jcdp.color.api.Ansi;
 import com.google.gson.Gson;
 import core.ProblemManager;
 import core.Result;
+import data_processing.serializable.OutputData;
+
 import java.io.*;
 import java.util.Arrays;
 
@@ -121,86 +123,99 @@ public class Logger {
     }
 
     public void log( int switches, int bestSwitches, long accepted, long rejected, long improved, double temperature, int[] sequence, String type) throws IOException {
-        PrintWriter out = this.getLogWriter();
-        long timeRunning = this.getTimeRunning();
-        long timeRemaining = this.getTimeRemaining();
-        System.out.printf(spacing,
-                //SW
-                switches,
-                // B_SW
-                bestSwitches,
-                // HOP
-                "",
-                // B_THOP
-                "",
-                // TAD
-                "",
-                // B_TAD
-                "",
-                // TRD
-                "",
-                // B_TRD
-                "",
-                // ACCEPT
-                accepted,
-                // REJECT
-                rejected,
-                // IMPROVE
-                improved,
-                // STEP
-                this.getProblemManager().getSteps(),
-                // T_RUN
-                timeRunning,
-                // T_REM
-                timeRemaining,
-                // TEMP
-                temperature ,
-                // SEQ
-                Arrays.toString(sequence),
-                //TYPE
-                type
 
-        );
 
-        String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,\"%s\"j,%s";
-        out.printf(logSpacing,
-                //SW
-                switches,
-                // B_SW
-                bestSwitches,
-                // HOP
-                "",
-                // B_THOP
-                "",
-                // TAD
-                "",
-                // B_TAD
-                "",
-                // TRD
-                "",
-                // B_TRD
-                "",
-                // ACCEPT
-                accepted,
-                // REJECT
-                rejected,
-                // IMPROVE
-                improved,
-                // STEP
-                this.getProblemManager().getSteps(),
-                // T_RUN
-                this.getTimeRunning(),
-                // T_REM
-                this.getTimeRemaining(),
-                // TEMP
-                temperature ,
-                // SEQ
-                Arrays.toString(sequence),
-                //TYPE
-                type
-        );
+        if(this.getProblemManager().getParameters().isLOG()) {
+            PrintWriter out = this.getLogWriter();
+            long timeRunning = this.getTimeRunning();
+            long timeRemaining = this.getTimeRemaining();
 
-        out.println();
+            if (this.getProblemManager().getParameters().isLOG_VERBOSE()) {
+
+                System.out.printf(spacing,
+                        //SW
+                        switches,
+                        // B_SW
+                        bestSwitches,
+                        // HOP
+                        "",
+                        // B_THOP
+                        "",
+                        // TAD
+                        "",
+                        // B_TAD
+                        "",
+                        // TRD
+                        "",
+                        // B_TRD
+                        "",
+                        // ACCEPT
+                        accepted,
+                        // REJECT
+                        rejected,
+                        // IMPROVE
+                        improved,
+                        // STEP
+                        this.getProblemManager().getSteps(),
+                        // T_RUN
+                        timeRunning,
+                        // T_REM
+                        timeRemaining,
+                        // TEMP
+                        temperature,
+                        // SEQ
+                        Arrays.toString(sequence),
+                        //TYPE
+                        type
+
+                );
+
+
+            }
+
+
+            String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,\"%s\"j,%s";
+
+            out.printf(logSpacing,
+                    //SW
+                    switches,
+                    // B_SW
+                    bestSwitches,
+                    // HOP
+                    "",
+                    // B_THOP
+                    "",
+                    // TAD
+                    "",
+                    // B_TAD
+                    "",
+                    // TRD
+                    "",
+                    // B_TRD
+                    "",
+                    // ACCEPT
+                    accepted,
+                    // REJECT
+                    rejected,
+                    // IMPROVE
+                    improved,
+                    // STEP
+                    this.getProblemManager().getSteps(),
+                    // T_RUN
+                    this.getTimeRunning(),
+                    // T_REM
+                    this.getTimeRemaining(),
+                    // TEMP
+                    temperature,
+                    // SEQ
+                    Arrays.toString(sequence),
+                    //TYPE
+                    type
+            );
+
+            out.println();
+
+        }
 
 
     }
@@ -223,6 +238,8 @@ public class Logger {
 
 
     public void writeResult(Result result) throws IOException {
+
+
          /*result = {
                 "n_jobs": 0,
                 "n_tools": 0,
@@ -239,20 +256,24 @@ public class Logger {
                 "matrix": [[]],
         }*/
 
-         PrintWriter out = this.getResultsWriter();
+
+         if(this.getProblemManager().getParameters().isWRITE_RESULTS()) {
+             PrintWriter out = this.getResultsWriter();
 
 
-         result.setProblemManager(null);
-         outputData.updateData(this.getResultsCount(), this.getTimeRunning(), this.getTimeRemaining(),result);
-         String a = gson.toJson(outputData);
-         out.println(a);
-         result.setProblemManager(this.getProblemManager());
-         ////out.println("#" + this.getResultsCount());
-         //this.printResult(result, out);
+             result.setProblemManager(null);
+             outputData.updateData(this.getResultsCount(), this.getTimeRunning(), this.getTimeRemaining(), result);
+             String a = gson.toJson(outputData);
+             out.println(a);
+             result.setProblemManager(this.getProblemManager());
+             ////out.println("#" + this.getResultsCount());
+             //this.printResult(result, out);
 
-        resultsCount+=1;
-
+             resultsCount += 1;
+         }
     }
+
+
 
     public void printResult(Result result, PrintWriter out) {
         long timeRunning = this.getTimeRunning();
@@ -295,15 +316,18 @@ public class Logger {
 
     //Costly operation use only f
     public void writeLiveResult(Result result) {
-        try(
-                FileWriter lfw = new FileWriter(this.problemManager.getParameters().getLIVE_RESULT_PATH(), false);
-                BufferedWriter lbw = new BufferedWriter(lfw);
-                PrintWriter liveWriter = new PrintWriter(lbw);
-        ){
-            liveWriter.println(this.problemManager.getParameters().getINSTANCE());
-            this.printResult(result, liveWriter);
-        }catch (IOException io) {
-            System.out.println("error writing update");
+        if(this.getProblemManager().getParameters().isLIVE_RESULT()) {
+
+            try (
+                    FileWriter lfw = new FileWriter(this.problemManager.getParameters().getLIVE_RESULT_PATH(), false);
+                    BufferedWriter lbw = new BufferedWriter(lfw);
+                    PrintWriter liveWriter = new PrintWriter(lbw);
+            ) {
+                liveWriter.println(this.problemManager.getParameters().getINSTANCE());
+                this.printResult(result, liveWriter);
+            } catch (IOException io) {
+                System.out.println("error writing update");
+            }
         }
     }
 

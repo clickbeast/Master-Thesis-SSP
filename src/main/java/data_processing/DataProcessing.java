@@ -63,6 +63,9 @@ public class DataProcessing {
             inputData.setMAGAZINE_SIZE(MAGAZINE_SIZE.intValue());
             inputData.setJOB_TOOL_MATRIX(m);
 
+            //Set the parameters
+            parameters.problemInstantiated(N_JOBS.intValue(), N_TOOLS.intValue(), MAGAZINE_SIZE.intValue());
+
             // close reader
             reader.close();
 

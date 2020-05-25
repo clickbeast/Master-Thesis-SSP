@@ -27,7 +27,7 @@ dependencies {
     implementation 'de.siegmar:fastcsv:1.0.3'
     implementation 'com.diogonunes:JCDP:4.0.1'
     implementation "com.google.guava:guava:29.0-jre"
-
+    compile 'info.picocli:picocli:4.3.2'
 }
 
 jar {

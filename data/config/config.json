@@ -1,18 +1,43 @@
 {
     "files_folder_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances",
     "project_root": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP",
-    "files_name": "yanasse_A_1-4.json",
+    "files_name": "mixed_files.json",
     "title": "Yanasse A1",
     "params": {
         "root_folder": "",
-        "instance": "",
-        "run_type": "SA-DECODE-GT-B",
+        "instance": "SD",
         "run_time": "180",
         "seed": "7",
+
+
+        "w_s": 1,
+        "w_hops": 1,
+        "w_ktns_hops": 1,
+        "w_dist":  1,
+        "w_dist_min": 1,
+        "w_dist_max":  1,
+
+
+        "blink_rate": 0.01,
+        "avg_ruin": 10,
+
         "start_temp": "100",
         "end_temp": "0.000097",
         "decay_rate": "0.99900",
-        "log_verbose": "true"
+        "sa_timed": true,
+        "iterations": -1,
+        "alpha": -1,
+        "beta": 0,
+        "w_f": 1,
+        "w_alpha": 1,
+        "w_tm": 0.5,
+        "w_jobs": 1,
+        "w_tools": 1,
+        "w_mag": 1,
+        "log": true,
+        "log_verbose": true,
+        "write_results": true,
+        "live_result": true
     },
     "filter": {
         "n_jobs": [
