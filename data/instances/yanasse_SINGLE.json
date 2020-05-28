@@ -1,0 +1,17 @@
+{
+    "base": "SSP",
+    "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+    "root_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/",
+    "files": [
+        {
+            "original": "L1-1.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_15_5_1",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 15,
+            "magazine_size": 5,
+            "variation": 1
+        }
+    ]
+}

@@ -3,13 +3,11 @@ package data_processing.serializable;
 import core.Result;
 
 public class OutputData {
-
     //CHANGEABLE
     private Result result;
     private long id;
     private long timeRunning;
     private long timeRemaining;
-
 
     //CONSTANTS
     private  int magazineSize;
@@ -24,9 +22,12 @@ public class OutputData {
     private int[][] switchesLbMatrix;
     private int[][] toolPairMatrix;
 
+    private String instance = "bonjour";
 
-    public OutputData(int MAGAZINE_SIZE, int n_TOOLS, int n_JOBS, int[][] JOB_TOOL_MATRIX, int[][] DIFFERENCE_MATRIX,
+
+    public OutputData(String instance, int MAGAZINE_SIZE, int n_TOOLS, int n_JOBS, int[][] JOB_TOOL_MATRIX, int[][] DIFFERENCE_MATRIX,
                       int[][][] SHARED_TOOLS_MATRIX, int[][] SWITCHES_LB_MATRIX, int[][] TOOL_PAIR_MATRIX) {
+        this.instance = instance;
         this.magazineSize = MAGAZINE_SIZE;
         nTools = n_TOOLS;
         nJobs = n_JOBS;
@@ -38,7 +39,7 @@ public class OutputData {
     }
 
 
-    public void updateData(long id, long  timeRunning, long timeRemaining, Result result) {
+    public void updateData(long id,  long  timeRunning, long timeRemaining, Result result) {
         this.setResult(result);
         this.setId(id);
         this.setTimeRunning(timeRunning);

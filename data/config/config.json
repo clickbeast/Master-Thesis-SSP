@@ -2,12 +2,15 @@
     "files_folder_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances",
     "project_root": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP",
     "files_name": "mixed_files.json",
-    "title": "Yanasse A1",
+    "title": "MIXED",
     "params": {
+
+        "run_type": "A-RR-02",
         "root_folder": "",
         "instance": "SD",
-        "run_time": "180",
+        "run_time": "240",
         "seed": "7",
+
 
 
         "w_s": 1,
@@ -20,6 +23,8 @@
 
         "blink_rate": 0.01,
         "avg_ruin": 10,
+
+
 
         "start_temp": "100",
         "end_temp": "0.000097",
@@ -34,10 +39,12 @@
         "w_jobs": 1,
         "w_tools": 1,
         "w_mag": 1,
+
+
         "log": true,
-        "log_verbose": true,
+        "log_verbose": false,
         "write_results": true,
-        "live_result": true
+        "live_result": false
     },
     "filter": {
         "n_jobs": [

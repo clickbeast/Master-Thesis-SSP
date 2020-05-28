@@ -59,15 +59,17 @@ public class Result {
         if (problemManager != null) {
             this.jobToolMatrix = General.copyGrid(this.problemManager.getJOB_TOOL_MATRIX());
         }
-        this.jobPositions = new int[this.sequence.length];
+        this.jobPositions = new int[this.problemManager.getN_JOBS()];
         this.reloadJobPositions();
     }
 
 
     public void reloadJobPositions() {
-        for (int i = 0; i < jobPositions.length; i++) {
-            this.jobPositions[this.getSequence()[i]] = i;
+        for (int i = 0; i < sequence.length; i++) {
+            int jobId = this.getSequence()[i];
+            this.jobPositions[jobId] = i;
         }
+
     }
 
     public Result getCopy() {

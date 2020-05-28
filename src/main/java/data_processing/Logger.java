@@ -57,6 +57,7 @@ public class Logger {
         this.gson = new Gson();
 
         this.outputData = new OutputData(
+                this.getProblemManager().getParameters().getINSTANCE(),
                 this.getProblemManager().getMAGAZINE_SIZE(),
                 this.getProblemManager().getN_TOOLS(),
                 this.getProblemManager().getN_JOBS(),
@@ -225,7 +226,7 @@ public class Logger {
 
 
     public void writeSolution(Result result) throws IOException {
-
+        this.logInfo("WRITE SOLUTION ");
         PrintWriter out = this.getSolutionWriter();
 
         result.setProblemManager(null);
@@ -233,30 +234,34 @@ public class Logger {
         String a = gson.toJson(outputData);
 
         out.println(a);
+        System.out.println(a);
+        System.out.println(this.problemManager.getParameters().getSOLUTION_PATH());
+
+
+
+
+/*
+
+        try (
+                FileWriter lfw = new FileWriter(this.problemManager.getParameters().getSOLUTION_PATH(), false);
+                BufferedWriter lbw = new BufferedWriter(lfw);
+                PrintWriter liveWriter = new PrintWriter(lbw);
+        ) {
+
+            liveWriter.println("bonsoir");
+            System.out.println("yaaas");
+        } catch (IOException io) {
+            System.out.println("error writing update");
+        }
+*/
+
+
+
         //this.printResult(result, out);
     }
 
 
     public void writeResult(Result result) throws IOException {
-
-
-         /*result = {
-                "n_jobs": 0,
-                "n_tools": 0,
-                "magazine_size": 0,
-                "switches": 0,
-                "tool_hops": 0,
-                "tool_add_distance": 0,
-                "tool_remove_distance": 0,
-                "run_time": 0,
-                "sequence": [],
-                "tool_hops_sequence": [],
-                "tool_add_distance_sequence": [],
-                "tool_remove_distance_sequence": [],
-                "matrix": [[]],
-        }*/
-
-
          if(this.getProblemManager().getParameters().isWRITE_RESULTS()) {
              PrintWriter out = this.getResultsWriter();
 
@@ -272,8 +277,6 @@ public class Logger {
              resultsCount += 1;
          }
     }
-
-
 
     public void printResult(Result result, PrintWriter out) {
         long timeRunning = this.getTimeRunning();
@@ -323,8 +326,11 @@ public class Logger {
                     BufferedWriter lbw = new BufferedWriter(lfw);
                     PrintWriter liveWriter = new PrintWriter(lbw);
             ) {
-                liveWriter.println(this.problemManager.getParameters().getINSTANCE());
-                this.printResult(result, liveWriter);
+                result.setProblemManager(null);
+                outputData.updateData(0, this.getTimeRunning(), this.getTimeRemaining(), result);
+                String a = gson.toJson(outputData);
+                liveWriter.println(a);
+                result.setProblemManager(this.getProblemManager());
             } catch (IOException io) {
                 System.out.println("error writing update");
             }

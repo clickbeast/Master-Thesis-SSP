@@ -1,6 +1,8 @@
 package data_processing;
 import picocli.CommandLine.Option;
 
+import java.util.Map;
+
 
 public class Parameters {
 
@@ -21,7 +23,7 @@ public class Parameters {
     private String INSTANCE                 =   "yan_8_15_10_29";
 
     @Option(names = {"--run_type"})
-    private String RUN_TYPE                 =   "DEBUG";
+    private String RUN_TYPE                 =   "TEST";
 
 
     private String INPUT_FILE_PATH          =   "/";
@@ -35,10 +37,15 @@ public class Parameters {
     @Option(names = {"--run_time"})
     private  long RUN_TIME                  =   60;
     private  long START_TIME                =   0;
-    
+
+
+    //CHOICES
+    private String constructive = "random";
+    private String ls = "rr";
+    private String meta = "sa";
+    private String objective = "";
+
     //OBJ
-
-
     @Option(names = {"--w_s"})
     private double W_S                      =   1;
     @Option(names = {"--w_hops"})
@@ -110,9 +117,18 @@ public class Parameters {
     private boolean LIVE_RESULT             = false;
 
 
+
+    //OPTIONS
+   /* static final Map<String, Boolean > MY_MAP = Map.of(
+            1, ,
+            2,
+    );*/
+
+
+
+
     public Parameters(long START_TIME) {
         this.START_TIME = START_TIME;
-        this.createAdditionalFilePaths();
     }
 
 
@@ -177,12 +193,18 @@ public class Parameters {
 
     }
 
+
+    public void parametersRead() {
+        this.createAdditionalFilePaths();
+    }
+
     public void problemInstantiated(int n_JOBS, int n_TOOLS, int magazine_size) {
         this.setN_JOBS(n_JOBS);
         this.setN_TOOLS(n_TOOLS);
         this.setMAGAZINE_SIZE(magazine_size);
         generateSAParameters();
-
+        System.out.println("Parameters set.");
+        System.out.println(toString());
     }
 
 
@@ -588,5 +610,54 @@ public class Parameters {
 
     public void setAVG_RUIN(int AVG_RUIN) {
         this.AVG_RUIN = AVG_RUIN;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Parameters{" +
+                "PROJECT_ROOT='" + PROJECT_ROOT + '\'' +
+                ", ROOT_FOLDER='" + ROOT_FOLDER + '\'' +
+                ", INSTANCE_FOLDER='" + INSTANCE_FOLDER + '\'' +
+                ", INSTANCE='" + INSTANCE + '\'' +
+                ", RUN_TYPE='" + RUN_TYPE + '\'' +
+                ", INPUT_FILE_PATH='" + INPUT_FILE_PATH + '\'' +
+                ", LOG_PATH='" + LOG_PATH + '\'' +
+                ", RESULTS_PATH='" + RESULTS_PATH + '\'' +
+                ", SOLUTION_PATH='" + SOLUTION_PATH + '\'' +
+                ", LIVE_RESULT_PATH='" + LIVE_RESULT_PATH + '\'' +
+                ", RUN_TIME=" + RUN_TIME +
+                ", START_TIME=" + START_TIME +
+                ", W_S=" + W_S +
+                ", W_HOPS=" + W_HOPS +
+                ", W_KTNS_HOPS=" + W_KTNS_HOPS +
+                ", W_DIST=" + W_DIST +
+                ", W_DIST_MIN=" + W_DIST_MIN +
+                ", W_DIST_MAX=" + W_DIST_MAX +
+                ", SEED=" + SEED +
+                ", BLINK_RATE=" + BLINK_RATE +
+                ", AVG_RUIN=" + AVG_RUIN +
+                ", SA_TIMED=" + SA_TIMED +
+                ", START_TEMP=" + START_TEMP +
+                ", END_TEMP=" + END_TEMP +
+                ", DECAY_RATE=" + DECAY_RATE +
+                ", ITERATIONS=" + ITERATIONS +
+                ", ALPHA=" + ALPHA +
+                ", BETA=" + BETA +
+                ", W_F=" + W_F +
+                ", W_ALPHA=" + W_ALPHA +
+                ", W_JOBS=" + W_JOBS +
+                ", W_TOOLS=" + W_TOOLS +
+                ", W_MAG=" + W_MAG +
+                ", W_TM=" + W_TM +
+                ", N_JOBS=" + N_JOBS +
+                ", N_TOOLS=" + N_TOOLS +
+                ", MAGAZINE_SIZE=" + MAGAZINE_SIZE +
+                ", LOG_INFO=" + LOG_INFO +
+                ", LOG_VERBOSE=" + LOG_VERBOSE +
+                ", LOG=" + LOG +
+                ", WRITE_RESULTS=" + WRITE_RESULTS +
+                ", LIVE_RESULT=" + LIVE_RESULT +
+                '}';
     }
 }

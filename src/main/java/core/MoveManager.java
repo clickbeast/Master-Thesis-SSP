@@ -134,6 +134,7 @@ public class MoveManager {
         return result;
     }
 
+    //ok
     public Ruin ruin(Result result) {
 
         Ruin ruined = new Ruin();
@@ -142,26 +143,17 @@ public class MoveManager {
         int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
 
         //Remove associated tools -> currently: ONLY NON KTNS TOOLS
-        for (int i = 0; i < this.problemManager.getN_JOBS(); i++) {
-            Job job = this.problemManager.getJob(i);
-
-            checkTool: for (int j = 0; j < job.getSet().length; j++) {
-
-                int toolId = job.getSet()[j];
-
-                if(selectedToolId == toolId) {
-                    //CASE 1: job to be removed
-                    ruined.getRemove().add(job.getId());
-                    break;
-                }
-            }
-
+        for (int i = 0; i < result.getSequence().length; i++) {
+            Job job = result.getJobSeqPos(i);
             if(job.getTOOLS()[selectedToolId] == 1) {
+                //CASE 1: job to be removed
                 ruined.getRemove().add(job.getId());
             }else{
                 ruined.getKeep().add(job.getId());
             }
         }
+
+
 
         return ruined;
     }
@@ -210,52 +202,49 @@ public class MoveManager {
 
         for (Integer jobId : ruined.getRemove()) {
 
-            int bestCost = 0;
+            int bestCost = Integer.MAX_VALUE;
             int bestPosition = 0;
             int nBestPositions = 0;
 
             for (int index = 0; index < sequence.size(); index++) {
 
                 //Blink
-                if (random.nextDouble() <= this.problemManager.getParameters().getBLINK_RATE()) {
-
+                if (random.nextDouble() <= (1 - this.problemManager.getParameters().getBLINK_RATE())) {
 
                     sequence.add(index, jobId);
                     //To Array -> optimize to linked list strucuture
                     temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
                     this.problemManager.getDecoder().decode(temp);
+                    this.problemManager.getLogger().writeLiveResult(temp);
 
-                    if (temp.getCost() <= bestCost) {
 
-                        if (nBestPositions == 0) {
 
+                    if(temp.getCost() <  bestCost) {
+                        nBestPositions = 1;
+                        bestPosition = index;
+                        bestCost = temp.getCost();
+                    }else if(temp.getCost() == bestCost) {
+                        nBestPositions += 1;
+                        float probability = 1 / (float) nBestPositions;
+                        if (random.nextDouble() <= probability) {
                             bestPosition = index;
                             bestCost = temp.getCost();
-                            nBestPositions += 1;
-
-                        } else {
-
-                            float probability = 1 / nBestPositions;
-                            if (random.nextDouble() <= probability) {
-                                bestPosition = index;
-                                bestCost = temp.getCost();
-                            }
-                            nBestPositions += 1;
-
                         }
                     }
 
                     sequence.remove(index);
-
                 }
-
-
-                sequence.remove(index);
             }
+
             sequence.add(bestPosition, jobId);
+
         }
 
+        int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
+        result.setSequence(seqOut);
+        this.problemManager.getDecoder().decode(result);
     }
+
 
 
 
@@ -300,6 +289,10 @@ public class MoveManager {
             }
             sequence.add(bestPosition, jobId);
         }
+
+        int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
+        result.setSequence(seqOut);
+        this.problemManager.getDecoder().decode(result);
 
     }
 

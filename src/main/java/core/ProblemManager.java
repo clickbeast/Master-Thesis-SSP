@@ -115,29 +115,25 @@ public class ProblemManager {
         //this.initialSolution();
         //this.initialOrderedSolution();
 
-
         this.initialRandomSolution();
-
-
 
         //String hello = gson.toJson(result);
 
 
-        this.steepestDescentRandomBest();
+        //this.steepestDescentRandomBest();
         //this.steepestDescentBestFirst();
 
 
         //[2, 7, 4, 6, 5, 3, 1, 0] answer
 
         //Used for confirming algorithm
-
-        //this.simulatedAnnealing();
+        //this.steepestDescentBestFirst();
+        this.simulatedAnnealing();
         //this.steepestDescent();
         //this.bruteForce();
 
         //this.hillClimbing();
         ///
-
 
         //this.simulatedAnnealing();
         //this.logger.logInfo("BONSOIR");
@@ -147,17 +143,12 @@ public class ProblemManager {
         //2,7 ,4 ,6 ,5 ,3,1 ,0
         //this.forceSequence(sequence);
 
-
-        this.logger.logInfo("FINAL SOLUTION FOUND");
+        this.logger.logInfo("FINAL SOLUTION FOUND: " + String.valueOf(this.bestResult.getCost()));
 
         this.logger.log(this.bestResult);
         this.logger.writeResult(bestResult);
         this.logger.writeSolution(this.bestResult);
-
-
-
     }
-
 
 
     public void initialize(){
@@ -396,7 +387,7 @@ public class ProblemManager {
 
             this.workingResult = this.currentResult.getCopy();
 
-            int nBestResults = 0;
+            int nBestResults = 1;
 
             for (int i = 0; i < this.workingResult.getSequence().length; i++) {
                 for (int j = i + 1 ; j < this.workingResult.getSequence().length; j++) {
@@ -414,21 +405,24 @@ public class ProblemManager {
 
 
                     if(this.workingResult.getnSwitches() <  this.currentResult.getnSwitches()) {
-
-                        if(nBestResults==0) {
-                            this.currentResult = this.workingResult.getCopy();
-                            nBestResults+=1;
-                        }else{
-                            float probability = 1/nBestResults;
-                            if(random.nextDouble() <= probability) {
-                                this.currentResult = this.workingResult.getCopy();
-                            }
-                            nBestResults+=1;
-                        }
-
+                        this.currentResult = this.workingResult.getCopy();
+                        nBestResults = 1;
                         this.logger.log(this.workingResult);
 
+                    }else if(this.workingResult.getnSwitches() == this.currentResult.getnSwitches()) {
+                        nBestResults+=1;
+                        float probability = 1/  (float)  nBestResults;
+                        if(random.nextDouble() <= probability) {
+                            this.currentResult = this.workingResult.getCopy();
+                        }
                     }
+
+
+
+
+
+
+
 
                 }
             }
@@ -472,7 +466,6 @@ public class ProblemManager {
                         improved = true;
                         this.bestResult = this.workingResult.getCopy();
                         this.logger.log(this.workingResult);
-
                     }
 
                     this.logger.writeLiveResult(this.workingResult);
@@ -624,6 +617,112 @@ public class ProblemManager {
     //SA
     public void simulatedAnnealing() throws IOException {
 
+        this.logger.logInfo("Starting SA");
+
+        double temperature = this.START_TEMP;
+        int j = 0;
+        this.setSteps(0);
+        int steady = 0;
+
+
+        while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
+
+            //this.getMoveManager().swap(this.workingResult);
+            this.getMoveManager().ruinAndRecreate(this.workingResult);
+
+
+            this.getDecoder().decode(this.workingResult);
+
+
+            int deltaE = this.workingResult.getnSwitches() - this.bestResult.getnSwitches();
+
+            if(deltaE > 0) {
+                double acceptance = Math.exp(-deltaE/ temperature);
+                double ran = random.nextDouble();
+
+                if(acceptance > ran) {
+
+                    //accept move -> not the best solution
+                    this.workingResult.setAccepted();
+                    this.currentResult = this.workingResult;
+
+                    accepted+=1;
+
+                }else{
+                    rejected+=1;
+                    this.workingResult.setRejected();
+                    //cancel move
+                }
+            }else{
+                //accept & best solution now
+                //this.logger.logInfo("New best solution found");
+
+                this.workingResult.setImproved();
+
+                this.currentResult = this.workingResult;
+                this.bestResult = this.currentResult.getCopy();
+
+                this.logger.log(this.getWorkingResult(), temperature);
+
+                improved+=1;
+            }
+
+
+
+            //LOGGING
+            if (steps % 330 == 0) {
+                this.logger.log(this.getWorkingResult(), temperature);
+            }
+
+            if(steps % 10000 == 0) {
+                this.logger.writeResult(this.getWorkingResult());
+            }
+
+            // - PREPARE FOR NEW ITERATION - -
+
+            //Copy for new iteration
+            this.workingResult = this.currentResult.getCopy();
+
+
+
+            //Keep temperature steady for a few steps before dropping
+            if(steady > 70) {
+                temperature = temperature * DECAY_RATE;
+                steady=0;
+            }
+            steady++;
+
+
+            //Reheating
+            if (temperature < 1.5) {
+                //temperature = 10.0 + random.nextDouble() * 40;
+            }
+
+            if(temperature < 0.007) {
+                break;
+            }
+
+            //TODO: stop SA after no improvement is found anymore...
+
+            steps++;
+        }
+
+
+    }
+
+
+    public void simulatedAnnealingTimed( ) {
+
+    }
+
+
+
+
+
+    public void simulatedAnnealingIterations() throws IOException {
+
+        this.logger.logInfo("Starting SA");
+
         double temperature = this.START_TEMP;
         int j = 0;
         this.setSteps(0);
@@ -714,10 +813,6 @@ public class ProblemManager {
 
 
     }
-
-
-
-
 
 
 

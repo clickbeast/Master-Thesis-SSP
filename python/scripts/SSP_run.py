@@ -76,7 +76,7 @@ class Runner:
                 command = "java -jar" + " " + jar_file + " " + \
                           self.create_command_param()
 
-                command += " > /dev/null"
+                #command += " > /dev/null"
                 print(command)
                 command_file.write(command)
                 command_file.write("\n")
@@ -94,7 +94,7 @@ class Runner:
 
         command = ""
         for k, v in self.params.items():
-            command += "--" + k + "=" + v + " "
+            command += "--" + str(k) + "=" + str(v) + " "
         return command
 
     def read_config_file(self):

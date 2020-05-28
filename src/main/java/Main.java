@@ -67,9 +67,10 @@ public class Main {
         DataProcessing dataProcessing = new DataProcessing();
         Parameters parameters = new Parameters(START_TIME);
         new CommandLine(parameters).parseArgs(args);
-
+        parameters.parametersRead();
         System.out.println(parameters.getBETA());
-
+        System.out.println(parameters.getINSTANCE());
+        System.out.println(parameters.getSOLUTION_PATH());
 
         InputData inputData = dataProcessing.instantiateProblem(parameters);
 
@@ -79,7 +80,6 @@ public class Main {
                 FileWriter lfw = new FileWriter(parameters.getLOG_PATH(), false);
                 BufferedWriter lbw = new BufferedWriter(lfw);
                 PrintWriter logWriter = new PrintWriter(lbw);
-
 
                 FileWriter rfw = new FileWriter(parameters.getRESULTS_PATH(), false);
                 BufferedWriter rbw = new BufferedWriter(rfw);

@@ -1,5 +1,0 @@
-instance,n_jobs,n_tools,magazine_size,variations,switches,run_time,run_type,sequence
-"('yan', 8, 15, 5)",8,15,5,10,12.0,8.824,BF-A,[]
-"('yan', 8, 15, 10)",8,15,10,30,6.87,15.920200000000001,BF-A,[]
-"('yan', 8, 20, 10)",8,20,10,30,13.2,10.0779,BF-A,[]
-"('yan', 8, 20, 5)",8,20,5,10,16.8,10.5838,BF-A,[]
