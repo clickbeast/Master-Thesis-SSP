@@ -1,0 +1,6 @@
+instance,n_jobs,n_tools,magazine_size,variations,n_switches,time_running,run_type,sequence,switches
+"('yan', 8, 15, 10)",8,15,10,30,7.8,2.44503,SSD-03,[],
+"('cram', 30, 40, 25)",30,40,25,10,52.6,4.0062,SSD-03,[],
+"('cat', 15, 20, 12)",15,20,12,10,9.2,3.027,SSD-03,[],
+"('cat', 30, 40, 17)",30,40,17,10,98.5,5.3726,SSD-03,[],
+"('cat', 40, 60, 30)",40,60,30,10,143.6,4.5133,SSD-03,[],

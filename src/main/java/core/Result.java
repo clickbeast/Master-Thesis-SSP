@@ -13,7 +13,7 @@ public class Result {
     private ProblemManager problemManager;
 
     //General
-    private int cost;
+    private Double cost;
     //-- full perspective --
     //The tool matrix
     private int[][] jobToolMatrix;
@@ -40,6 +40,12 @@ public class Result {
     private int nKtnsToolHops;
 
     private String type;
+
+
+    // NOT EXPORTED
+    private int[][] zeroBlockLength;
+
+    private double tieBreakingCost;
 
     //private int[][] magazineState;
 
@@ -86,6 +92,7 @@ public class Result {
         result.setSwitches(switches);
         result.setnSwitches(this.getnSwitches());
         result.setType(this.getType());
+        result.setTieBreakingCost(this.getTieBreakingCost());
 
         return result;
     }
@@ -121,14 +128,20 @@ public class Result {
     }
 
 
-    public int getCost() {
-        return this.getnSwitches();
+    public Double getCost() {
+        //TODO: change
+
+        return (double) this.getnSwitches();
+        //return this.getTieBreakingCost();
     }
 
-    public void setCost(int cost) {
-        this.setnSwitches(cost);
+
+    public void setCost(Double cost) {
         this.cost = cost;
     }
+
+
+
 
     public int[] getTools(Job job) {
         return this.getJobToolMatrix()[job.getId()];
@@ -287,6 +300,23 @@ public class Result {
         this.nKtnsToolHops = nKtnsToolHops;
     }
 
+    public int[][] getZeroBlockLength() {
+        return zeroBlockLength;
+    }
+
+    public void setZeroBlockLength(int[][] zeroBlockLength) {
+        this.zeroBlockLength = zeroBlockLength;
+    }
+
+
+    public double getTieBreakingCost() {
+        return tieBreakingCost;
+    }
+
+    public void setTieBreakingCost(double tieBreakingCost) {
+        this.tieBreakingCost = tieBreakingCost;
+    }
+
     @Override
     public String toString() {
         return "Result{" +
@@ -305,4 +335,6 @@ public class Result {
                 ", nKtnsToolHops=" + nKtnsToolHops +
                 '}';
     }
+
+
 }

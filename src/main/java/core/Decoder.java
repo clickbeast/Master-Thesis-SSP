@@ -200,6 +200,7 @@ public class Decoder {
     }
 
 
+
     //TODO: convertable to induvidual steps possible
 
 
@@ -395,7 +396,26 @@ public class Decoder {
         int[] switches = this.count_switches(result);
         result.setSwitches(switches);
         result.setnSwitches(nSwitches(switches));
+
+        //NEW TYPE OF COST
+        result.setZeroBlockLength(this.zeroBlockLength(result));
+        result.setTieBreakingCost(this.calculateTieBreakingCost(result));
+        //System.out.println(result.getTieBreakingCost());
+
     }
+    public double calculateTieBreakingCost(Result result) {
+        double total = 0;
+
+        for (int toolId = 0; toolId < result.getZeroBlockLength().length; toolId++) {
+            for (int zeroBlockId = 0; zeroBlockId < result.getZeroBlockLength()[toolId].length; zeroBlockId++) {
+                int zeroBlockLength = result.getZeroBlockLength()[toolId][zeroBlockId];
+                total+= Math.sqrt(zeroBlockLength);
+            }
+        }
+
+        return total;
+    }
+
 
     public int nSwitches(int[] switches) {
         int count = 0;
@@ -446,6 +466,50 @@ public class Decoder {
         }
 
         return switches;
+    }
+
+
+
+
+
+    public int[][] zeroBlockLength(Result result) {
+
+        int[][] zeroBlocks = new int[this.problemManager.getN_TOOLS()][];
+
+
+        for (int toolId = 0; toolId < this.problemManager.getN_TOOLS(); toolId++) {
+            LinkedList<Integer> blocks = new LinkedList<>();
+            int length = 0;
+            boolean run = false;
+
+            for (int jobId = 0; jobId < this.problemManager.getN_JOBS(); jobId++) {
+                int value = result.getJobToolMatrix()[jobId][toolId];
+
+                if(!run) {
+                    if (value == 0) {
+                        run = true;
+                        length += 1;
+                    }
+                }else{
+                    if(value == 0) {
+                        length+=1;
+                    }else{
+                        blocks.add(length);
+                        length = 0;
+                        run = false;
+                    }
+                }
+            }
+
+            if(run) {
+                blocks.add(length);
+            }
+
+            zeroBlocks[toolId] = blocks.stream().mapToInt(i->i).toArray();
+
+        }
+
+        return zeroBlocks;
     }
 
 

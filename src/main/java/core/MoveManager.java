@@ -142,6 +142,8 @@ public class MoveManager {
         //Choose random tool
         int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
 
+
+
         //Remove associated tools -> currently: ONLY NON KTNS TOOLS
         for (int i = 0; i < result.getSequence().length; i++) {
             Job job = result.getJobSeqPos(i);
@@ -150,6 +152,14 @@ public class MoveManager {
                 ruined.getRemove().add(job.getId());
             }else{
                 ruined.getKeep().add(job.getId());
+            }
+        }
+
+        Collections.shuffle(ruined.getRemove());
+        int remove = ruined.getRemove().size() - 3;
+        if(remove > 0) {
+            for (int i = 0; i < remove; i++) {
+                ruined.getKeep().add(ruined.getRemove().remove(i));
             }
         }
 
@@ -202,7 +212,7 @@ public class MoveManager {
 
         for (Integer jobId : ruined.getRemove()) {
 
-            int bestCost = Integer.MAX_VALUE;
+            Double bestCost = Double.MAX_VALUE;
             int bestPosition = 0;
             int nBestPositions = 0;
 
@@ -220,9 +230,12 @@ public class MoveManager {
 
 
                     if(temp.getCost() <  bestCost) {
+
                         nBestPositions = 1;
                         bestPosition = index;
                         bestCost = temp.getCost();
+
+
                     }else if(temp.getCost() == bestCost) {
                         nBestPositions += 1;
                         float probability = 1 / (float) nBestPositions;
@@ -259,7 +272,7 @@ public class MoveManager {
 
         for (Integer jobId : ruined.getRemove()) {
 
-            int bestCost = 0;
+            Double bestCost = 0.0;
             int bestPosition = 0;
             int nBestPositions = 0;
 

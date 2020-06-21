@@ -80,8 +80,6 @@ class Runner:
                 print(command)
                 command_file.write(command)
                 command_file.write("\n")
-
-
         pass
 
     def run_parallel(self):

@@ -13,14 +13,15 @@ public class Parameters {
     @Option(names = {"--root_folder"})
     private String ROOT_FOLDER              =   "/Users/simonvermeir/Documents/industrial-engineering/" +
                                                 "SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/" +
-            
-            
-                                                "yanasse";
+                                                "catanzaro";
     @Option(names = {"--instance_folder"})
     private String INSTANCE_FOLDER          =   "yanasse";
-
+    //cat_30_40_17_9
+    //yan_8_15_10_29
     @Option(names = {"--instance"})
-    private String INSTANCE                 =   "yan_8_15_10_29";
+    private String INSTANCE                 =   "cat_30_40_17_9";
+    //private String INSTANCE                 =   "yan_8_15_10_29";
+
 
     @Option(names = {"--run_type"})
     private String RUN_TYPE                 =   "TEST";
@@ -30,6 +31,7 @@ public class Parameters {
     private String LOG_PATH                 =   "/";
     private String RESULTS_PATH             =   "/";
     private String SOLUTION_PATH            =   "/";
+    private String PARAMETER_PATH           =   "/";
     private String LIVE_RESULT_PATH         =   "/";
 
 
@@ -40,10 +42,15 @@ public class Parameters {
 
 
     //CHOICES
-    private String constructive = "random";
-    private String ls = "rr";
-    private String meta = "sa";
-    private String objective = "";
+    @Option(names = {"--constructive_heuristic"})
+    private String constructiveHeuristic = "random";
+    @Option(names = {"--local_search"})
+    private String localSearch = "ruinAndRecreate";
+    @Option(names = {"--meta_heuristic"})
+    private String metaHeuristic = "simulatedAnnealing";
+    @Option(names = {"--objective"})
+    private String objective = "switches";
+
 
     //OBJ
     @Option(names = {"--w_s"})
@@ -71,13 +78,17 @@ public class Parameters {
 
     //SA
     @Option(names = {"--sa_timed"})
-    private  boolean SA_TIMED               =   true;
+    private  boolean SA_TIMED               =   false;
+
     @Option(names = {"--start_temp"})
     private  double  START_TEMP             =   100;
     @Option(names = {"--end_temp"})
-    private  double  END_TEMP               =   0.000097;
+    private  double  END_TEMP               =   0.00097;
     @Option(names = {"--decay_rate"})
-    private  double  DECAY_RATE             =   0.9990;
+    //private  double  DECAY_RATE             =   0.9990;
+    private  double  DECAY_RATE             =   -1;
+    @Option(names = {"--force_alpha"})
+    private  boolean FORCE_ALPHA            =   true;
     @Option(names = {"--iterations"})
     private  long    ITERATIONS             =   -1;
     @Option(names = {"--alpha"})
@@ -87,16 +98,19 @@ public class Parameters {
     @Option(names = {"--w_f"})
     private  double  W_F                    =   1;
     @Option(names = {"--w_alpha"})
-    private  double  W_ALPHA                =   1;
+    private  double  W_ALPHA                =   0.737;
     @Option(names = {"--w_jobs"})
-    private  double  W_JOBS                 =   1;
+    private  double  W_JOBS                 =   0.60;
     @Option(names = {"--w_tools"})
-    private  double  W_TOOLS                =   1;
+    private  double  W_TOOLS                =   0.97;
     @Option(names = {"--w_mag"})
-    private  double  W_MAG                  =   1;
+    private  double  W_MAG                  =   0.97;
     @Option(names = {"--w_tm"})
-    private  double  W_TM                   =   0.5;
+    private  double  W_TM                   =   0.2;
 
+
+    //FORCE SEQUECE
+    private int[] forceSequence = {1,2,3,4,5,6,7,8,9};
 
     //PROBLEM
     private int N_JOBS                      = -1;
@@ -115,16 +129,6 @@ public class Parameters {
     private boolean WRITE_RESULTS           = true;
     @Option(names = {"--live_result"})
     private boolean LIVE_RESULT             = false;
-
-
-
-    //OPTIONS
-   /* static final Map<String, Boolean > MY_MAP = Map.of(
-            1, ,
-            2,
-    );*/
-
-
 
 
     public Parameters(long START_TIME) {
@@ -231,10 +235,15 @@ public class Parameters {
         this.calculateAlpha();
         this.calculateIterations();
         this.calculateDecayRate();
-
+        System.out.println("bonjour");
     }
 
     public void calculateAlpha() {
+        if(isFORCE_ALPHA()) {
+            this.forceAlpha();
+            return;
+        }
+
         this.setALPHA(getW_ALPHA()
                 * ( (getW_JOBS() * getN_JOBS())
                     + (getW_TM() *
@@ -244,6 +253,14 @@ public class Parameters {
         );
     }
 
+
+    public void forceAlpha() {
+        //0.060  slower
+        //0.0470  faster
+        this.setALPHA(18 * getN_JOBS() * 0.014);
+
+    }
+
     public void calculateIterations() {
         this.setITERATIONS(
                 (long) (getW_F() * Math.pow(10,(this.getALPHA() + this.getBETA()))));
@@ -251,7 +268,7 @@ public class Parameters {
 
 
     public void calculateDecayRate() {
-        this.setDECAY_RATE(Math.pow((this.getEND_TEMP()/this.getSTART_TEMP()), (1/getITERATIONS())));
+        this.setDECAY_RATE(Math.pow((this.getEND_TEMP()/this.getSTART_TEMP()), ( (float) 1/getITERATIONS())));
     }
 
 
@@ -267,6 +284,9 @@ public class Parameters {
         this.setRESULTS_PATH(resultPath);
         String solutionPath = this.getINSTANCE_FOLDER() + "/" + "solution_" + this.getRUN_TYPE() + ".txt";
         this.setSOLUTION_PATH(solutionPath);
+        String parameterPath = this.getINSTANCE_FOLDER() + "/" + "parameter_" + this.getRUN_TYPE() + ".txt";
+        this.setPARAMETER_PATH(parameterPath);
+
     }
 
 
@@ -612,6 +632,62 @@ public class Parameters {
         this.AVG_RUIN = AVG_RUIN;
     }
 
+    public String getPARAMETER_PATH() {
+        return PARAMETER_PATH;
+    }
+
+    public void setPARAMETER_PATH(String PARAMETER_PATH) {
+        this.PARAMETER_PATH = PARAMETER_PATH;
+    }
+
+
+    public String getObjective() {
+        return objective;
+    }
+
+    public void setObjective(String objective) {
+        this.objective = objective;
+    }
+
+    public boolean isLOG_INFO() {
+        return LOG_INFO;
+    }
+
+    public void setLOG_INFO(boolean LOG_INFO) {
+        this.LOG_INFO = LOG_INFO;
+    }
+
+    public String getConstructiveHeuristic() {
+        return constructiveHeuristic;
+    }
+
+    public void setConstructiveHeuristic(String constructiveHeuristic) {
+        this.constructiveHeuristic = constructiveHeuristic;
+    }
+
+    public String getLocalSearch() {
+        return localSearch;
+    }
+
+    public void setLocalSearch(String localSearch) {
+        this.localSearch = localSearch;
+    }
+
+    public String getMetaHeuristic() {
+        return metaHeuristic;
+    }
+
+    public void setMetaHeuristic(String metaHeuristic) {
+        this.metaHeuristic = metaHeuristic;
+    }
+
+    public int[] getForceSequence() {
+        return forceSequence;
+    }
+
+    public void setForceSequence(int[] forceSequence) {
+        this.forceSequence = forceSequence;
+    }
 
     @Override
     public String toString() {
@@ -659,5 +735,13 @@ public class Parameters {
                 ", WRITE_RESULTS=" + WRITE_RESULTS +
                 ", LIVE_RESULT=" + LIVE_RESULT +
                 '}';
+    }
+
+    public boolean isFORCE_ALPHA() {
+        return FORCE_ALPHA;
+    }
+
+    public void setFORCE_ALPHA(boolean FORCE_ALPHA) {
+        this.FORCE_ALPHA = FORCE_ALPHA;
     }
 }

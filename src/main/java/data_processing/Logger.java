@@ -107,23 +107,17 @@ public class Logger {
 
     }
 
-    public void log( int switches, int bestSwitches, int[] sequence ) throws IOException {
-        this.log(switches, bestSwitches,-1,-1,-1,-1, sequence,"");
-    }
 
-    public void log( int switches, int bestSwitches, long accepted, long rejected, long improved,int[] sequence ) throws IOException {
-        this.log(switches, bestSwitches,accepted,rejected,improved,-1, sequence,"");
-    }
 
     public void log(Result result) throws IOException {
         this.log(result, -1);
     }
 
     public void log(Result result, double temperature) throws IOException {
-        this.log(result.getnSwitches(),this.problemManager.getBestResult().getnSwitches(), this.problemManager.getAccepted(),this.problemManager.getRejected(), this.problemManager.getImproved(), temperature, result.getSequence(), result.getType());
+        this.log(result, result.getnSwitches(),this.problemManager.getBestResult().getnSwitches(), this.problemManager.getAccepted(),this.problemManager.getRejected(), this.problemManager.getImproved(), temperature, result.getSequence(), result.getType());
     }
 
-    public void log( int switches, int bestSwitches, long accepted, long rejected, long improved, double temperature, int[] sequence, String type) throws IOException {
+    public void log(Result result ,int switches, int bestSwitches, long accepted, long rejected, long improved, double temperature, int[] sequence, String type) throws IOException {
 
 
         if(this.getProblemManager().getParameters().isLOG()) {
@@ -139,7 +133,7 @@ public class Logger {
                         // B_SW
                         bestSwitches,
                         // HOP
-                        "",
+                        result.getTieBreakingCost(),
                         // B_THOP
                         "",
                         // TAD
@@ -223,6 +217,20 @@ public class Logger {
 
 
     /* SOLUTIONS & RESULTS ------------------------------------------------------------------ */
+
+
+    public void writeParameters() {
+        try (
+                FileWriter lfw = new FileWriter(this.problemManager.getParameters().getPARAMETER_PATH(), false);
+                BufferedWriter lbw = new BufferedWriter(lfw);
+                PrintWriter liveWriter = new PrintWriter(lbw);
+        ) {
+            String a = gson.toJson(this.problemManager.getParameters());
+            liveWriter.println(a);
+        } catch (IOException io) {
+            System.out.println("error writing update");
+        }
+    }
 
 
     public void writeSolution(Result result) throws IOException {
