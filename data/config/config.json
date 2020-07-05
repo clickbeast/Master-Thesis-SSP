@@ -1,17 +1,15 @@
 {
     "files_folder_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances",
     "project_root": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP",
-    "files_name": "mixed_files.json",
+    "files_name": "all_files.json",
     "title": "MIXED",
     "params": {
 
-        "run_type": "SA-TIE",
+        "run_type": "ALL-SA",
         "root_folder": "",
         "instance": "SD",
         "run_time": "420",
         "seed": "7",
-
-
 
         "w_s": 1,
         "w_hops": 1,
@@ -24,11 +22,14 @@
         "constructive_heuristic": "random",
         "local_search": "ruinAndRecreate",
         "meta_heuristic": "simulatedAnnealing",
-        "objective": "switches",
-
+        "objective": " ",
 
         "blink_rate": 0.01,
         "avg_ruin": 10,
+        "select": "randomTool",
+        "match":  "required",
+        "insert": "best",
+        "decode": "full",
 
         "start_temp": "100",
         "end_temp": "0.00097",
@@ -45,9 +46,8 @@
         "w_tools": 1,
         "w_mag": 1,
 
-
         "log": true,
-        "log_verbose": false,
+        "log_verbose": true,
         "write_results": true,
         "live_result": false
     },

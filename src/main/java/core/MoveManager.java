@@ -130,7 +130,6 @@ public class MoveManager {
     public Result ruinAndRecreate(Result result) throws IOException {
         Ruin ruined = ruin(result);
         recreate(result, ruined);
-
         return result;
     }
 

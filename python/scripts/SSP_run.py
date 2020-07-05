@@ -18,7 +18,6 @@ class Runner:
     title = ""
     params = {}
     filter = {}
-    solution = {}
     result = {}
     csv_line = {}
 
@@ -84,7 +83,7 @@ class Runner:
 
     def run_parallel(self):
         self.create_commands_files()
-        command = "parallel --jobs 16  --progress < /Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent" \
+        command = "nohup parallel --jobs 16  --progress < /Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent" \
                   "/MasterProef/Master-Thesis-SSP/data/config/commands.txt"
         os.system(command)
 
@@ -105,8 +104,6 @@ class Runner:
             self.title = d["title"]
             self.params = d["params"]
             self.filter = d["filter"]
-            self.solution = d["solution"]
-            self.result = d["result"]
             self.csv_line = d["csv_line"]
 
 

@@ -1,3 +1,6 @@
 # Compiled class file
 *.class
 venv
+data/instances_archive
+data/instances
+.gradle

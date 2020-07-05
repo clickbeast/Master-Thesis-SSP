@@ -258,7 +258,6 @@ public class Parameters {
         //0.060  slower
         //0.0470  faster
         this.setALPHA(18 * getN_JOBS() * 0.014);
-
     }
 
     public void calculateIterations() {

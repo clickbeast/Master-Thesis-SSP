@@ -149,12 +149,12 @@ public class ProblemManager {
                 break;
             }
 
-            case "steepestDescentRandomBest": {
+            case "steepestDescentBestRandom": {
                 this.steepestDescentRandomBest();
                 break;
             }
 
-            case "steepestDescentFirstBest": {
+            case "steepestDescentBestFirst": {
                 this.steepestDescentFirstBest();
                 break;
             }
@@ -713,7 +713,6 @@ public class ProblemManager {
 
             //this.getMoveManager().swap(this.workingResult);
             this.getMoveManager().ruinAndRecreate(this.workingResult);
-
 
             this.getDecoder().decode(this.workingResult);
 

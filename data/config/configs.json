@@ -1,0 +1,44 @@
+[{
+
+  "run_type": "SA-TIE",
+  "instance": "SD",
+  "run_time": "420",
+  "seed": "7",
+
+  "w_s": 1,
+  "w_hops": 1,
+  "w_ktns_hops": 1,
+  "w_dist":  1,
+  "w_dist_min": 1,
+  "w_dist_max":  1,
+
+  "constructive_heuristic": "random",
+  "local_search": "ruinAndRecreate",
+  "meta_heuristic": "steepestDescentBestRandom",
+  "objective": "switches",
+
+  "blink_rate": 0.01,
+  "avg_ruin": 10,
+
+  "start_temp": "100",
+  "end_temp": "0.00097",
+  "decay_rate": -1,
+  "sa_timed": false,
+  "force_alpha": true,
+  "iterations": -1,
+  "alpha": -1,
+  "beta": 0,
+  "w_f": 1,
+  "w_alpha": 1,
+  "w_tm": 0.5,
+  "w_jobs": 1,
+  "w_tools": 1,
+  "w_mag": 1,
+
+
+  "log": true,
+  "log_verbose": false,
+  "write_results": true,
+  "live_result": false
+}
+]
