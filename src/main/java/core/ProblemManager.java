@@ -1,15 +1,23 @@
 package core;
 
+import com.google.common.graph.EndpointPair;
+import com.google.common.graph.MutableValueGraph;
+import com.google.common.graph.ValueGraph;
+import com.google.common.graph.ValueGraphBuilder;
 import data_processing.DataProcessing;
 import data_processing.InputData;
 import data_processing.Logger;
 import data_processing.Parameters;
+import exception.NoToolFoundException;
 import models.elemental.Job;
 import models.elemental.Tool;
 import util.General;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 
 public class ProblemManager {
@@ -39,6 +47,7 @@ public class ProblemManager {
 
     private int[][] SWITCHES_LB_MATRIX;
     private int[][] TOOL_PAIR_MATRIX;
+    private  MutableValueGraph<Integer, Integer> TOOL_PAIR_GRAPH;
 
     //MANAGERS
     private MoveManager moveManager;
@@ -64,7 +73,6 @@ public class ProblemManager {
 
 
     //TRACKING
-
     private long accepted = 0;
     private long rejected = 0;
     private long improved = 0;
@@ -111,6 +119,8 @@ public class ProblemManager {
         //this.initialize();
 
         General.printGrid(this.getJOB_TOOL_MATRIX());
+        General.printTransposeGrid(this.getJOB_TOOL_MATRIX());
+
         //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
         //this.initialSolution();
         //this.initialOrderedSolution();
@@ -196,6 +206,7 @@ public class ProblemManager {
         this.SHARED_TOOLS_MATRIX = initializeSharedToolsMatrix();
         this.SWITCHES_LB_MATRIX = this.initializeSwitchesLowerBoundMatrix();
         this.TOOL_PAIR_MATRIX = this.initializeToolPairMatrix();
+        this.TOOL_PAIR_GRAPH = this.initializeToolPairGraph();
     }
 
 
@@ -289,13 +300,14 @@ public class ProblemManager {
     }
 
     //TODO: initializeToolPairMatrix
+    //OK
     public int[][] initializeToolPairMatrix() {
 
         int[][] matrix = new int[this.getN_TOOLS()][this.getN_TOOLS()];
 
         for (int toolId1 = 0; toolId1 < this.getN_TOOLS() ; toolId1++) {
             for (int toolId2 = toolId1; toolId2 < this.getN_TOOLS(); toolId2++) {
-                int value = this.toolPairOccurences(toolId1, toolId2);
+                int value = this.toolPairOccurrences(toolId1, toolId2);
                 matrix[toolId1][toolId2] = value;
                 matrix[toolId2][toolId1] = value;
             }
@@ -305,15 +317,7 @@ public class ProblemManager {
     }
 
 
-
-
-    public void initalizeToolPairGraph() {
-
-    }
-
-
-
-    public int toolPairOccurences(int toolId1, int toolId2) {
+    public int toolPairOccurrences(int toolId1, int toolId2) {
         int count = 0;
         for (int jobId = 0; jobId < this.getN_JOBS(); jobId++) {
             if(this.getJOB_TOOL_MATRIX()[jobId][toolId1] == 1 && this.getJOB_TOOL_MATRIX()[jobId][toolId2] == 1) {
@@ -322,6 +326,34 @@ public class ProblemManager {
         }
         return count;
     }
+
+
+
+
+
+
+    public MutableValueGraph<Integer, Integer> initializeToolPairGraph() {
+
+        MutableValueGraph<Integer, Integer> weightedGraph = ValueGraphBuilder.undirected().build();
+
+        for (int i = 0; i < this.getN_TOOLS(); i++) {
+            weightedGraph.addNode(i);
+        }
+
+        for (int i = 0; i < this.getTOOL_PAIR_MATRIX().length ; i++) {
+            for (int j = i+1; j < this.getTOOL_PAIR_MATRIX()[0].length ; j++) {
+                if(i != j & this.getTOOL_PAIR_MATRIX()[i][j] != 0 ){
+                    weightedGraph.putEdgeValue(i,j,this.getTOOL_PAIR_MATRIX()[i][j]);
+                }
+            }
+        }
+
+
+        return weightedGraph;
+    }
+
+
+
 
 
 
@@ -386,12 +418,18 @@ public class ProblemManager {
     }
 
 
-
+    /**
+     * Gustavo Silva Paiva, et al.
+     */
     public void initialToolSequencingSolution() throws IOException {
-        this.logger.logInfo("Creating initial solution");
+        this.logger.logInfo("Creating initial solution: Tool Sequencing");
 
-        int[] sequence = this.orderedInitialSequence();
-        sequence = this.randomInitialSequence(sequence);
+
+        LinkedList<Integer> toolSequence = generateToolSequence();
+        LinkedList<Integer> jobSequence = generateJobSequence(toolSequence);
+
+
+        int[] sequence = jobSequence.stream().mapToInt(i -> i).toArray();
 
         this.currentResult = new Result(sequence, this);
         this.getDecoder().decode(this.currentResult);
@@ -402,11 +440,241 @@ public class ProblemManager {
 
         this.logger.logInfo(String.valueOf(this.workingResult.getCost()));
         this.logger.logInfo("Initial Solution Created");
-
         this.logger.log(this.workingResult);
-        //this.logger.writeSolution(this.bestResult);
+
+
+
     }
 
+
+    public LinkedList<Integer> generateToolSequence() {
+
+        LinkedList<Integer> toolSequence = new LinkedList<>();
+        boolean[] visited = new boolean[this.getN_TOOLS()];
+        boolean[] added = new boolean[this.getN_TOOLS()];
+        int count_visited = 0;
+        int count_added = 0;
+
+        //Start at a random tool
+        //int startToolId = this.random.nextInt(this.getN_TOOLS());
+
+        int startToolId = 0;
+        toolSequence.add(startToolId);
+        added[startToolId] = true;
+        count_added += 1;
+        Queue<Integer> q = new LinkedList<>();
+        q.add(startToolId);
+
+        findToolSeq: while(count_visited < this.getN_TOOLS()) {
+
+            while (!q.isEmpty()) {
+                int toolId = q.remove();
+                visited[toolId] = true;
+                count_visited += 1;
+
+
+                //TODO: optimize
+                int[] sortedNeighbours = sortNeighboursDecreasing(toolId);
+
+                for(Integer neighbourToolId : sortedNeighbours) {
+                    if(!added[neighbourToolId]) {
+
+                        added[neighbourToolId] = true;
+                        count_added += 1;
+
+                        toolSequence.add(neighbourToolId);
+                        q.add(neighbourToolId);
+
+                        if(count_added >= this.getN_TOOLS()) {
+                            break findToolSeq;
+                        }
+
+                    }
+                }
+            }
+
+            //if exists a node k ∈ V not visited then insert k in Q;
+            if(count_visited < this.getN_TOOLS()) {
+                for (int i = 0; i < visited.length; i++) {
+                    if(!visited[i]) {
+                        q.add(i);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        return toolSequence;
+
+    }
+
+
+
+    public LinkedList<Integer> generateJobSequenceSimplified(LinkedList<Integer> toolSequence) {
+
+        LinkedList<Integer> jobSequence = new LinkedList<>();
+        Set<Integer> parent = new HashSet<>();
+        boolean[] addedJobs = new boolean[this.getN_JOBS()];
+
+
+        //Naive
+        for(Integer toolId: toolSequence) {
+            parent.add(toolId);
+            for (int i = 0; i < this.getN_JOBS(); i++) {
+                if(!addedJobs[i]) {
+                    if (isSubset(parent, this.jobs[i].getSet())) {
+                        jobSequence.add(i);
+                        addedJobs[i] = true;
+                    }
+                }
+            }
+        }
+
+
+
+        return jobSequence;
+    }
+
+
+    public LinkedList<Integer> generateJobSequence(LinkedList<Integer> toolSequence) throws IOException {
+
+        Comparator<Integer> byNumberOfTools = Comparator.comparingInt(
+                id -> {
+                    return this.jobs[id].getSet().length;
+                });
+
+
+        LinkedList<Integer> jobSequence = new LinkedList<>();
+        boolean[] addedJobs = new boolean[this.getN_JOBS()];
+        Set<Integer> parent = new HashSet<>();
+        Set<Integer> candidates = new HashSet<>();
+
+        for(Integer toolId: toolSequence) {
+            parent.add(toolId);
+
+            //Get canditate jobs
+            for (int i = 0; i < this.getN_JOBS(); i++) {
+                if(!addedJobs[i]) {
+                    if(isSubset(parent,this.jobs[i].getSet())) {
+                        candidates.add(i);
+                    }
+                }
+            }
+
+
+            while (!candidates.isEmpty()) {
+                int picked = -1;
+
+                if(jobSequence.isEmpty()) {
+                    //Pick the one with the most amount of tools
+                    picked = candidates.stream().max(byNumberOfTools).orElse(-1);
+
+                }else{
+                    //Pick the one that results in the least amount of switches
+                    picked = pickMinKTNS(jobSequence, candidates);
+                }
+
+                candidates.remove(picked);
+                jobSequence.add(picked);
+                addedJobs[picked] = true;
+
+            }
+
+        }
+
+
+
+        return jobSequence;
+    }
+
+
+
+    public int pickMinKTNS(LinkedList<Integer> jobSequence, Set<Integer> candidates) throws IOException {
+
+        int min = -1;
+        int minValue = Integer.MAX_VALUE;
+        int nBestResults = 0;
+
+
+        for(Integer c: candidates) {
+            jobSequence.add(c);
+
+            int[] sequence = jobSequence.stream().mapToInt(i -> i).toArray();
+            Result partial = new Result(sequence,this);
+            this.decoder.decode(partial);
+            int value = partial.getnSwitches();
+
+            if (value < minValue) {
+
+                nBestResults = 1;
+                minValue = value;
+                min = c;
+
+            }else if (value == minValue) {
+                nBestResults+=1;
+                float probability = 1/  (float)  nBestResults;
+                if(random.nextDouble() <= probability) {
+                    minValue = value;
+                    min = c;
+                }
+
+            }
+
+
+            jobSequence.remove(c);
+
+        }
+
+        return min;
+    }
+
+
+
+    public boolean isSubset(Set<Integer> parent, int[] child) {
+
+        if(child.length > parent.size()) {
+            return false;
+        }
+
+
+        for(int i = 0; i < child.length; i++) {
+            if(!parent.contains(child[i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    public int[] sortNeighboursDecreasing(int node) {
+        Set<EndpointPair<Integer>> endpointPairs = this.getTOOL_PAIR_GRAPH().incidentEdges(node);
+
+        Comparator<EndpointPair<Integer>> byWeight = Comparator.comparingInt(
+                pair -> {
+                    return this.getTOOL_PAIR_GRAPH().edgeValue(pair).orElse(0);
+                });
+
+        //TODO: OPTIMIZE or leave out...
+        Comparator<EndpointPair<Integer>> byNodeId = Comparator.comparingInt(
+                pair -> {
+                    if(pair.nodeU() != node) {
+                        return pair.nodeU();
+                    }else{
+                        return pair.nodeV();
+                    }
+                });
+
+        return  endpointPairs.stream().sorted(byWeight.reversed().thenComparing(byNodeId)).mapToInt(pair -> {
+            if(pair.nodeU() != node) {
+                return pair.nodeU();
+            }else{
+                return pair.nodeV();
+            }
+        }).toArray();
+
+    }
 
 
 
@@ -434,15 +702,8 @@ public class ProblemManager {
         return sequence;
     }
 
-    /**
-     * Gustavo Silva Paiva, et al.
-     */
-    //TODO : toolJobRelationBFSInitialSequence
-    public void toolSequencingInitialSequence() {
-        int[] toolSequence = new int[this.getN_TOOLS()];
 
 
-    }
 
     /**
      * Tang and Denardo
@@ -696,7 +957,6 @@ public class ProblemManager {
             this.simulatedAnnealingIterations();
         }
     }
-
 
     public void simulatedAnnealingTimed() throws IOException {
 
@@ -1115,5 +1375,14 @@ public class ProblemManager {
 
     public void setImproved(long improved) {
         this.improved = improved;
+    }
+
+
+    public void setTOOL_PAIR_GRAPH(MutableValueGraph<Integer, Integer> TOOL_PAIR_GRAPH) {
+        this.TOOL_PAIR_GRAPH = TOOL_PAIR_GRAPH;
+    }
+
+    public MutableValueGraph<Integer, Integer> getTOOL_PAIR_GRAPH() {
+        return TOOL_PAIR_GRAPH;
     }
 }

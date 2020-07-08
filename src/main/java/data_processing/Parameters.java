@@ -13,13 +13,15 @@ public class Parameters {
     @Option(names = {"--root_folder"})
     private String ROOT_FOLDER              =   "/Users/simonvermeir/Documents/industrial-engineering/" +
                                                 "SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/" +
-                                                "catanzaro";
+                                                "yanasse";
     @Option(names = {"--instance_folder"})
     private String INSTANCE_FOLDER          =   "yanasse";
     //cat_30_40_17_9
     //yan_8_15_10_29
     @Option(names = {"--instance"})
-    private String INSTANCE                 =   "cat_30_40_17_9";
+    //private String INSTANCE                 =   "cat_30_40_17_9";
+    //private String INSTANCE                   =   "yan_8_15_10_29";
+    private String INSTANCE                   =   "yan_5_6_3_1";
     //private String INSTANCE                 =   "yan_8_15_10_29";
 
 
@@ -47,7 +49,7 @@ public class Parameters {
     @Option(names = {"--local_search"})
     private String localSearch = "ruinAndRecreate";
     @Option(names = {"--meta_heuristic"})
-    private String metaHeuristic = "simulatedAnnealing";
+    private String metaHeuristic = "steepestDescent";
     @Option(names = {"--objective"})
     private String objective = "switches";
 
@@ -65,6 +67,17 @@ public class Parameters {
     private double W_DIST_MIN               =   1;
     @Option(names = {"--w_dist_max"})
     private double W_DIST_MAX               =   1;
+
+
+    //RR
+    @Option(names = {"--select"})
+    private String select                   =   "";
+    @Option(names = {"--match"})
+    private String match               =   "";
+    @Option(names = {"--insert"})
+    private String insert               =   "";
+    @Option(names = {"--decode"})
+    private String decode               =   "";
 
     //STOCHASTIC
     @Option(names = {"--seed"})
@@ -259,6 +272,15 @@ public class Parameters {
         //0.0470  faster
         this.setALPHA(18 * getN_JOBS() * 0.014);
     }
+
+    public void forceIterations() {
+        double alpha = 18 * getN_JOBS() * 0.014;
+
+
+        this.setITERATIONS(
+                (long) ( 12000 + (getW_F() * Math.pow(10,alpha))));
+    }
+
 
     public void calculateIterations() {
         this.setITERATIONS(

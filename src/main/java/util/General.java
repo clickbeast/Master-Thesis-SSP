@@ -13,17 +13,26 @@ public class General {
     }
 
 
+    public static void printTransposeGrid(int[][] grid) {
+        int[][] tgrid = transposeMatrix(grid);
+        printGrid(tgrid);
+    }
+
+
     //TODO: CLEAN UP
     public static int[][] transposeMatrix(int[][] grid) {
 
+        int[][] out = new int[grid[0].length][grid.length];
+
         for (int i = 0; i < grid.length; i++) {
-            for (int j = i+1; j < grid[0].length; j++) {
-                int temp = grid[i][j];
-                grid[i][j] = grid[j][i];
-                grid[j][i] = temp;
+            for (int j = 0; j < grid[0].length; j++) {
+                int grab = grid[i][j];
+                out[j][i] = grab;
             }
         }
-        return grid;
+
+
+        return out;
     }
 
 
