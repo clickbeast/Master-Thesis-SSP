@@ -5,9 +5,9 @@ plugins {
     id 'java'
 }
 
-def jsonFile = file('/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/config/config.json')
+def jsonFile = file('/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/config/build_config.json')
 def parsedJson = new JsonSlurper().parseText(jsonFile.text)
-def file_type = parsedJson.params.run_type
+def file_type = parsedJson.run_type
 
 
 group 'com.simonvermeir'

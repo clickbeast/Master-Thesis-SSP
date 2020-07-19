@@ -50,6 +50,8 @@ public class Parameters {
     private  long START_TIME                =   0;
 
 
+
+
     //CHOICES
     @Option(names = {"--constructive_heuristic"})
     private String constructiveHeuristic = "random";
@@ -59,6 +61,10 @@ public class Parameters {
     private String metaHeuristic = "steepestDescentBestRandom";
     @Option(names = {"--objective"})
     private String objective = "switches";
+    @Option(names = {"--decode_version"})
+    private String decodeVersion = "default";
+    @Option(names = {"--parallel"})
+    private boolean parallel = false;
 
 
     //OBJ
@@ -85,6 +91,9 @@ public class Parameters {
     private String insert               =   "";
     @Option(names = {"--decode"})
     private String decode               =   "";
+    @Option(names = {"--insert_positions"})
+    private String insertPositions               =   "all";
+
 
     //STOCHASTIC
     @Option(names = {"--seed"})
@@ -95,6 +104,7 @@ public class Parameters {
     private double BLINK_RATE               =   0.01;
         @Option(names = {"--avg_ruin"})
     private int AVG_RUIN                    =   10;
+
 
     //SA
     @Option(names = {"--sa_timed"})
@@ -109,13 +119,15 @@ public class Parameters {
     private  double  DECAY_RATE             =   -1;
     @Option(names = {"--force_alpha"})
     private  boolean FORCE_ALPHA            =   true;
+    @Option(names = {"--force_iterations"})
+    private  boolean FORCE_ITERATIONS            =   true;
     @Option(names = {"--iterations"})
     private  long    ITERATIONS             =   -1;
     @Option(names = {"--alpha"})
     private  double  ALPHA                  =   -1;
     @Option(names = {"--beta"})
     private  double  BETA                   =   0;
-    @Option(names = {"--w_f"})
+    @Option(names = {"--w_iterations"})
     private  double  W_F                    =   1;
     @Option(names = {"--w_alpha"})
     private  double  W_ALPHA                =   0.737;
@@ -127,6 +139,7 @@ public class Parameters {
     private  double  W_MAG                  =   0.97;
     @Option(names = {"--w_tm"})
     private  double  W_TM                   =   0.2;
+
 
 
     //FORCE SEQUECE

@@ -1,4 +1,4 @@
-yanasse
-yan_5_6_3_1
-TEST
-0
+/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_10_10_4_1
+cat_10_10_4_1
+hellow
+7
