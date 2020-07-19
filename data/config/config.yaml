@@ -1,7 +1,7 @@
 ---
 root_path: "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
 files: 'all_files.json' #filename of file containing instances to be run
-runs: 10  #int; amount of runs of each instance
+runs: 1  #int; amount of runs of each instance
 parallel: True      #(bool); run instances parallel
 background: False    #(bool); run everything as a background task; only applicable when running parallel
 multi: True         #(bool); run multiple params versions

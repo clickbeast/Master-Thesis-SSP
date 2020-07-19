@@ -273,13 +273,13 @@ public class Parameters {
         this.STATE_PATH = getPROJECT_ROOT() + "/data/config/state.txt";
 
 
-        String logPath = this.getINSTANCE_FOLDER() + "/" + "log_" + this.getRUN_TYPE() + ".csv";
+        String logPath = this.getINSTANCE_FOLDER() + "/" + "log_" + this.getRUN_TYPE() + "_#" + this.getRUN() +  ".csv";
         this.setLOG_PATH(logPath);
-        String resultPath = this.getINSTANCE_FOLDER() + "/" + "result_" + this.getRUN_TYPE() + ".txt";
+        String resultPath = this.getINSTANCE_FOLDER() + "/" + "result_" + this.getRUN_TYPE() +  "_#" + this.getRUN() + ".txt";
         this.setRESULTS_PATH(resultPath);
-        String solutionPath = this.getINSTANCE_FOLDER() + "/" + "solution_" + this.getRUN_TYPE() + ".txt";
+        String solutionPath = this.getINSTANCE_FOLDER() + "/" + "solution_" + this.getRUN_TYPE() + "_#" + this.getRUN() + ".txt";
         this.setSOLUTION_PATH(solutionPath);
-        String parameterPath = this.getINSTANCE_FOLDER() + "/" + "parameter_" + this.getRUN_TYPE() + ".txt";
+        String parameterPath = this.getINSTANCE_FOLDER() + "/" + "parameter_" + this.getRUN_TYPE() + "_#" + this.getRUN() +  ".txt";
         this.setPARAMETER_PATH(parameterPath);
     }
 
