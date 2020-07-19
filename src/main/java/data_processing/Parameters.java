@@ -1,6 +1,10 @@
 package data_processing;
 import picocli.CommandLine.Option;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 
 
@@ -27,6 +31,9 @@ public class Parameters {
 
     @Option(names = {"--run_type"})
     private String RUN_TYPE                 =   "TEST";
+    @Option(names = {"--run"})
+    private int RUN                         =   0;
+
 
 
     private String INPUT_FILE_PATH          =   "/";
@@ -35,7 +42,7 @@ public class Parameters {
     private String SOLUTION_PATH            =   "/";
     private String PARAMETER_PATH           =   "/";
     private String LIVE_RESULT_PATH         =   "/";
-
+    private String STATE_PATH               =   "/";
 
 
     @Option(names = {"--run_time"})
@@ -49,7 +56,7 @@ public class Parameters {
     @Option(names = {"--local_search"})
     private String localSearch = "ruinAndRecreate";
     @Option(names = {"--meta_heuristic"})
-    private String metaHeuristic = "steepestDescent";
+    private String metaHeuristic = "steepestDescentBestRandom";
     @Option(names = {"--objective"})
     private String objective = "switches";
 
@@ -149,68 +156,6 @@ public class Parameters {
     }
 
 
-
-    public Parameters(String PROJECT_ROOT, String ROOT_FOLDER, String INSTANCE, String RUN_TYPE, long RUN_TIME,
-                      long START_TIME, int SEED, double START_TEMP, double END_TEMP, double DECAY_RATE) {
-        this.setPROJECT_ROOT(PROJECT_ROOT);
-        this.ROOT_FOLDER = ROOT_FOLDER;
-        this.INSTANCE = INSTANCE;
-        
-        
-        this.RUN_TYPE = RUN_TYPE;
-        this.RUN_TIME = RUN_TIME;
-        this.START_TIME = START_TIME;
-        this.SEED = SEED;
-        this.START_TEMP = START_TEMP;
-        this.END_TEMP = END_TEMP;
-        this.DECAY_RATE = DECAY_RATE;
-        this.createAdditionalFilePaths();
-    }
-
-
-    public Parameters(String PROJECT_ROOT, String ROOT_FOLDER, String INSTANCE, String RUN_TYPE, long RUN_TIME,
-                      long START_TIME, int SEED, double START_TEMP, double END_TEMP, double DECAY_RATE,
-                      boolean SA_TIMED, long ITERATIONS, double ALPHA,  double BETA, double w_F, double w_ALPHA,
-                      double w_JOBS, double w_TOOLS, double w_MAG, double w_TM, boolean LOG_VERBOSE,
-                      boolean LOG, boolean WRITE_RESULTS, boolean LIVE_RESULT) {
-
-
-        this.setPROJECT_ROOT(PROJECT_ROOT);
-        this.ROOT_FOLDER = ROOT_FOLDER;
-        this.INSTANCE = INSTANCE;
-        this.RUN_TYPE = RUN_TYPE;
-        this.RUN_TIME = RUN_TIME;
-        this.START_TIME = START_TIME;
-        this.SEED = SEED;
-        this.START_TEMP = START_TEMP;
-        this.END_TEMP = END_TEMP;
-        this.DECAY_RATE = DECAY_RATE;
-
-        this.createAdditionalFilePaths();
-
-        //SA PARAMS
-        this.setSA_TIMED(SA_TIMED);
-        this.ITERATIONS = ITERATIONS;
-        this.setALPHA(ALPHA);
-        this.setBETA(BETA);
-        W_F = w_F;
-        W_ALPHA = w_ALPHA;
-        W_JOBS = w_JOBS;
-        W_TOOLS = w_TOOLS;
-        W_MAG = w_MAG;
-        W_TM = w_TM;
-
-
-        //LOG PARAMS
-        this.LOG_VERBOSE = LOG_VERBOSE;
-        this.LOG = LOG;
-        this.WRITE_RESULTS = WRITE_RESULTS;
-        this.LIVE_RESULT = LIVE_RESULT;
-
-
-    }
-
-
     public void parametersRead() {
         this.createAdditionalFilePaths();
     }
@@ -222,10 +167,24 @@ public class Parameters {
         generateSAParameters();
         System.out.println("Parameters set.");
         System.out.println(toString());
+
+
+        //Set state
+        try(
+                FileWriter sfw = new FileWriter(getSTATE_PATH(), false);
+                BufferedWriter sbw = new BufferedWriter(sfw);
+                PrintWriter stateWriter = new PrintWriter(sbw);
+
+        ){
+            stateWriter.println(this.getINSTANCE_FOLDER());
+            stateWriter.println(this.getINSTANCE());
+            stateWriter.println(this.getRUN_TYPE());
+            stateWriter.println(this.getRUN());
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
-
-
-
 
     public void generateSAParameters() {
 
@@ -298,7 +257,9 @@ public class Parameters {
         this.INSTANCE_FOLDER = ROOT_FOLDER + "/" + INSTANCE;
         this.INPUT_FILE_PATH = ROOT_FOLDER + "/" + INSTANCE + "/" + INSTANCE + ".json";
         this.LIVE_RESULT_PATH = getPROJECT_ROOT() + "/data/instances/live.txt";
-        
+        this.STATE_PATH = getPROJECT_ROOT() + "/data/config/state.txt";
+
+
         String logPath = this.getINSTANCE_FOLDER() + "/" + "log_" + this.getRUN_TYPE() + ".csv";
         this.setLOG_PATH(logPath);
         String resultPath = this.getINSTANCE_FOLDER() + "/" + "result_" + this.getRUN_TYPE() + ".txt";
@@ -307,7 +268,6 @@ public class Parameters {
         this.setSOLUTION_PATH(solutionPath);
         String parameterPath = this.getINSTANCE_FOLDER() + "/" + "parameter_" + this.getRUN_TYPE() + ".txt";
         this.setPARAMETER_PATH(parameterPath);
-
     }
 
 
@@ -708,6 +668,54 @@ public class Parameters {
 
     public void setForceSequence(int[] forceSequence) {
         this.forceSequence = forceSequence;
+    }
+
+    public String getSTATE_PATH() {
+        return STATE_PATH;
+    }
+
+    public void setSTATE_PATH(String STATE_PATH) {
+        this.STATE_PATH = STATE_PATH;
+    }
+
+    public String getSelect() {
+        return select;
+    }
+
+    public void setSelect(String select) {
+        this.select = select;
+    }
+
+    public String getMatch() {
+        return match;
+    }
+
+    public void setMatch(String match) {
+        this.match = match;
+    }
+
+    public String getInsert() {
+        return insert;
+    }
+
+    public void setInsert(String insert) {
+        this.insert = insert;
+    }
+
+    public String getDecode() {
+        return decode;
+    }
+
+    public void setDecode(String decode) {
+        this.decode = decode;
+    }
+
+    public int getRUN() {
+        return RUN;
+    }
+
+    public void setRUN(int RUN) {
+        this.RUN = RUN;
     }
 
     @Override

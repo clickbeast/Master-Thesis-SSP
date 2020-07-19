@@ -3806,6 +3806,23 @@
 
 
     {
+      "original": "Paiva2017Example",
+      "root_folder": "yanasse",
+      "instance": "yan_5_6_3_1",
+      "author": "yan",
+      "n_jobs": 5,
+      "n_tools": 6,
+      "magazine_size": 3,
+      "variation": 1
+    }
+
+
+
+
+
+    ,
+
+    {
       "original": "L1-1.txt",
       "root_folder": "yanasse",
       "instance": "yan_8_15_5_1",
