@@ -1,0 +1,14 @@
+root_path: "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
+files: 'all_files.json' #filename of file containing instances to be run
+bundle_variations: false
+bundle_runs: false
+use_run_type: false
+run_type:     #(str, true)
+use_filter: false
+filter:
+  author: 'cat'
+  n_jobs: 10
+  n_tools: 10
+  magazine_size: 4
+  variation: 1
+  run: 0

@@ -1,13 +1,13 @@
 ---
 root_path: "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
-files: 'all_files.json' #filename of file containing instances to be run
-runs: 1  #int; amount of runs of each instance
+files: 'mixed_files.json' #filename of file containing instances to be run
+runs: 5  #int; amount of runs of each instance
 parallel: True      #(bool); run instances parallel
 background: False    #(bool); run everything as a background task; only applicable when running parallel
 multi: True         #(bool); run multiple params versions
 use_runs: True      #(bool); run each instance multiple times
-jobs: 16             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
-use_filter: true   #(bool); only use the instances that match the filter
+jobs: 4             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
+use_filter: false   #(bool); only use the instances that match the filter
 open_results: false #(bool); calculate the results of the runs and open after running
 
 
@@ -24,7 +24,7 @@ params:
     # General: run info
     #
 
-    - run_type: 'RR-A'          #name of the run , configured with the paramaters below
+    - run_type: ''          #name of the run , configured with the paramaters below
       run: 0                    #(0); indicates which run it is
       root_folder: ''           #(empty); indicates the folder of the author, containing the problem and aux file.
       instance: ''              #(empty); indicates the instance being used
@@ -129,8 +129,13 @@ params:
 
       # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-    - run_type: bonjour
+    - run_type: ORDERED-SD
       constructive_heuristic: ordered    #(ordered, toolSequencing, random)
-    - run_type: hellow
+    - run_type: TOOLSEQ-SD
       constructiv_heuristic: toolSequencing
-
+    - run_type: TOOLSEQ-SA
+        constructiv_heuristic: toolSequencing
+        meta_heuristic: simulatedAnnealing #(steepestDescentBestRandom, steepestDescentBestFirst, simulatedAnnealing, hillClimbing, permutations, forceSequence, multiForceSequence)
+    - run_type: RANDOM-SA
+        constructiv_heuristic: random
+        meta_heuristic: simulatedAnnealing #(steepestDescentBestRandom, steepestDescentBestFirst, simulatedAnnealing, hillClimbing, permutations, forceSequence, multiForceSequence)
