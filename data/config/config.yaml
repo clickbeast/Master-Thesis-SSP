@@ -134,8 +134,8 @@ params:
     - run_type: TOOLSEQ-SD
       constructiv_heuristic: toolSequencing
     - run_type: TOOLSEQ-SA
-        constructiv_heuristic: toolSequencing
-        meta_heuristic: simulatedAnnealing #(steepestDescentBestRandom, steepestDescentBestFirst, simulatedAnnealing, hillClimbing, permutations, forceSequence, multiForceSequence)
+      constructiv_heuristic: toolSequencing
+      meta_heuristic: simulatedAnnealing #(steepestDescentBestRandom, steepestDescentBestFirst, simulatedAnnealing, hillClimbing, permutations, forceSequence, multiForceSequence)
     - run_type: RANDOM-SA
-        constructiv_heuristic: random
-        meta_heuristic: simulatedAnnealing #(steepestDescentBestRandom, steepestDescentBestFirst, simulatedAnnealing, hillClimbing, permutations, forceSequence, multiForceSequence)
+      constructiv_heuristic: random
+      meta_heuristic: simulatedAnnealing #(steepestDescentBestRandom, steepestDescentBestFirst, simulatedAnnealing, hillClimbing, permutations, forceSequence, multiForceSequence)

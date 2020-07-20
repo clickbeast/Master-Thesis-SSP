@@ -6,8 +6,8 @@ use_run_type: false
 run_type:     #(str, true)
 use_filter: false
 filter:
-  author: 'cat'
-  n_jobs: 10
+  author: 'yan'
+  n_jobs:
   n_tools: 10
   magazine_size: 4
   variation: 1

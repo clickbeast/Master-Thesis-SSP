@@ -1,4 +1,4 @@
-/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_10_10_4_1
-cat_10_10_4_1
-hellow
-0
+/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/yanasse/yan_8_15_10_6
+yan_8_15_10_6
+RANDOM-SA
+4
