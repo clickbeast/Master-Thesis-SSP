@@ -50,50 +50,11 @@ public class Job {
     }
 
 
+
     /* GRAPH ------------------------------------------------------------------ */
-/*
-
-    public Job nextJob() {
-        if(position + 1 >=  this.problemManager.getN_JOBS()) {
-            return null;
-        }
-
-        //Job nextJob = this.problemManager.getJobSeqPos(position + 1);
-        return nextJob;
-    }
-
-    public Job prevJob() {
-        //TODO: look to store this...
-        if(position - 1 < 0) {
-            return null;
-        }
-
-        //Job prevJob = this.problemManager.getJobSeqPos(position - 1);
-        return prevJob;
-
-    }
-
-*/
 
 
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
-
-
-    public int getSwitches() {
-        return switches;
-    }
-
-    public void setSwitches(int switches) {
-        this.switches = switches;
-    }
-
-    public int getPickedToolsNextJobCount() {
-        return nextFirstJobChosenAntiCount;
-    }
-
-    public void setNextFirstJobChosenAntiCount(int nextFirstJobChosenAntiCount) {
-        this.nextFirstJobChosenAntiCount = nextFirstJobChosenAntiCount;
-    }
 
     public int[] getTOOLS() {
         return TOOLS;

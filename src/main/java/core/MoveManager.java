@@ -1,10 +1,12 @@
 package core;
 
+import core.moves.Move;
+import core.moves.RR;
+import core.moves.Swap;
 import models.elemental.Job;
 
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
@@ -13,20 +15,44 @@ public class MoveManager {
 
     private final Random random;
     ProblemManager problemManager;
-
+    private Move move;
 
     public MoveManager(ProblemManager problemManager) {
         this.problemManager = problemManager;
 
         this.random = this.problemManager.getRandom();
+        //this.setupMoves();
+    }
+
+
+    public void setupMoves() {
+        if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
+            move = new Swap();
+        }else if(problemManager.getParameters().getLocalSearch().equals("ruin")){
+            move = new RR();
+        }
+    }
+
+
+    public Result doMove(Result result) throws IOException {
+
+        if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
+            return this.swap(result);
+        }else if(problemManager.getParameters().getLocalSearch().equals("ruin")){
+            return this.ruinAndRecreate(result);
+        }
+
+        return null;
 
     }
+
+    /* SWAP ------------------------------------------------------------------ */
 
 
 
     public Result swap(Result result) {
 
-        //Selection policy
+ /*       //Selection policy
         int[] select = {0};
         int picked = select[this.random.nextInt(select.length)];
 
@@ -35,18 +61,9 @@ public class MoveManager {
         }else{
             return  swapTwoBlocks(result);
         }
+        */
+        return swapTwoJobs(result);
 
-    }
-
-
-
-    /* MOVES ------------------------------------------------------------------ */
-
-
-
-    public Result rotateSequence(Result result) {
-
-        return result;
     }
 
     public Result swapTwoJobs(Result result) {
@@ -75,6 +92,10 @@ public class MoveManager {
     }
 
 
+    public Result rotateSequence(Result result) {
+
+        return result;
+    }
 
     //TODO:
     public Result jobPairSwap(Result result) {
@@ -133,39 +154,7 @@ public class MoveManager {
         return result;
     }
 
-    //ok
-    public Ruin ruin(Result result) {
 
-        Ruin ruined = new Ruin();
-
-        //Choose random tool
-        int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
-
-
-
-        //Remove associated tools -> currently: ONLY NON KTNS TOOLS
-        for (int i = 0; i < result.getSequence().length; i++) {
-            Job job = result.getJobSeqPos(i);
-            if(job.getTOOLS()[selectedToolId] == 1) {
-                //CASE 1: job to be removed
-                ruined.getRemove().add(job.getId());
-            }else{
-                ruined.getKeep().add(job.getId());
-            }
-        }
-
-        Collections.shuffle(ruined.getRemove());
-        int remove = ruined.getRemove().size() - 3;
-        if(remove > 0) {
-            for (int i = 0; i < remove; i++) {
-                ruined.getKeep().add(ruined.getRemove().remove(i));
-            }
-        }
-
-
-
-        return ruined;
-    }
 
     class Ruin {
         LinkedList<Integer> remove;
@@ -193,10 +182,143 @@ public class MoveManager {
         }
     }
 
+    // STEP 1: Ruin
+    //- - - - - - - - - - - -
+    public Ruin ruin(Result result) {
+
+        Ruin ruined = new Ruin();
+
+        //Choose random tool
+        int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
+
+
+        //Remove associated tools -> currently: ONLY NON KTNS TOOLS
+        for (int i = 0; i < result.getSequence().length; i++) {
+            Job job = result.getJobSeqPos(i);
+            if(job.getTOOLS()[selectedToolId] == 1) {
+                //CASE 1: job to be removed
+                ruined.getRemove().add(job.getId());
+            }else{
+                ruined.getKeep().add(job.getId());
+            }
+        }
+
+        Collections.shuffle(ruined.getRemove(), random);
+        int remove = ruined.getRemove().size() - 3;
+        if(remove > 0) {
+            for (int i = 0; i < remove; i++) {
+                ruined.getKeep().add(ruined.getRemove().remove(i));
+            }
+        }
+
+        return ruined;
+    }
+
+
+
+
+    // STEP 1A: SELECT
+    //- - - - - - - - - - - -
+
+
+    public  Ruin selectRandomTool(Result result) {
+
+
+        return null;
+
+    }
+
+
+    public Ruin selectRandomJob(Result result) {
+
+
+        return null;
+    }
+
+
+    public Ruin selectMostHopsRoulette(Result result) {
+
+
+        return null;
+    }
+
+
+    // STEP 1B: MATCH
+    //- - - - - - - - - - - -
+
+
+    public Ruin matchRequiredTool(Result result) {
+
+        return null;
+    }
+
+
+    public Ruin matchNotRequiredTool(Result result) {
+
+        return null;
+    }
+
+    public Ruin matchKtnsTool(Result result) {
+
+        return null;
+    }
+
+
+    public Ruin matchKtnsFail(Result result) {
+
+        return null;
+    }
+
+
+
+    // STEP 1B': FILTER JOBS
+    //- - - - - - - - - - - -
+
+
+    public void filter() {
+
+    }
+
+    public void filterRandom() {
+
+
+    }
+
+    public void filterWorst() {
+
+
+
+    }
+
+
+
+
+
+    // STEP 2: Recreate
+    //- - - - - - - - - - - -
+
+
     public Result recreate(Result result, Ruin ruined) throws IOException {
-        insertJobsRandomBestPositionBlinks(result, ruined);
+
+        if(this.problemManager.getParameters().getInsertPositions().equals("all")) {
+            insertJobsRandomBestPositionBlinks(result, ruined);
+        }else if(this.problemManager.getParameters().getInsertPositions().equals("removed")){
+            insertJobsRandomBestPositionBlinks(result, ruined);
+        }
+
         return result;
     }
+
+
+    // STEP 2A: Insert
+    //- - - - - - - - - - - -
+
+
+    //TODO
+    public void insertJobsRemovedRandomBestPositionsBlinks(Result result, Ruin ruined) {
+    }
+
+
 
     public void insertJobsRandomBestPositionBlinks(Result result , Ruin ruined) throws IOException{
 
@@ -223,7 +345,10 @@ public class MoveManager {
                     sequence.add(index, jobId);
                     //To Array -> optimize to linked list strucuture
                     temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
-                    this.problemManager.getDecoder().decode(temp);
+
+                    this.problemManager.getDecoder().decodeRR(temp);
+
+
                     this.problemManager.getLogger().writeLiveResult(temp);
 
 
@@ -258,55 +383,6 @@ public class MoveManager {
     }
 
 
-
-
-
-
-
-    public void insertAtBestRandomPositionNoRelationOrdered(Result result, Ruin ruined) throws IOException {
-        LinkedList<Integer> sequence = ruined.getKeep();
-        int[] seq = sequence.stream().mapToInt(i -> i).toArray();
-        Result temp = new Result(seq, problemManager);
-
-
-        for (Integer jobId : ruined.getRemove()) {
-
-            Double bestCost = 0.0;
-            int bestPosition = 0;
-            int nBestPositions = 0;
-
-            for (int index = 0; index < sequence.size(); index++) {
-
-                sequence.add(index, jobId);
-                //To Array -> optimize to linked list strucuture
-                temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
-                this.problemManager.getDecoder().decode(temp);
-
-                if (temp.getCost() <= bestCost) {
-                    if (nBestPositions == 0) {
-                        bestPosition = index;
-                        bestCost = temp.getCost();
-                        nBestPositions += 1;
-                    } else {
-                        float probability = 1 / nBestPositions;
-                        if (random.nextDouble() <= probability) {
-                            bestPosition = index;
-                            bestCost = temp.getCost();
-                        }
-                        nBestPositions += 1;
-
-                    }
-                }
-                sequence.remove(index);
-            }
-            sequence.add(bestPosition, jobId);
-        }
-
-        int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
-        result.setSequence(seqOut);
-        this.problemManager.getDecoder().decode(result);
-
-    }
 
 
 }

@@ -119,16 +119,8 @@ public class ProblemManager {
 
     public void optimize() throws IOException {
         this.logger.logLegend(logTitles);
-        //this.initialize();
-
         General.printGrid(this.getJOB_TOOL_MATRIX());
         General.printTransposeGrid(this.getJOB_TOOL_MATRIX());
-
-        //General.printGrid(General.transposeMatrix(this.copyGrid(this.getJOB_TOOL_MATRIX())));
-        //this.initialSolution();
-        //this.initialOrderedSolution();
-        //this.initialOrderedSolution();
-        //String hello = gson.toJson(result);
 
         switch (this.getParameters().getConstructiveHeuristic()) {
             case "ordered": {
@@ -182,8 +174,8 @@ public class ProblemManager {
                 break;
             }
 
-            case "allPermutations": {
-                this.allPermutations();
+            case "permutations": {
+                this.permutations();
                 break;
             }
 
@@ -193,13 +185,25 @@ public class ProblemManager {
             }
         }
 
+
+
+
+        if(this.getParameters().isRunBackupSD()) {
+            this.logger.logInfo("RUNNING BACKUP LS");
+            this.steepestDescentRandomBest();
+        }
+
+
         this.logger.logInfo("FINAL SOLUTION FOUND: " + String.valueOf(this.bestResult.getCost()));
         this.logger.log(this.bestResult);
         this.logger.writeResult(bestResult);
         this.logger.writeSolution(this.bestResult);
         this.logger.writeParameters();
-
     }
+
+
+
+
 
 
     public void initialize(){
@@ -295,11 +299,26 @@ public class ProblemManager {
 
 
 
-
-    //TODO: initializeSwitchesLowerBoundMatrix
+    //VERIFY
     public int[][] initializeSwitchesLowerBoundMatrix() {
 
-        return null;
+        int[][] matrix = new int[this.getN_JOBS()][this.getN_JOBS()];
+
+        for (int jobIdA = 0; jobIdA < this.getN_JOBS(); jobIdA++) {
+            for (int jobIdB = jobIdA; jobIdB < this.getN_JOBS(); jobIdB++) {
+
+                Job jobA = this.getJob(jobIdA);
+                Job jobB = this.getJob(jobIdB);
+
+                int intersection = this.getSHARED_TOOLS_MATRIX()[jobIdA][jobIdB].length;
+                int LB = Math.max(0, (jobA.getSet().length + jobB.getSet().length - intersection - this.getMAGAZINE_SIZE()));
+                matrix[jobIdA][jobIdB] = LB;
+                matrix[jobIdB][jobIdA] = LB;
+            }
+        }
+
+
+        return matrix;
     }
 
     //TODO: initializeToolPairMatrix
@@ -329,8 +348,6 @@ public class ProblemManager {
         }
         return count;
     }
-
-
 
 
 
@@ -419,6 +436,12 @@ public class ProblemManager {
         this.logger.log(this.workingResult);
         //this.logger.writeSolution(this.bestResult);
     }
+
+
+
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    /* INITIAL SOLUTION: TOOL SEQUENCING
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
     /**
@@ -591,13 +614,11 @@ public class ProblemManager {
     }
 
 
-
     public int pickMinKTNS(LinkedList<Integer> jobSequence, Set<Integer> candidates) throws IOException {
 
         int min = -1;
         int minValue = Integer.MAX_VALUE;
         int nBestResults = 0;
-
 
         for(Integer c: candidates) {
             jobSequence.add(c);
@@ -623,14 +644,12 @@ public class ProblemManager {
 
             }
 
-
             jobSequence.remove(c);
 
         }
 
         return min;
     }
-
 
 
     public boolean isSubset(Set<Integer> parent, int[] child) {
@@ -680,6 +699,9 @@ public class ProblemManager {
 
 
 
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
     public int[] orderedInitialSequence() {
         int[] sequence = new int[this.N_JOBS];
         //Setup sequence
@@ -704,11 +726,8 @@ public class ProblemManager {
         return sequence;
     }
 
-
-
-
     /**
-     * Tang and Denardo
+     * Tang and Denardo   -> skip
      */
     //TODO: TSPInitialSequence
     public void TSPInitialSequence() {
@@ -718,6 +737,7 @@ public class ProblemManager {
             }
         }
     }
+
 
 
 
@@ -862,87 +882,8 @@ public class ProblemManager {
     }
 
 
-    //BRUTE FORCE
-    //TODO: THIS PERMUTATION IS NOT THE CORRECT ONE
-    public void allPermutations() throws IOException {
-        //Try all permutations of the string
-        //int[] sequence = Arrays.copyOf(this.getCurrentResult().getSequence(), this.getCurrentResult().getSequence().length);
-        //permutation(sequence, 0);
-        //this.orderedInitialSequence();
-        int[] seq = this.orderedInitialSequence();
-        this.workingResult = new Result(seq,this);
-
-        //brute(seq);
-        this.permutation(seq, 0);
-    }
-
-
-    private void permutation(int[] sequence, int offset) throws IOException {
-        if(offset == sequence.length - 1) {
-            brute(Arrays.copyOf(sequence, sequence.length));
-        }else {
-
-            for (int i = offset; i < sequence.length; i++) {
-                swap(sequence, i, offset);
-                permutation(sequence, offset + 1);
-                swap(sequence, offset ,i);
-            }
-        }
-    }
-
-
-
-    //TODO: check for a swap in place
-    private int[] swap(int[] list, int a, int b) {
-        int temp = list[a];
-        list[a] = list[b];
-        list[b] = temp;
-        return list;
-    }
-
-    int bruteCount = 0;
-
-    private void brute(int[] sequence) throws IOException {
-
-        int[] refer = {2, 7, 4, 6, 5, 3, 1, 0};
-        if(sequence.equals(refer)) {
-            this.logger.logInfo("GEVONDEN GEVONDEN GEVONDEN");
-        }
-
-        this.workingResult.setSequence(sequence);
-        this.decoder.decode(this.workingResult);
-
-
-        if(this.bestResult == null) {
-            this.bestResult = this.workingResult.getCopy();
-        }
-
-
-        if(this.workingResult.getCost() < this.bestResult.getCost()) {
-            this.bestResult = this.workingResult.getCopy();
-            //this.logger.log(bestResult);
-        }
-
-
-        if(bruteCount == 1000) {
-            this.logger.log(this.workingResult);
-
-            bruteCount = 0;
-            this.logger.writeResult(this.workingResult);
-            this.logger.writeLiveResult(this.workingResult);
-        }
-
-        bruteCount+=1;
-
-
-        //this.logger.writeLiveResult(this.workingResult);
-    }
-
-
-    //FORCE SEQUENCE
 
     public void forceSequence(int[] sequence) throws IOException {
-        //this.bestResult.setSequence(sequence);
         this.bestResult.reloadJobPositions();
         this.bestResult = this.bestResult.getCopy();
         this.bestResult.setSequence(sequence);
@@ -952,6 +893,13 @@ public class ProblemManager {
 
 
     //SA
+
+
+    public void permutations() {
+        this.logger.logInfo("Finding all permutations");
+        //TODO
+    }
+
     public void simulatedAnnealing() throws IOException {
         if(this.getParameters().isSA_TIMED()) {
             this.simulatedAnnealingTimed();
@@ -959,6 +907,7 @@ public class ProblemManager {
             this.simulatedAnnealingIterations();
         }
     }
+
 
     public void simulatedAnnealingTimed() throws IOException {
 
@@ -970,12 +919,9 @@ public class ProblemManager {
         this.setSteps(0);
         int steady = 0;
 
-
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
 
-            //this.getMoveManager().swap(this.workingResult);
-            this.getMoveManager().ruinAndRecreate(this.workingResult);
-
+            this.getMoveManager().doMove(this.workingResult);
             this.getDecoder().decode(this.workingResult);
 
 
@@ -1015,18 +961,21 @@ public class ProblemManager {
 
 
             //LOGGING
-            if (steps % 1000 == 0) {
+            if (steps % 10000 == 0) {
                 this.logger.log(this.getWorkingResult(), temperature);
             }
 
-            if(steps % 10000 == 0) {
+            if(steps % 100000 == 0) {
                 this.logger.writeResult(this.getWorkingResult());
             }
+
 
             // - PREPARE FOR NEW ITERATION - -
 
             //Copy for new iteration
             this.workingResult = this.currentResult.getCopy();
+
+
 
             //Keep temperature steady for a few steps before dropping
             if(steady > 70) {
@@ -1034,8 +983,6 @@ public class ProblemManager {
                 steady=0;
             }
             steady++;
-
-
 
             //Reheating
             if (temperature < 1.5) {
@@ -1046,16 +993,12 @@ public class ProblemManager {
                 break;
             }
 
-            //TODO: stop SA after no improvement is found anymore...
 
             steps++;
         }
 
 
     }
-
-
-
 
 
     public void simulatedAnnealingIterations() throws IOException {
@@ -1152,18 +1095,7 @@ public class ProblemManager {
 
 
 
-
-
-
     /* UTILITIES ------------------------------------------------------------------ */
-
-    public int[][] copyGrid(int[][] grid) {
-        int[][] gridCopy = new int[grid.length][grid[0].length];
-        for (int i = 0; i < grid.length; i++) {
-            System.arraycopy(grid[i], 0, gridCopy[i], 0, grid[i].length);
-        }
-        return gridCopy;
-    }
 
 
 

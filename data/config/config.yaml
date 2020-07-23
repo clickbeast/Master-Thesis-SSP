@@ -52,8 +52,9 @@ params:
       blink_rate: 0.01                  #(double);
       avg_ruin: 10                      #(int); max allowed ruined solutions
       select: randomTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
-      match: required                   #(requiredTool, ktnsTool, notRequiredTool, hopCreator)
-      insert:                       #(best); where to insert the removed jobs
+      match: requiredTool                   #(requiredTool, ktnsTool, notRequiredTool, hopCreator)
+      insert: best                       #(best); where to insert the removed jobs
+      filter: random                     #(random, worst); when making a choice how many to remove, which ones to keep
       insert_positions: all             #(all, removed); insert at all possible positions, or only in the removed positions
       decode: full                      #(full, shallow, hybrid); rank insert position quality with a full decode, shallow or hybrid (Depending if there are a lot of ktns tools that can be added)
 

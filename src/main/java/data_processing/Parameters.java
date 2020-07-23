@@ -51,8 +51,12 @@ public class Parameters {
 
 
 
+    //RUIN AND RECREATE
+    @Option(names = {"--blink_rate"})
+    private double BLINK_RATE               =   0.01;
+    @Option(names = {"--avg_ruin"})
+    private int AVG_RUIN                    =   10;
 
-    //CHOICES
     @Option(names = {"--constructive_heuristic"})
     private String constructiveHeuristic = "random";
     @Option(names = {"--local_search"})
@@ -63,6 +67,8 @@ public class Parameters {
     private String objective = "switches";
     @Option(names = {"--decode_version"})
     private String decodeVersion = "default";
+    @Option(names = {"--run_backup_SD"})
+    private boolean runBackupSD = true;
     @Option(names = {"--parallel"})
     private boolean parallel = false;
 
@@ -84,26 +90,23 @@ public class Parameters {
 
     //RR
     @Option(names = {"--select"})
-    private String select                   =   "";
+    private String select                   =   "randomTool";
     @Option(names = {"--match"})
-    private String match               =   "";
+    private String match               =   "requiredTool";
     @Option(names = {"--insert"})
-    private String insert               =   "";
-    @Option(names = {"--decode"})
-    private String decode               =   "";
+    private String insert               =   "best";
     @Option(names = {"--insert_positions"})
     private String insertPositions               =   "all";
+    @Option(names = {"--decode"})
+    private String decode               =   "full";
+    @Option(names = {"--filter"})
+    private String filter               =   "random";
+
 
 
     //STOCHASTIC
     @Option(names = {"--seed"})
     private  int SEED                       =   7;
-
-    //SA
-    @Option(names = {"--blink_rate"})
-    private double BLINK_RATE               =   0.01;
-        @Option(names = {"--avg_ruin"})
-    private int AVG_RUIN                    =   10;
 
 
     //SA
@@ -199,6 +202,17 @@ public class Parameters {
 
     }
 
+
+
+
+
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    /* SIMULATED ANNEALING PARAMETERS
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+
+
     public void generateSAParameters() {
 
         if(getDECAY_RATE() != -1) {
@@ -220,8 +234,13 @@ public class Parameters {
         this.calculateAlpha();
         this.calculateIterations();
         this.calculateDecayRate();
+
+
         System.out.println("bonjour");
     }
+
+
+
 
     public void calculateAlpha() {
         if(isFORCE_ALPHA()) {
@@ -237,7 +256,6 @@ public class Parameters {
                 )
         );
     }
-
 
     public void forceAlpha() {
         //0.060  slower
@@ -259,10 +277,19 @@ public class Parameters {
                 (long) (getW_F() * Math.pow(10,(this.getALPHA() + this.getBETA()))));
     }
 
-
     public void calculateDecayRate() {
         this.setDECAY_RATE(Math.pow((this.getEND_TEMP()/this.getSTART_TEMP()), ( (float) 1/getITERATIONS())));
     }
+
+
+
+
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+
+
+
 
 
     public void createAdditionalFilePaths() {
@@ -282,6 +309,14 @@ public class Parameters {
         String parameterPath = this.getINSTANCE_FOLDER() + "/" + "parameter_" + this.getRUN_TYPE() + "_#" + this.getRUN() +  ".txt";
         this.setPARAMETER_PATH(parameterPath);
     }
+
+
+
+
+
+
+
+
 
 
     public void resetStartTime() {
@@ -729,6 +764,46 @@ public class Parameters {
 
     public void setRUN(int RUN) {
         this.RUN = RUN;
+    }
+
+    public String getDecodeVersion() {
+        return decodeVersion;
+    }
+
+    public void setDecodeVersion(String decodeVersion) {
+        this.decodeVersion = decodeVersion;
+    }
+
+    public boolean isRunBackupSD() {
+        return runBackupSD;
+    }
+
+    public void setRunBackupSD(boolean runBackupSD) {
+        this.runBackupSD = runBackupSD;
+    }
+
+    public boolean isParallel() {
+        return parallel;
+    }
+
+    public void setParallel(boolean parallel) {
+        this.parallel = parallel;
+    }
+
+    public String getInsertPositions() {
+        return insertPositions;
+    }
+
+    public void setInsertPositions(String insertPositions) {
+        this.insertPositions = insertPositions;
+    }
+
+    public boolean isFORCE_ITERATIONS() {
+        return FORCE_ITERATIONS;
+    }
+
+    public void setFORCE_ITERATIONS(boolean FORCE_ITERATIONS) {
+        this.FORCE_ITERATIONS = FORCE_ITERATIONS;
     }
 
     @Override
