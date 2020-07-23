@@ -93,9 +93,12 @@ public class ProblemManager {
         this.RUN_TIME = this.getParameters().getRUN_TIME();
         this.TIME_LIMIT = System.currentTimeMillis() + 1000 * this.getParameters().getRUN_TIME();
 
-        this.random = new Random(this.getSEED());
 
-        //SA PARAMSà
+        // BEWARE
+        this.random = new Random(this.parameters.getSEED());
+
+
+        //SA PARAMS
         this.START_TEMP = this.getParameters().getSTART_TEMP();
         this.END_TEMP = this.getParameters().getEND_TEMP();
         this.DECAY_RATE = this.getParameters().getDECAY_RATE();
@@ -441,7 +444,6 @@ public class ProblemManager {
         this.logger.logInfo(String.valueOf(this.workingResult.getCost()));
         this.logger.logInfo("Initial Solution Created");
         this.logger.log(this.workingResult);
-
 
 
     }
