@@ -17,16 +17,16 @@ public class Parameters {
     @Option(names = {"--root_folder"})
     private String ROOT_FOLDER              =   "/Users/simonvermeir/Documents/industrial-engineering/" +
                                                 "SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/" +
-                                                "yanasse";
+                                                "crama";
     @Option(names = {"--instance_folder"})
-    private String INSTANCE_FOLDER          =   "yanasse";
+    private String INSTANCE_FOLDER          =   "crama";
     //cat_30_40_17_9
     //yan_8_15_10_29
     @Option(names = {"--instance"})
     //private String INSTANCE                 =   "cat_30_40_17_9";
     //private String INSTANCE                   =   "yan_8_15_10_29";
-    private String INSTANCE                   =   "yan_5_6_3_1";
-    //private String INSTANCE                 =   "yan_8_15_10_29";
+    private String INSTANCE                   =   "cram_10_10_4_1";
+    //private String INSTANCE                 =   "yan_5_6_3_1";
 
 
     @Option(names = {"--run_type"})
@@ -62,13 +62,13 @@ public class Parameters {
     @Option(names = {"--local_search"})
     private String localSearch = "ruinAndRecreate";
     @Option(names = {"--meta_heuristic"})
-    private String metaHeuristic = "steepestDescentBestRandom";
+    private String metaHeuristic = "forceSequence";
     @Option(names = {"--objective"})
     private String objective = "switches";
     @Option(names = {"--decode_version"})
     private String decodeVersion = "default";
     @Option(names = {"--run_backup_SD"})
-    private boolean runBackupSD = true;
+    private boolean runBackupSD = false;
     @Option(names = {"--parallel"})
     private boolean parallel = false;
 
@@ -106,6 +106,9 @@ public class Parameters {
     @Option(names = {"--filter"})
     private String filter               =   "random";
 
+
+    //FORCE SEQUECE
+    private int[] forceSequence = {0,1,2,3,4,5,6,7,8,9};
 
 
     //STOCHASTIC
@@ -149,8 +152,7 @@ public class Parameters {
 
 
 
-    //FORCE SEQUECE
-    private int[] forceSequence = {1,2,3,4,5,6,7,8,9};
+
 
     //PROBLEM
     private int N_JOBS                      = -1;

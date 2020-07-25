@@ -58,13 +58,6 @@ public class Result {
     //TODO: ADD PROPER DELTA EVAL: VERY VERY VERY IMPORTANT TOO...
 
 
-    public Result(ProblemManager problemManager, int[] sequence, int[] jobPosition, int[][] jobToolMatrix) {
-        this.problemManager = problemManager;
-        this.sequence = sequence;
-
-        this.jobToolMatrix = jobToolMatrix;
-    }
-
     public Result(int[] sequence, ProblemManager problemManager) {
         this.problemManager = problemManager;
         this.sequence = sequence;

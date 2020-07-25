@@ -1,4 +1,4 @@
-/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/yanasse/yan_5_6_3_1
-yan_5_6_3_1
+/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/crama/cram_10_10_4_1
+cram_10_10_4_1
 TEST
 0

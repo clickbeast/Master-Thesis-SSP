@@ -126,6 +126,12 @@ public class ProblemManager {
                 this.initialToolSequencingSolution();
                 break;
             }
+
+
+            case "skip": {
+                break;
+            }
+
             default: {
                 this.logger.logInfo("NO CONSTRUCTIVE HEURISTIC CHOSEN");
                 return;
@@ -169,6 +175,7 @@ public class ProblemManager {
             }
         }
 
+        //this.forceSequence(this.parameters.getForceSequence());
 
         if(this.getParameters().isRunBackupSD()) {
             this.logger.logInfo("RUNNING BACKUP LS");
@@ -878,11 +885,13 @@ public class ProblemManager {
 
 
     public void forceSequence(int[] sequence) throws IOException {
+        this.logger.logInfo("RUNNING FORCE SEQUENCE");
         this.bestResult.reloadJobPositions();
-        this.bestResult = this.bestResult.getCopy();
         this.bestResult.setSequence(sequence);
         this.bestResult.reloadJobPositions();
         this.decoder.decode(this.bestResult);
+        this.getLogger().writeLiveResult(this.bestResult);
+        this.logger.writeResult(this.bestResult);
     }
 
 

@@ -90,9 +90,107 @@ public class Decoder {
     /* DECODE VERSION 2
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-
-
+    //OK
     public void decodeV2(Result result) throws IOException {
+
+        //TODO: refine
+        result.setJobToolMatrix(General.copyGrid(this.problemManager.getJOB_TOOL_MATRIX()));
+
+        //for all jobs
+        for (int seqPos = 0; seqPos < result.getSequence().length; seqPos++) {
+
+            Job job = result.getJobSeqPos(seqPos);
+
+            //base case
+            if (seqPos == 0) {
+                //resultJobToolMatrix[job.getId()] = Arrays.copyOf(job.getTOOLS(),job.getTOOLS().length);
+            }else{
+
+                Job prevJob = result.prevJob(job);
+
+                LinkedList<Integer> diffPrevCurTools = this.getDifTools(result.getJobToolMatrix()[prevJob.getId()], job.getAntiSet());
+
+
+                int unionPrevCurJobSize = diffPrevCurTools.size() + job.getSet().length;
+                int nToolsDelete = Math.max(0, unionPrevCurJobSize - this.problemManager.getMAGAZINE_SIZE());
+                int nToolsKeep = unionPrevCurJobSize - nToolsDelete;
+                int nToolsAdd = nToolsKeep - job.getSet().length;
+
+                System.out.println("nToolsAdd:" + nToolsAdd);
+                System.out.println(diffPrevCurTools);
+
+
+                //Add the required tools //OPTIMIZE
+                //resultJobToolMatrix[job.getId()] = Arrays.copyOf(job.getTOOLS(),job.getTOOLS().length);
+                //Pasop ! ! ! ! ! ! !  -> de oude zitter er nog in aan de rechterkant van de vorige keer want deze zijn
+                //gwn simpel gekopiert NIET GOED -> DANGERUUUX , FOUND IT
+
+
+                Job nextJob = result.nextJob(job);
+
+                while(nToolsAdd != 0 & nextJob != null & diffPrevCurTools.size() > 0) {
+
+                    ListIterator<Integer> iter = diffPrevCurTools.listIterator();
+
+                    System.out.println("");
+
+                    while (iter.hasNext() && nToolsAdd != 0) {
+                        int toolAddId = iter.next();
+
+                        System.out.print(" " + toolAddId);
+
+                        if(result.getJobToolMatrix()[nextJob.getId()][toolAddId] == 1) {
+                            //Add as ktns tool
+                            System.out.print("->" + toolAddId);
+
+
+                            result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
+                            nToolsAdd-=1;
+                            iter.remove();
+                        }
+
+
+                    }
+
+                    nextJob = result.nextJob(nextJob);
+                }
+
+
+
+                System.out.println("");
+
+
+                //Fill remaining nToolsAdd with any tool
+                ListIterator<Integer> remainingIter = diffPrevCurTools.listIterator();
+                while(nToolsAdd != 0) {
+
+
+
+                    int toolAddId = remainingIter.next();
+
+                    //Add as ktns tool
+                    System.out.print("- - >" + toolAddId);
+
+                    result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
+                    remainingIter.remove();
+                    nToolsAdd-=1;
+                }
+                System.out.println("");
+
+
+            }
+
+
+
+
+
+        }
+
+        this.evaluate(result);
+    }
+
+
+    public void decodeV2FaultyRef(Result result) throws IOException {
 
         int[][] resultJobToolMatrix = result.getJobToolMatrix();
 
@@ -112,6 +210,17 @@ public class Decoder {
 
                 //TODO: shortcut when there are no tools that need to be removed
 
+
+                if(Arrays.equals(result.getSequence(),this.getParameters().getForceSequence()) && (seqPos==3 || seqPos == 4)) {
+                    System.out.println("= = = ");
+                    System.out.println(seqPos);
+                    System.out.println(diffPrevCurTools);
+                    System.out.println("- -");
+
+                }
+
+
+
                 int unionPrevCurJobSize = diffPrevCurTools.size() + job.getSet().length;
                 int nToolsDelete = Math.max(0, unionPrevCurJobSize - this.problemManager.getMAGAZINE_SIZE());
                 int nToolsKeep = unionPrevCurJobSize - nToolsDelete;
@@ -120,16 +229,48 @@ public class Decoder {
 
                 //Add the required tools //OPTIMIZE
                 resultJobToolMatrix[job.getId()] = Arrays.copyOf(job.getTOOLS(),job.getTOOLS().length);
+                //Pasop ! ! ! ! ! ! !  -> de oude zitter er nog in aan de rechterkant van de vorige keer want deze zijn
+                //gwn simpel gekopiert NIET GOED -> DANGERUUUX , FOUND IT
+
 
                 Job nextJob = result.nextJob(job);
+
                 while(nToolsAdd != 0 & nextJob != null & diffPrevCurTools.size() > 0) {
 
                     ListIterator<Integer> iter = diffPrevCurTools.listIterator();
 
                     while (iter.hasNext() && nToolsAdd != 0) {
                         int toolAddId = iter.next();
+                        if(Arrays.equals(result.getSequence(),this.getParameters().getForceSequence()) && (seqPos==3 || seqPos == 4)) {
+                            System.out.println(toolAddId);
+                        }
+                        if(Arrays.equals(result.getSequence(),this.getParameters().getForceSequence()) && (seqPos==3 || seqPos == 4) && toolAddId==2) {
+                            System.out.println("*");
+                            System.out.println(toolAddId);
+                            System.out.println(Arrays.toString(result.getSequence()));
+                            System.out.println(Arrays.toString(result.getJobPositions()));
+                            General.printTransposeGrid(General.mapToSequence(problemManager.getJOB_TOOL_MATRIX(),result.getSequence()));
+
+                            General.printTransposeGrid(General.mapToSequence(resultJobToolMatrix,result.getSequence()));
+                            System.out.println("*");
+
+                        }
+
 
                         if(resultJobToolMatrix[nextJob.getId()][toolAddId] == 1) {
+                            //Add as ktns tool
+                            if(Arrays.equals(result.getSequence(),this.getParameters().getForceSequence()) && (seqPos==3 || seqPos == 4) && toolAddId==2) {
+                                System.out.println("->added");
+                            }
+
+
+                            /*if(Arrays.equals(result.getSequence(),this.getParameters().getForceSequence()) && (seqPos==3 || seqPos == 4)) {
+                                General.printTransposeGrid(General.mapToSequence(resultJobToolMatrix,result.getSequence()));
+                                System.out.println(Arrays.toString(result.getSequence()));
+                                System.out.println(Arrays.toString(result.getJobPositions()));
+                                System.out.println(toolAddId);
+                            }*/
+
                             resultJobToolMatrix[job.getId()][toolAddId] = 1;
                             nToolsAdd-=1;
                             iter.remove();
@@ -201,6 +342,7 @@ public class Decoder {
 
 
     public void evaluate(Result result) {
+        System.out.println("eval");
         int[] switches = this.count_switches(result);
         result.setSwitches(switches);
         result.setnSwitches(nSwitches(switches));
@@ -264,11 +406,12 @@ public class Decoder {
 
 
     public double calculatePenaltyCost(Result result) {
-
         //Calculate the number of failed KTNS Attempts
         return this.getParameters().getW_S()*result.getnSwitches() + this.getParameters().getwFailKTNS()*nFailedKTNS(result);
     }
 
+
+    //OK
     public double calculateToolDistanceCost(Result result) {
 
         //Calculate max and min distance
@@ -286,7 +429,6 @@ public class Decoder {
             }
         }
 
-
         return  (this.getParameters().getW_S()*result.getnSwitches()) +
                 (this.getParameters().getW_DIST() * ((this.getParameters().getW_DIST_MIN() * minDist)
                 + (this.getParameters().getW_DIST_MAX() * maxDist)));
@@ -294,24 +436,24 @@ public class Decoder {
 
 
     //TODO: can be integrated into decoder
-    //INSPECT
+    //OK
     public int nFailedKTNS(Result result) {
 
         int ktnsFail = 0;
 
         for (int i = 0; i < result.getSequence().length - 1; i++) {
             for (int toolId = 0; toolId < this.problemManager.getN_TOOLS(); toolId++) {
-                if(result.toolUsedAtSeqPos(i,toolId) && !result.getJobSeqPos(i).toolRequired(toolId)) {
-                    if(!result.toolUsedAtSeqPos(i+1,toolId)) {
-                        ktnsFail+=1;
+                if (result.toolUsedAtSeqPos(i, toolId) && !result.getJobSeqPos(i).toolRequired(toolId)) {
+                    if (!result.toolUsedAtSeqPos(i + 1, toolId)) {
+                        ktnsFail += 1;
                     }
                 }
             }
         }
 
+
         return ktnsFail;
     }
-
 
 
     public int nSwitches(int[] switches) {
@@ -411,6 +553,7 @@ public class Decoder {
 
 
     //TODO: VERY INNEFICIENT -> INTEGRATE WITH DECODE
+    //OK
     public int[][] calculateToolDistance(Result result) {
 
         //Create a new tool distance matrix
@@ -419,7 +562,6 @@ public class Decoder {
 
         for (int i = 0; i < result.getSequence().length - 1; i++) {
             Job job = result.getJobSeqPos(i);
-            System.out.println("kie");
             for (int toolId = 0; toolId < this.problemManager.getN_TOOLS(); toolId++) {
 
                 //Lookup distance
@@ -429,8 +571,17 @@ public class Decoder {
                     distance += 1;
                     if(result.toolUsedAtSeqPos(j,toolId)) {
                         break measure;
+                    }else{
+
+                        //Add 1 to distance when tool not needed anymore but requires a switch
+                        if(j == result.getSequence().length - 1) {
+                            distance+=1;
+                        }
+
+
                     }
                 }
+
 
                 //Set distance
                 toolDistance[job.getId()][toolId] = distance;
@@ -439,13 +590,6 @@ public class Decoder {
 
         }
 
-
-        General.printGrid(toolDistance);
-        General.printGrid(General.mapToSequence(toolDistance, result.getSequence()));
-        General.printTransposeGrid(General.mapToSequence(toolDistance,result.getSequence()));
-
-
-        System.out.println("bonjout");
         return toolDistance;
     }
 
