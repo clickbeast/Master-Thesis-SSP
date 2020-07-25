@@ -28,10 +28,6 @@ public class ProblemManager {
     private final long TIME_LIMIT;
     private final long RUN_TIME;
 
-    private final int SEED;
-    private final double START_TEMP;
-    private final double END_TEMP;
-    private final double DECAY_RATE;
 
     String[] logTitles = {"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"};
 
@@ -87,23 +83,11 @@ public class ProblemManager {
 
         this.parameters = inputData.getParameters();
 
-
         //Configure Params
-        this.SEED = this.getParameters().getSEED();
         this.RUN_TIME = this.getParameters().getRUN_TIME();
         this.TIME_LIMIT = System.currentTimeMillis() + 1000 * this.getParameters().getRUN_TIME();
 
-
-        // BEWARE
-        this.random = new Random(this.parameters.getSEED());
-
-
-        //SA PARAMS
-        this.START_TEMP = this.getParameters().getSTART_TEMP();
-        this.END_TEMP = this.getParameters().getEND_TEMP();
-        this.DECAY_RATE = this.getParameters().getDECAY_RATE();
-
-        this.random = new Random(this.getSEED());
+        this.random = new Random(this.getParameters().getSEED());
 
         this.moveManager = new MoveManager(this);
         this.solutionManager = new SolutionManager(this);
@@ -184,8 +168,6 @@ public class ProblemManager {
                 return;
             }
         }
-
-
 
 
         if(this.getParameters().isRunBackupSD()) {
@@ -413,6 +395,8 @@ public class ProblemManager {
         this.logger.logInfo("Initial Solution Created");
 
         this.logger.log(this.workingResult);
+        this.logger.writeResult(this.workingResult);
+
         //this.logger.writeSolution(this.bestResult);
     }
 
@@ -770,24 +754,34 @@ public class ProblemManager {
                     this.decoder.decode(this.workingResult);
 
 
-                    if(this.workingResult.getnSwitches() <  this.currentResult.getnSwitches()) {
+                    if(this.workingResult.getCost() <  this.currentResult.getCost()) {
                         this.currentResult = this.workingResult.getCopy();
                         nBestResults = 1;
+
                         this.logger.log(this.workingResult);
 
-                    }else if(this.workingResult.getnSwitches() == this.currentResult.getnSwitches()) {
+                    }else if(this.workingResult.getCost() == this.currentResult.getCost()) {
                         nBestResults+=1;
                         float probability = 1/  (float)  nBestResults;
                         if(random.nextDouble() <= probability) {
                             this.currentResult = this.workingResult.getCopy();
+                            this.logger.log(this.workingResult);
+
                         }
                     }
+
+
+                    this.logger.writeResult(this.workingResult);
+
+
                 }
+
             }
 
 
 
-            if (this.currentResult.getnSwitches() <  this.bestResult.getnSwitches()) {
+
+            if (this.currentResult.getCost() <  this.bestResult.getCost()) {
                 this.bestResult = this.currentResult.getCopy();
                 this.logger.logInfo("next neighbourhood");
             }else{
@@ -820,7 +814,7 @@ public class ProblemManager {
                     this.decoder.decode(this.workingResult);
 
 
-                    if(this.workingResult.getnSwitches() < this.bestResult.getnSwitches()) {
+                    if(this.workingResult.getCost() < this.bestResult.getCost()) {
                         improved = true;
                         this.bestResult = this.workingResult.getCopy();
                         this.logger.log(this.workingResult);
@@ -901,11 +895,14 @@ public class ProblemManager {
     }
 
     public void simulatedAnnealing() throws IOException {
-        if(this.getParameters().isSA_TIMED()) {
+      /*  if(this.getParameters().isSA_TIMED()) {
             this.simulatedAnnealingTimed();
         }else{
             this.simulatedAnnealingIterations();
-        }
+        }*/
+
+      this.simulatedAnnealingIterations();
+
     }
 
 
@@ -914,7 +911,7 @@ public class ProblemManager {
 
         this.logger.logInfo("Starting SA: timed");
 
-        double temperature = this.START_TEMP;
+        double temperature = this.getParameters().getSTART_TEMP();
         int j = 0;
         this.setSteps(0);
         int steady = 0;
@@ -925,7 +922,7 @@ public class ProblemManager {
             this.getDecoder().decode(this.workingResult);
 
 
-            double deltaE = this.workingResult.getnSwitches() - this.bestResult.getnSwitches();
+            double deltaE = this.workingResult.getCost() - this.bestResult.getCost();
 
             if(deltaE > 0) {
                 double acceptance = Math.exp(-deltaE/ temperature);
@@ -979,7 +976,7 @@ public class ProblemManager {
 
             //Keep temperature steady for a few steps before dropping
             if(steady > 70) {
-                temperature = temperature * DECAY_RATE;
+                temperature = temperature * this.getParameters().getDECAY_RATE();
                 steady=0;
             }
             steady++;
@@ -1002,35 +999,33 @@ public class ProblemManager {
 
 
     public void simulatedAnnealingIterations() throws IOException {
+        if(this.getParameters().isSA_TIMED()) {
+            this.logger.logInfo("Starting SA: timed");
+            this.logger.logInfo("Running for:" + String.valueOf(this.getParameters().getRUN_TIME()) + "steps");
 
-        this.logger.logInfo("Starting SA: iterations");
-        this.logger.logInfo("Running for:" + String.valueOf(this.getParameters().getITERATIONS()) + "steps");
 
-        double temperature = this.START_TEMP;
-        int j = 0;
+        }else{
+            this.logger.logInfo("Starting SA: iterations");
+            this.logger.logInfo("Running for:" + String.valueOf(this.getParameters().getITERATIONS()) + "steps");
+
+        }
+
+
+        double temperature = this.getParameters().getSTART_TEMP();
         this.setSteps(0);
         int steady = 0;
 
-
         while (System.currentTimeMillis() < this.getTIME_LIMIT() && this.steps <= this.getParameters().getITERATIONS()) {
 
-            this.getMoveManager().swap(this.workingResult);
-            //this.getMoveManager().ruinAndRecreate(this.workingResult);
+            this.getMoveManager().doMove(this.workingResult);
             this.getDecoder().decode(this.workingResult);
 
-
-            //double deltaE = this.workingResult.getTieBreakingCost() - this.bestResult.getTieBreakingCost();
-            double deltaE = this.workingResult.getnSwitches() - this.bestResult.getnSwitches();
-
-            //System.out.println(this.workingResult.getTieBreakingCost());
-            //System.out.println(this.bestResult.getTieBreakingCost());
-
-            //System.out.println(deltaE);
+            double deltaE = this.workingResult.getCost() - this.bestResult.getCost();
 
             if(deltaE > 0) {
 
-                //deltaE = this.workingResult.getnSwitches() - this.bestResult.getnSwitches();
-                deltaE = this.workingResult.getTieBreakingCost() - this.bestResult.getTieBreakingCost();
+                deltaE = this.workingResult.getCost() - this.bestResult.getCost();
+
 
                 double acceptance = Math.exp(-deltaE/ temperature);
                 double ran = random.nextDouble();
@@ -1048,6 +1043,7 @@ public class ProblemManager {
                     this.workingResult.setRejected();
                     //cancel move
                 }
+
             }else{
                 //accept & best solution now
                 //this.logger.logInfo("New best solution found");
@@ -1061,7 +1057,6 @@ public class ProblemManager {
 
                 improved+=1;
             }
-
 
 
             //LOGGING
@@ -1078,10 +1073,18 @@ public class ProblemManager {
             //Copy for new iteration
             this.workingResult = this.currentResult.getCopy();
 
+            /*//Keep temperature steady for a few steps before dropping
+            if(steady > 70) {
+                temperature = temperature * DECAY_RATE;
+                steady=0;
+            }
+            steady++;*/
+
+
             temperature = temperature * this.getParameters().getDECAY_RATE();
 
 
-            if(temperature < this.getEND_TEMP()) {
+            if(temperature < this.getParameters().getEND_TEMP()) {
                 break;
             }
 
@@ -1094,8 +1097,14 @@ public class ProblemManager {
 
 
 
-
     /* UTILITIES ------------------------------------------------------------------ */
+
+
+    //TODO:
+    public void runDecodeExperiment() {
+
+    }
+
 
 
 
@@ -1113,21 +1122,6 @@ public class ProblemManager {
         return RUN_TIME;
     }
 
-    public int getSEED() {
-        return SEED;
-    }
-
-    public double getSTART_TEMP() {
-        return START_TEMP;
-    }
-
-    public double getEND_TEMP() {
-        return END_TEMP;
-    }
-
-    public double getDECAY_RATE() {
-        return DECAY_RATE;
-    }
 
     public int getMAGAZINE_SIZE() {
         return MAGAZINE_SIZE;

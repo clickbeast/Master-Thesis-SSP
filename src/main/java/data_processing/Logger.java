@@ -135,9 +135,9 @@ public class Logger {
                         // HOP
                         result.getTieBreakingCost(),
                         // B_THOP
-                        "",
+                        result.penaltyCost,
                         // TAD
-                        "",
+                        result.toolDistanceCost,
                         // B_TAD
                         "",
                         // TRD

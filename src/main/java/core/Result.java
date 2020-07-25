@@ -17,17 +17,20 @@ public class Result {
     //-- full perspective --
     //The tool matrix
     private int[][] jobToolMatrix;
+    private int[][] toolDistance;
 
     //-- jobs perspective --
     //The sequence of jobs
     private int[] sequence;
     private int[] jobPositions;
     private int[] switches;
-    private int[] toolDistance;
+    //private int[] toolDistance;
     private int[] nToolsDelete;
     private int[] nToolsKeep;
     private int[] nToolsAdd;
 
+
+    //
 
     //tools perspective
     private int[] toolHops;
@@ -42,12 +45,15 @@ public class Result {
     private String type;
 
 
+    public double penaltyCost;
+    public double toolDistanceCost;
+
+
+
     // NOT EXPORTED
     private int[][] zeroBlockLength;
 
     private double tieBreakingCost;
-
-    //private int[][] magazineState;
 
     //TODO: ADD PROPER DELTA EVAL: VERY VERY VERY IMPORTANT TOO...
 
@@ -69,13 +75,11 @@ public class Result {
         this.reloadJobPositions();
     }
 
-
     public void reloadJobPositions() {
         for (int i = 0; i < sequence.length; i++) {
             int jobId = this.getSequence()[i];
             this.jobPositions[jobId] = i;
         }
-
     }
 
     public Result getCopy() {
@@ -88,11 +92,18 @@ public class Result {
 
 
         Result result = new Result(sequence, this.getProblemManager());
+
+
+        result.setCost(this.getCost());
         result.setJobToolMatrix(jobToolMatrix);
         result.setSwitches(switches);
         result.setnSwitches(this.getnSwitches());
         result.setType(this.getType());
         result.setTieBreakingCost(this.getTieBreakingCost());
+        result.setToolDistance(General.copyGrid(this.getToolDistance()));
+
+        result.penaltyCost = this.penaltyCost;
+        result.toolDistanceCost = this.toolDistanceCost;
 
         return result;
     }
@@ -128,11 +139,9 @@ public class Result {
     }
 
 
-    public Double getCost() {
-        //TODO: change
 
-        return (double) this.getnSwitches();
-        //return this.getTieBreakingCost();
+    public Double getCost() {
+        return cost;
     }
 
 
@@ -141,15 +150,28 @@ public class Result {
     }
 
 
+    public boolean toolUsed(int jobId, int toolId) {
+        return this.getJobToolMatrix()[jobId][toolId] == 1;
+    }
 
+
+    public boolean toolUsedAtSeqPos(int i, int toolId) {
+        return this.getJobToolMatrix()[this.getJobSeqPos(i).getId()][toolId] == 1;
+    }
 
     public int[] getTools(Job job) {
         return this.getJobToolMatrix()[job.getId()];
     }
 
+    public int[] getToolsAtSeqPos(int i) {
+        return this.getTools(this.getJobSeqPos(i));
+    }
 
 
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
+
+
+
 
     public void setImproved() {
         this.setType("improved");
@@ -210,7 +232,6 @@ public class Result {
     }
 
     public int[] getJobPositions() {
-
         return jobPositions;
     }
 
@@ -227,12 +248,11 @@ public class Result {
     }
 
 
-
-    public int[] getToolDistance() {
+    public int[][] getToolDistance() {
         return toolDistance;
     }
 
-    public void setToolDistance(int[] toolDistance) {
+    public void setToolDistance(int[][] toolDistance) {
         this.toolDistance = toolDistance;
     }
 

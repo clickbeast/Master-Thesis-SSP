@@ -1,4 +1,4 @@
-/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_40_60_30_10
-cat_40_60_30_10
-TOOLSEQ-SD
+/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/yanasse/yan_5_6_3_1
+yan_5_6_3_1
+TEST
 0

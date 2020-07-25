@@ -1,5 +1,6 @@
 package core;
 
+import data_processing.Parameters;
 import models.elemental.Job;
 import util.General;
 
@@ -18,7 +19,7 @@ public class Decoder {
     /* VARIABLES & CONSTANTS --------------------------------------------------------------------------------------- */
 
     ProblemManager problemManager;
-
+    private Parameters parameters;
     //TODO
     int[] indexes;
     int[] sortedTools;
@@ -31,13 +32,11 @@ public class Decoder {
 
     public Decoder(ProblemManager problemManager) {
         this.problemManager = problemManager;
+        this.parameters = problemManager.getParameters();
     }
 
 
     /* PREPROCESS -------------------------------------------------------------------------------------------------- */
-
-    
-
 
 
 
@@ -59,8 +58,6 @@ public class Decoder {
 
 
     public void decodeRR(Result result) throws IOException{
-
-
         switch (this.problemManager.getParameters().getDecode()) {
             case "full": {
                 this.decode(result);
@@ -80,13 +77,9 @@ public class Decoder {
 
             default: {
                 this.problemManager.getLogger().logInfo("NO RR DECODE CHOSEN");
-                return;
             }
         }
-
     }
-
-
 
 
 
@@ -164,6 +157,8 @@ public class Decoder {
     }
 
 
+
+
     public LinkedList<Integer> getDifTools(int[] toolsA, int[] antiToolSetB) {
 
         LinkedList<Integer> list = new LinkedList<>();
@@ -178,7 +173,6 @@ public class Decoder {
 
         return list;
     }
-
 
     public Result shallowDecode(Result result) {
 
@@ -214,10 +208,45 @@ public class Decoder {
         //NEW TYPE OF COST
         result.setZeroBlockLength(this.zeroBlockLength(result));
         result.setTieBreakingCost(this.calculateTieBreakingCost(result));
-        //System.out.println(result.getTieBreakingCost());
+        result.setToolDistance(this.calculateToolDistance(result));
+
+
+        result.toolDistanceCost = this.calculateToolDistanceCost(result);
+        this.problemManager.getLogger().writeLiveResult(result);
+        result.penaltyCost = this.calculatePenaltyCost(result);
+
+
+
+        switch (this.problemManager.getParameters().getObjective()) {
+            case "switches": {
+                result.setCost((double) result.getnSwitches());
+                break;
+            }
+
+            case "tieBreaking": {
+                result.setCost(result.getTieBreakingCost());
+                break;
+            }
+
+            case "toolDistance": {
+                result.setCost(this.calculateToolDistanceCost(result));
+                break;
+            }
+
+            case "penalty": {
+                result.setCost(this.calculatePenaltyCost(result));
+                break;
+            }
+
+
+            default: {
+                this.problemManager.getLogger().logInfo("NO OBJECTIVE CHOSEN");
+                return;
+            }
+        }
+
 
     }
-
 
     public double calculateTieBreakingCost(Result result) {
         double total = 0;
@@ -229,8 +258,60 @@ public class Decoder {
             }
         }
 
+
         return total;
     }
+
+
+    public double calculatePenaltyCost(Result result) {
+
+        //Calculate the number of failed KTNS Attempts
+        return this.getParameters().getW_S()*result.getnSwitches() + this.getParameters().getwFailKTNS()*nFailedKTNS(result);
+    }
+
+    public double calculateToolDistanceCost(Result result) {
+
+        //Calculate max and min distance
+
+        int minDist = 0;
+        int maxDist = 0;
+
+        for (int i = 0; i < result.getSequence().length; i++) {
+            for (int toolId = 0; toolId < this.problemManager.getN_TOOLS(); toolId++) {
+                if(result.toolUsedAtSeqPos(i,toolId)) {
+                    minDist += result.getToolDistance()[result.getJobSeqPos(i).getId()][toolId];
+                }else{
+                    maxDist += result.getToolDistance()[result.getJobSeqPos(i).getId()][toolId];
+                }
+            }
+        }
+
+
+        return  (this.getParameters().getW_S()*result.getnSwitches()) +
+                (this.getParameters().getW_DIST() * ((this.getParameters().getW_DIST_MIN() * minDist)
+                + (this.getParameters().getW_DIST_MAX() * maxDist)));
+    }
+
+
+    //TODO: can be integrated into decoder
+    //INSPECT
+    public int nFailedKTNS(Result result) {
+
+        int ktnsFail = 0;
+
+        for (int i = 0; i < result.getSequence().length - 1; i++) {
+            for (int toolId = 0; toolId < this.problemManager.getN_TOOLS(); toolId++) {
+                if(result.toolUsedAtSeqPos(i,toolId) && !result.getJobSeqPos(i).toolRequired(toolId)) {
+                    if(!result.toolUsedAtSeqPos(i+1,toolId)) {
+                        ktnsFail+=1;
+                    }
+                }
+            }
+        }
+
+        return ktnsFail;
+    }
+
 
 
     public int nSwitches(int[] switches) {
@@ -285,10 +366,8 @@ public class Decoder {
     }
 
 
-
-
-
     public int[][] zeroBlockLength(Result result) {
+
 
         int[][] zeroBlocks = new int[this.problemManager.getN_TOOLS()][];
 
@@ -326,6 +405,50 @@ public class Decoder {
 
         return zeroBlocks;
     }
+
+
+
+
+
+    //TODO: VERY INNEFICIENT -> INTEGRATE WITH DECODE
+    public int[][] calculateToolDistance(Result result) {
+
+        //Create a new tool distance matrix
+        int[][] toolDistance = new int[problemManager.getN_JOBS()][problemManager.getN_TOOLS()];
+
+
+        for (int i = 0; i < result.getSequence().length - 1; i++) {
+            Job job = result.getJobSeqPos(i);
+            System.out.println("kie");
+            for (int toolId = 0; toolId < this.problemManager.getN_TOOLS(); toolId++) {
+
+                //Lookup distance
+                int distance = 0;
+
+                measure: for (int j = i + 1; j < result.getSequence().length; j++) {
+                    distance += 1;
+                    if(result.toolUsedAtSeqPos(j,toolId)) {
+                        break measure;
+                    }
+                }
+
+                //Set distance
+                toolDistance[job.getId()][toolId] = distance;
+
+            }
+
+        }
+
+
+        General.printGrid(toolDistance);
+        General.printGrid(General.mapToSequence(toolDistance, result.getSequence()));
+        General.printTransposeGrid(General.mapToSequence(toolDistance,result.getSequence()));
+
+
+        System.out.println("bonjout");
+        return toolDistance;
+    }
+
 
     //</editor-fold>
 
@@ -492,7 +615,6 @@ public class Decoder {
     //</editor-fold>
 
 
-
     //<editor-fold desc="DECODE VERSION 1">
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -586,6 +708,19 @@ public class Decoder {
     //</editor-fold>
 
 
+    public ProblemManager getProblemManager() {
+        return problemManager;
+    }
 
+    public void setProblemManager(ProblemManager problemManager) {
+        this.problemManager = problemManager;
+    }
 
+    public Parameters getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Parameters parameters) {
+        this.parameters = parameters;
+    }
 }

@@ -81,11 +81,15 @@ public class Parameters {
     @Option(names = {"--w_ktns_hops"})
     private double W_KTNS_HOPS              =   1;
     @Option(names = {"--w_dist"})
-    private double W_DIST                   =   1;
+    private double W_DIST                   =   0.3;
     @Option(names = {"--w_dist_min"})
     private double W_DIST_MIN               =   1;
     @Option(names = {"--w_dist_max"})
-    private double W_DIST_MAX               =   1;
+    private double W_DIST_MAX               =   -1;
+    @Option(names = {"--w_fail_ktns"})
+    private double wFailKTNS               =   0.4;
+
+
 
 
     //RR
@@ -164,7 +168,7 @@ public class Parameters {
     @Option(names = {"--write_results"})
     private boolean WRITE_RESULTS           = true;
     @Option(names = {"--live_result"})
-    private boolean LIVE_RESULT             = false;
+    private boolean LIVE_RESULT             = true;
 
 
     public Parameters(long START_TIME) {
@@ -215,9 +219,17 @@ public class Parameters {
 
     public void generateSAParameters() {
 
-        if(getDECAY_RATE() != -1) {
+        if(isSA_TIMED()) {
+            this.setITERATIONS(Long.MAX_VALUE);
             return;
         }
+
+
+        if(getDECAY_RATE() != -1) {
+            //KEEP DECAY RATE FROM PARAMS
+            return;
+        }
+
 
         if(getITERATIONS() != -1) {
             this.calculateDecayRate();
@@ -271,8 +283,12 @@ public class Parameters {
                 (long) ( 12000 + (getW_F() * Math.pow(10,alpha))));
     }
 
-
     public void calculateIterations() {
+
+        if(this.isFORCE_ITERATIONS()) {
+            this.forceIterations();
+        }
+
         this.setITERATIONS(
                 (long) (getW_F() * Math.pow(10,(this.getALPHA() + this.getBETA()))));
     }
@@ -321,6 +337,15 @@ public class Parameters {
 
     public void resetStartTime() {
         this.setSTART_TIME(System.currentTimeMillis());
+    }
+
+
+    public double getwFailKTNS() {
+        return wFailKTNS;
+    }
+
+    public void setwFailKTNS(double wFailKTNS) {
+        this.wFailKTNS = wFailKTNS;
     }
 
     public String getROOT_FOLDER() {
@@ -800,6 +825,15 @@ public class Parameters {
 
     public boolean isFORCE_ITERATIONS() {
         return FORCE_ITERATIONS;
+    }
+
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
     public void setFORCE_ITERATIONS(boolean FORCE_ITERATIONS) {
