@@ -8,6 +8,8 @@ import core.Result;
 import data_processing.serializable.OutputData;
 
 import java.io.*;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class Logger {
@@ -119,6 +121,8 @@ public class Logger {
 
     public void log(Result result ,int switches, int bestSwitches, long accepted, long rejected, long improved, double temperature, int[] sequence, String type) throws IOException {
 
+        DecimalFormat df = new DecimalFormat("#.####");
+        df.setRoundingMode(RoundingMode.CEILING);
 
         if(this.getProblemManager().getParameters().isLOG()) {
             PrintWriter out = this.getLogWriter();
@@ -133,11 +137,12 @@ public class Logger {
                         // B_SW
                         bestSwitches,
                         // HOP
-                        result.getTieBreakingCost(),
+                        df.format(result.getTieBreakingCost()),
+                        //result.getTieBreakingCost(),
                         // B_THOP
-                        result.penaltyCost,
+                        df.format(result.getPenaltyCost()),
                         // TAD
-                        result.toolDistanceCost,
+                        df.format(result.getToolDistanceCost()),
                         // B_TAD
                         "",
                         // TRD

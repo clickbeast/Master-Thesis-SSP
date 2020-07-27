@@ -25,20 +25,12 @@ public class MoveManager {
     }
 
 
-    public void setupMoves() {
-        if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
-            move = new Swap();
-        }else if(problemManager.getParameters().getLocalSearch().equals("ruin")){
-            move = new RR();
-        }
-    }
-
 
     public Result doMove(Result result) throws IOException {
 
         if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
             return this.swap(result);
-        }else if(problemManager.getParameters().getLocalSearch().equals("ruin")){
+        }else if(problemManager.getParameters().getLocalSearch().equals("ruinAndRecreate")){
             return this.ruinAndRecreate(result);
         }
 
@@ -240,6 +232,8 @@ public class MoveManager {
                         ruined.getKeep().add(job.getId());
                     }
                 }
+
+                break;
             }
 
 
@@ -253,6 +247,8 @@ public class MoveManager {
                         ruined.getKeep().add(job.getId());
                     }
                 }
+
+                break;
             }
 
 
@@ -270,11 +266,24 @@ public class MoveManager {
             case "random": {
                 //Remove at random
 
+                //Shuffle
                 Collections.shuffle(ruined.getRemove(), random);
-                int remove = ruined.getRemove().size() - 3;
+                /*System.out.println("remove size:" + ruined.getRemove().size());
+                System.out.println("keep size:" + ruined.getKeep().size());
+                System.out.println(ruined.getRemove());
+                System.out.println(ruined.getKeep());*/
+
+                int remove = ruined.getRemove().size() - this.problemManager.getParameters().getAVG_RUIN();
+                //ystem.out.println("Have to remove:" + remove);
+
+                //TODO: check for behavuoir of linked list during remove
+
                 if(remove > 0) {
                     for (int i = 0; i < remove; i++) {
-                        ruined.getKeep().add(ruined.getRemove().remove(i));
+                        //int removed = ruined.getRemove().remove(i);
+                        //System.out.println("removed: " + removed + " At: " + i);
+                        //System.out.println(ruined.getRemove().removeFirst());
+                        ruined.getKeep().add(ruined.getRemove().removeFirst());
                     }
                 }
 
@@ -391,7 +400,7 @@ public class MoveManager {
 
 
     public Result recreate(Result result, Ruin ruined) throws IOException {
-
+        //System.out.println("allo");
         if(this.problemManager.getParameters().getInsertPositions().equals("all")) {
             insertJobsRandomBestPositionBlinks(result, ruined);
         }else if(this.problemManager.getParameters().getInsertPositions().equals("removed")){
@@ -423,7 +432,7 @@ public class MoveManager {
         Collections.shuffle(ruined.getRemove(), this.random);
 
 
-        for (Integer jobId : ruined.getRemove()) {
+         for (Integer jobId : ruined.getRemove()) {
 
             Double bestCost = Double.MAX_VALUE;
             int bestPosition = 0;
@@ -441,7 +450,7 @@ public class MoveManager {
                     this.problemManager.getDecoder().decodeRR(temp);
 
 
-                    this.problemManager.getLogger().writeLiveResult(temp);
+                    //this.problemManager.getLogger().writeLiveResult(temp);
 
                     if(temp.getCost() <  bestCost) {
 

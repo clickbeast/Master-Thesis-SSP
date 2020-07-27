@@ -17,15 +17,17 @@ public class Parameters {
     @Option(names = {"--root_folder"})
     private String ROOT_FOLDER              =   "/Users/simonvermeir/Documents/industrial-engineering/" +
                                                 "SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/" +
-                                                "crama";
+                                                "catanzaro";
     @Option(names = {"--instance_folder"})
-    private String INSTANCE_FOLDER          =   "crama";
+    private String INSTANCE_FOLDER          =   "catanzaro";
     //cat_30_40_17_9
     //yan_8_15_10_29
     @Option(names = {"--instance"})
-    //private String INSTANCE                 =   "cat_30_40_17_9";
+    private String INSTANCE                 =   "cat_30_40_17_9";
+    //private String INSTANCE                 =   "cat_40_60_20_10";
+
     //private String INSTANCE                   =   "yan_8_15_10_29";
-    private String INSTANCE                   =   "cram_10_10_4_1";
+    //private String INSTANCE                   =   "yan_5_6_3_1";
     //private String INSTANCE                 =   "yan_5_6_3_1";
 
 
@@ -46,31 +48,30 @@ public class Parameters {
 
 
     @Option(names = {"--run_time"})
-    private  long RUN_TIME                  =   60;
+    private  long RUN_TIME                  =   120;
     private  long START_TIME                =   0;
 
 
 
-    //RUIN AND RECREATE
-    @Option(names = {"--blink_rate"})
-    private double BLINK_RATE               =   0.01;
-    @Option(names = {"--avg_ruin"})
-    private int AVG_RUIN                    =   10;
-
     @Option(names = {"--constructive_heuristic"})
-    private String constructiveHeuristic = "random";
+    private String constructiveHeuristic = "toolSequencing";
     @Option(names = {"--local_search"})
     private String localSearch = "ruinAndRecreate";
     @Option(names = {"--meta_heuristic"})
-    private String metaHeuristic = "forceSequence";
+    private String metaHeuristic = "simulatedAnnealing";
     @Option(names = {"--objective"})
     private String objective = "switches";
     @Option(names = {"--decode_version"})
     private String decodeVersion = "default";
     @Option(names = {"--run_backup_SD"})
-    private boolean runBackupSD = false;
+    private boolean runBackupSD = true;
     @Option(names = {"--parallel"})
     private boolean parallel = false;
+
+
+
+    //FORCE SEQUECE
+    private int[] forceSequence = {0,2,3,4,1};
 
 
     //OBJ
@@ -90,13 +91,17 @@ public class Parameters {
     private double wFailKTNS               =   0.4;
 
 
-
+    //RUIN AND RECREATE
+    @Option(names = {"--blink_rate"})
+    private double BLINK_RATE               =   0.01;
+    @Option(names = {"--avg_ruin"})
+    private int AVG_RUIN                    =   10;
 
     //RR
     @Option(names = {"--select"})
     private String select                   =   "randomTool";
     @Option(names = {"--match"})
-    private String match               =   "requiredTool";
+    private String match               =   "ktnsTool";
     @Option(names = {"--insert"})
     private String insert               =   "best";
     @Option(names = {"--insert_positions"})
@@ -107,8 +112,6 @@ public class Parameters {
     private String filter               =   "random";
 
 
-    //FORCE SEQUECE
-    private int[] forceSequence = {0,1,2,3,4,5,6,7,8,9};
 
 
     //STOCHASTIC
@@ -123,16 +126,16 @@ public class Parameters {
     @Option(names = {"--start_temp"})
     private  double  START_TEMP             =   100;
     @Option(names = {"--end_temp"})
-    private  double  END_TEMP               =   0.00097;
+    private  double  END_TEMP               =   0.007;
     @Option(names = {"--decay_rate"})
-    //private  double  DECAY_RATE             =   0.9990;
     private  double  DECAY_RATE             =   -1;
+    //private  double  DECAY_RATE             =   0.99997;
     @Option(names = {"--force_alpha"})
     private  boolean FORCE_ALPHA            =   true;
     @Option(names = {"--force_iterations"})
     private  boolean FORCE_ITERATIONS            =   true;
     @Option(names = {"--iterations"})
-    private  long    ITERATIONS             =   -1;
+    private  long    ITERATIONS             =   300000;
     @Option(names = {"--alpha"})
     private  double  ALPHA                  =   -1;
     @Option(names = {"--beta"})
@@ -168,9 +171,9 @@ public class Parameters {
     @Option(names = {"--log"})
     private boolean LOG                     = true;
     @Option(names = {"--write_results"})
-    private boolean WRITE_RESULTS           = true;
+    private boolean WRITE_RESULTS           = false;
     @Option(names = {"--live_result"})
-    private boolean LIVE_RESULT             = true;
+    private boolean LIVE_RESULT             = false;
 
 
     public Parameters(long START_TIME) {

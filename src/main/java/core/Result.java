@@ -164,7 +164,21 @@ public class Result {
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
 
 
+    public double getPenaltyCost() {
+        return penaltyCost;
+    }
 
+    public void setPenaltyCost(double penaltyCost) {
+        this.penaltyCost = penaltyCost;
+    }
+
+    public double getToolDistanceCost() {
+        return toolDistanceCost;
+    }
+
+    public void setToolDistanceCost(double toolDistanceCost) {
+        this.toolDistanceCost = toolDistanceCost;
+    }
 
     public void setImproved() {
         this.setType("improved");
@@ -179,6 +193,10 @@ public class Result {
     public void setRejected() {
         this.setType("rejected");
 
+    }
+
+    public void setBackup() {
+        this.setType("backup");
     }
 
     public void setTrial() {

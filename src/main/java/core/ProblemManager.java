@@ -376,8 +376,10 @@ public class ProblemManager {
         this.workingResult = new Result(sequence,this);
         this.decoder.decode(workingResult);
 
+        //Set for all results
         this.currentResult = this.workingResult.getCopy();
         this.bestResult = this.currentResult.getCopy();
+
 
         this.logger.logInfo("Initial Solution Created : ordered");
 
@@ -395,6 +397,7 @@ public class ProblemManager {
         this.getDecoder().decode(this.currentResult);
         this.currentResult.setInitial();
 
+        //Set for all results
         this.workingResult = this.currentResult.getCopy();
         this.bestResult = this.currentResult.getCopy();
 
@@ -452,6 +455,8 @@ public class ProblemManager {
         this.getDecoder().decode(this.currentResult);
         this.currentResult.setInitial();
 
+
+        //Set for all solutions
         this.workingResult = this.currentResult.getCopy();
         this.bestResult = this.currentResult.getCopy();
 
@@ -742,7 +747,7 @@ public class ProblemManager {
         while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
             //Visit the whole neighberhoud
 
-            this.workingResult = this.currentResult.getCopy();
+            this.workingResult = this.bestResult.getCopy();
 
             int nBestResults = 1;
 
@@ -915,6 +920,7 @@ public class ProblemManager {
     }
 
 
+/*
     public void simulatedAnnealingTimed() throws IOException {
 
 
@@ -1005,12 +1011,13 @@ public class ProblemManager {
 
 
     }
+*/
 
 
     public void simulatedAnnealingIterations() throws IOException {
         if(this.getParameters().isSA_TIMED()) {
             this.logger.logInfo("Starting SA: timed");
-            this.logger.logInfo("Running for:" + String.valueOf(this.getParameters().getRUN_TIME()) + "steps");
+            this.logger.logInfo("Running for max: " + String.valueOf(this.getParameters().getRUN_TIME()) + "seconds");
 
 
         }else{
@@ -1023,50 +1030,51 @@ public class ProblemManager {
         double temperature = this.getParameters().getSTART_TEMP();
         this.setSteps(0);
         int steady = 0;
+        int noChange = 0;
 
         while (System.currentTimeMillis() < this.getTIME_LIMIT() && this.steps <= this.getParameters().getITERATIONS()) {
 
             this.getMoveManager().doMove(this.workingResult);
             this.getDecoder().decode(this.workingResult);
 
-            double deltaE = this.workingResult.getCost() - this.bestResult.getCost();
+            double deltaE = this.workingResult.getnSwitches() - this.bestResult.getnSwitches();
 
             if(deltaE > 0) {
 
                 deltaE = this.workingResult.getCost() - this.bestResult.getCost();
-
-
                 double acceptance = Math.exp(-deltaE/ temperature);
                 double ran = random.nextDouble();
 
                 if(acceptance > ran) {
-
                     //accept move -> not the best solution
                     this.workingResult.setAccepted();
                     this.currentResult = this.workingResult;
-
                     accepted+=1;
-
                 }else {
                     rejected += 1;
                     this.workingResult.setRejected();
                     //cancel move
                 }
-
             }else{
-                //accept & best solution now
-                //this.logger.logInfo("New best solution found");
 
                 this.workingResult.setImproved();
 
                 this.currentResult = this.workingResult;
                 this.bestResult = this.currentResult.getCopy();
-
                 this.logger.log(this.getWorkingResult(), temperature);
+
+
+                //TODO: cleanup
+                if(this.getWorkingResult().getnSwitches() == this.getBestResult().getnSwitches()) {
+                    noChange+=1;
+                }
+
 
                 improved+=1;
             }
 
+
+            //this.logger.log(this.getWorkingResult(), temperature);
 
             //LOGGING
             if (steps % 10000 == 0) {
@@ -1075,6 +1083,7 @@ public class ProblemManager {
 
             if(steps % 10000 == 0) {
                 this.logger.writeResult(this.getWorkingResult());
+                //this.getLogger().writeLiveResult(this.getWorkingResult());
             }
 
             // - PREPARE FOR NEW ITERATION - -
@@ -1090,6 +1099,12 @@ public class ProblemManager {
             steady++;*/
 
 
+            if(noChange > 1000) {
+                this.logger.logInfo("SA Stopped: result not changing");
+                break;
+            }
+
+
             temperature = temperature * this.getParameters().getDECAY_RATE();
 
 
@@ -1097,8 +1112,12 @@ public class ProblemManager {
                 break;
             }
 
+
+
             steps++;
         }
+
+        this.logger.logInfo("Number of steps used:" + String.valueOf(steps));
 
 
     }

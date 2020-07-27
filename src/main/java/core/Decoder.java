@@ -110,20 +110,10 @@ public class Decoder {
 
                 LinkedList<Integer> diffPrevCurTools = this.getDifTools(result.getJobToolMatrix()[prevJob.getId()], job.getAntiSet());
 
-
                 int unionPrevCurJobSize = diffPrevCurTools.size() + job.getSet().length;
                 int nToolsDelete = Math.max(0, unionPrevCurJobSize - this.problemManager.getMAGAZINE_SIZE());
                 int nToolsKeep = unionPrevCurJobSize - nToolsDelete;
                 int nToolsAdd = nToolsKeep - job.getSet().length;
-
-                System.out.println("nToolsAdd:" + nToolsAdd);
-                System.out.println(diffPrevCurTools);
-
-
-                //Add the required tools //OPTIMIZE
-                //resultJobToolMatrix[job.getId()] = Arrays.copyOf(job.getTOOLS(),job.getTOOLS().length);
-                //Pasop ! ! ! ! ! ! !  -> de oude zitter er nog in aan de rechterkant van de vorige keer want deze zijn
-                //gwn simpel gekopiert NIET GOED -> DANGERUUUX , FOUND IT
 
 
                 Job nextJob = result.nextJob(job);
@@ -132,24 +122,15 @@ public class Decoder {
 
                     ListIterator<Integer> iter = diffPrevCurTools.listIterator();
 
-                    System.out.println("");
-
                     while (iter.hasNext() && nToolsAdd != 0) {
                         int toolAddId = iter.next();
 
-                        System.out.print(" " + toolAddId);
 
                         if(result.getJobToolMatrix()[nextJob.getId()][toolAddId] == 1) {
-                            //Add as ktns tool
-                            System.out.print("->" + toolAddId);
-
-
                             result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
                             nToolsAdd-=1;
                             iter.remove();
                         }
-
-
                     }
 
                     nextJob = result.nextJob(nextJob);
@@ -157,32 +138,19 @@ public class Decoder {
 
 
 
-                System.out.println("");
-
-
                 //Fill remaining nToolsAdd with any tool
                 ListIterator<Integer> remainingIter = diffPrevCurTools.listIterator();
                 while(nToolsAdd != 0) {
 
 
-
                     int toolAddId = remainingIter.next();
-
-                    //Add as ktns tool
-                    System.out.print("- - >" + toolAddId);
 
                     result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
                     remainingIter.remove();
                     nToolsAdd-=1;
                 }
-                System.out.println("");
-
 
             }
-
-
-
-
 
         }
 
@@ -320,12 +288,13 @@ public class Decoder {
         int switches = 0;
         for (int i = 0; i < result.getSequence().length - 1; i++) {
             Job job = result.getJobSeqPos(i);
-            Job nextJob = result.getJobSeqPos(i);
+            Job nextJob = result.nextJob(job);
 
             switches+= this.problemManager.getSWITCHES_LB_MATRIX()[job.getId()][nextJob.getId()];
 
         }
         result.setnSwitches(switches);
+        result.setCost((double) switches);
         return result;
     }
 
@@ -342,7 +311,6 @@ public class Decoder {
 
 
     public void evaluate(Result result) {
-        System.out.println("eval");
         int[] switches = this.count_switches(result);
         result.setSwitches(switches);
         result.setnSwitches(nSwitches(switches));
@@ -354,9 +322,7 @@ public class Decoder {
 
 
         result.toolDistanceCost = this.calculateToolDistanceCost(result);
-        this.problemManager.getLogger().writeLiveResult(result);
         result.penaltyCost = this.calculatePenaltyCost(result);
-
 
 
         switch (this.problemManager.getParameters().getObjective()) {
@@ -371,12 +337,12 @@ public class Decoder {
             }
 
             case "toolDistance": {
-                result.setCost(this.calculateToolDistanceCost(result));
+                result.setCost(result.getToolDistanceCost());
                 break;
             }
 
             case "penalty": {
-                result.setCost(this.calculatePenaltyCost(result));
+                result.setCost(result.getPenaltyCost());
                 break;
             }
 
@@ -390,6 +356,7 @@ public class Decoder {
 
     }
 
+    //OK
     public double calculateTieBreakingCost(Result result) {
         double total = 0;
 
@@ -400,9 +367,9 @@ public class Decoder {
             }
         }
 
-
         return total;
     }
+
 
 
     public double calculatePenaltyCost(Result result) {
@@ -455,7 +422,7 @@ public class Decoder {
         return ktnsFail;
     }
 
-
+    //OK
     public int nSwitches(int[] switches) {
         int count = 0;
         for (int i = 0; i < switches.length; i++) {
@@ -464,7 +431,7 @@ public class Decoder {
         return count;
     }
 
-
+    //OK
     public int[] count_switches(Result result) {
 
         //Count first tool loadings
@@ -507,44 +474,43 @@ public class Decoder {
         return switches;
     }
 
-
+    //OK
     public int[][] zeroBlockLength(Result result) {
-
 
         int[][] zeroBlocks = new int[this.problemManager.getN_TOOLS()][];
 
         for (int toolId = 0; toolId < this.problemManager.getN_TOOLS(); toolId++) {
             LinkedList<Integer> blocks = new LinkedList<>();
+
             int length = 0;
             boolean run = false;
 
-            for (int jobId = 0; jobId < this.problemManager.getN_JOBS(); jobId++) {
-                int value = result.getJobToolMatrix()[jobId][toolId];
+            for (int seqPos = 0; seqPos < result.getSequence().length; seqPos++) {
+
+                boolean used = result.toolUsedAtSeqPos(seqPos, toolId);
 
                 if(!run) {
-                    if (value == 0) {
+                    if(!used) {
                         run = true;
-                        length += 1;
+                        length+=1;
                     }
+
                 }else{
-                    if(value == 0) {
+                    if(!used) {
+                        //Run is in progress
                         length+=1;
                     }else{
+                        //run is finished
                         blocks.add(length);
                         length = 0;
                         run = false;
                     }
+
                 }
             }
 
-            if(run) {
-                blocks.add(length);
-            }
-
             zeroBlocks[toolId] = blocks.stream().mapToInt(i->i).toArray();
-
         }
-
         return zeroBlocks;
     }
 
