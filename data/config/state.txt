@@ -1,4 +1,4 @@
-/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_40_60_30_10
-cat_40_60_30_10
-RANDOM-SA-SWAP-SW-SEED7
-4
+/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_10_10_4_1
+cat_10_10_4_1
+TEST
+0

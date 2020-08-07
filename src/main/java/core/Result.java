@@ -93,7 +93,9 @@ public class Result {
         result.setnSwitches(this.getnSwitches());
         result.setType(this.getType());
         result.setTieBreakingCost(this.getTieBreakingCost());
-        result.setToolDistance(General.copyGrid(this.getToolDistance()));
+
+
+        //result.setToolDistance(General.copyGrid(this.getToolDistance()));
 
         result.penaltyCost = this.penaltyCost;
         result.toolDistanceCost = this.toolDistanceCost;
@@ -121,6 +123,16 @@ public class Result {
         return this.problemManager.getJobs()[this.getSequence()[prevJobPos]];
     }
 
+
+    public int prevJobId(int jobId) {
+        int prevJobPos = this.getJobPositions()[jobId] - 1;
+        return prevJobPos;
+    }
+
+    public int nextJobId(int jobId) {
+        int nextJobPos = this.getJobPositions()[jobId] + 1;
+        return nextJobPos;
+    }
 
     public Job nextJob(Job job) {
         int nextJobPos = this.getJobPositions()[job.getId()] + 1;
@@ -159,6 +171,8 @@ public class Result {
     public int[] getToolsAtSeqPos(int i) {
         return this.getTools(this.getJobSeqPos(i));
     }
+
+
 
 
     /* GETTERS & SETTERS ------------------------------------------------------------------ */

@@ -28,17 +28,20 @@ public class ProblemManager {
     private final long TIME_LIMIT;
     private final long RUN_TIME;
 
-
-    String[] logTitles = {"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"};
-
     //CONSTANTS
     private final int MAGAZINE_SIZE;
     private final int N_TOOLS;
     private final int N_JOBS;
     private int[][] JOB_TOOL_MATRIX;
-    //Amount of different tool loading differences
+
+
+
+
     private int[][] DIFFERENCE_MATRIX;
-    //Amount common tools
+
+    //The jobs A and B , difference int[A][B][Tool]
+/*    private int[][][] DIFFERENCE_TOOLS_MATRIX;*/
+    //common tools
     private int[][][] SHARED_TOOLS_MATRIX;
 
     private int[][] SWITCHES_LB_MATRIX;
@@ -57,6 +60,7 @@ public class ProblemManager {
     private Tool[] tools;
 
 
+    // RESULT
     private Result workingResult;
     private Result currentResult;
     private Result bestResult;
@@ -87,7 +91,8 @@ public class ProblemManager {
         this.RUN_TIME = this.getParameters().getRUN_TIME();
         this.TIME_LIMIT = System.currentTimeMillis() + 1000 * this.getParameters().getRUN_TIME();
 
-        this.random = new Random(this.getParameters().getSEED());
+        //
+        this.random = new Random();
 
         this.moveManager = new MoveManager(this);
         this.solutionManager = new SolutionManager(this);
@@ -102,7 +107,7 @@ public class ProblemManager {
     }
 
     public void optimize() throws IOException {
-        this.logger.logLegend(logTitles);
+        this.logger.logLegend();
         General.printGrid(this.getJOB_TOOL_MATRIX());
         General.printTransposeGrid(this.getJOB_TOOL_MATRIX());
 
@@ -169,6 +174,12 @@ public class ProblemManager {
                 break;
             }
 
+
+            case "discover": {
+                this.discover();
+                break;
+            }
+
             default: {
                 this.logger.logInfo("NO META HEURISTIC CHOSEN");
                 return;
@@ -198,7 +209,7 @@ public class ProblemManager {
     public void initialize(){
         this.jobs = this.initializeJobs();
         this.initializeTools();
-        this.DIFFERENCE_MATRIX = this.initializeDifferenceMatrix();
+        //this.DIFFERENCE_TOOLS_MATRIX = this.initializeDifferenceMatrix();
         this.SHARED_TOOLS_MATRIX = initializeSharedToolsMatrix();
         this.SWITCHES_LB_MATRIX = this.initializeSwitchesLowerBoundMatrix();
         this.TOOL_PAIR_MATRIX = this.initializeToolPairMatrix();
@@ -225,7 +236,8 @@ public class ProblemManager {
 
 
     //TODO: initializeDifferenceMatrix
-    public int[][] initializeDifferenceMatrix() {
+    public int[][][] initializeDifferenceMatrix() {
+
 
         return null;
     }
@@ -343,6 +355,7 @@ public class ProblemManager {
 
     public MutableValueGraph<Integer, Integer> initializeToolPairGraph() {
 
+
         MutableValueGraph<Integer, Integer> weightedGraph = ValueGraphBuilder.undirected().build();
 
         for (int i = 0; i < this.getN_TOOLS(); i++) {
@@ -444,10 +457,8 @@ public class ProblemManager {
     public void initialToolSequencingSolution() throws IOException {
         this.logger.logInfo("Creating initial solution: Tool Sequencing");
 
-
         LinkedList<Integer> toolSequence = generateToolSequence();
         LinkedList<Integer> jobSequence = generateJobSequence(toolSequence);
-
 
         int[] sequence = jobSequence.stream().mapToInt(i -> i).toArray();
 
@@ -741,6 +752,36 @@ public class ProblemManager {
 
     /* LS ------------------------------------------------------------------ */
 
+
+    public void discover() throws IOException {
+        System.out.println("bonjour");
+        for (int i = 0; i < this.workingResult.getSequence().length; i++) {
+            for (int j = i + 1 ; j < this.workingResult.getSequence().length; j++) {
+
+                //PERFORM THE MOVE
+                int[] seq = this.workingResult.getSequence();
+                int temp = seq[i];
+                seq[i] = seq[j];
+                seq[j] = temp;
+
+                //this.logger.writeResult(this.getWorkingResult());
+
+                this.workingResult.reloadJobPositions();
+                this.logger.writeResult(this.workingResult);
+                this.decoder.decode(this.workingResult);
+                this.logger.writeResult(this.workingResult);
+
+                this.logger.writeResult(this.getWorkingResult());
+
+            }
+
+        }
+
+
+    }
+
+
+
     //Best Improvement
     public void steepestDescentRandomBest() throws IOException {
 
@@ -803,7 +844,6 @@ public class ProblemManager {
         }
 
     }
-
 
     public void steepestDescentFirstBest() throws IOException {
         boolean improved = false;
@@ -887,8 +927,6 @@ public class ProblemManager {
         }
     }
 
-
-
     public void forceSequence(int[] sequence) throws IOException {
         this.logger.logInfo("RUNNING FORCE SEQUENCE");
         this.bestResult.reloadJobPositions();
@@ -899,146 +937,67 @@ public class ProblemManager {
         this.logger.writeResult(this.bestResult);
     }
 
-
     //SA
 
 
     public void permutations() {
         this.logger.logInfo("Finding all permutations");
-        //TODO
     }
 
     public void simulatedAnnealing() throws IOException {
-      /*  if(this.getParameters().isSA_TIMED()) {
-            this.simulatedAnnealingTimed();
-        }else{
-            this.simulatedAnnealingIterations();
-        }*/
 
-      this.simulatedAnnealingIterations();
-
-    }
-
-
-/*
-    public void simulatedAnnealingTimed() throws IOException {
-
-
-        this.logger.logInfo("Starting SA: timed");
-
-        double temperature = this.getParameters().getSTART_TEMP();
-        int j = 0;
-        this.setSteps(0);
-        int steady = 0;
-
-        while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
-
-            this.getMoveManager().doMove(this.workingResult);
-            this.getDecoder().decode(this.workingResult);
-
-
-            double deltaE = this.workingResult.getCost() - this.bestResult.getCost();
-
-            if(deltaE > 0) {
-                double acceptance = Math.exp(-deltaE/ temperature);
-                double ran = random.nextDouble();
-
-                if(acceptance > ran) {
-
-                    //accept move -> not the best solution
-                    this.workingResult.setAccepted();
-                    this.currentResult = this.workingResult;
-
-                    accepted+=1;
-
-                }else{
-                    rejected+=1;
-                    this.workingResult.setRejected();
-                    //cancel move
-                }
-            }else{
-                //accept & best solution now
-                //this.logger.logInfo("New best solution found");
-
-                this.workingResult.setImproved();
-
-                this.currentResult = this.workingResult;
-                this.bestResult = this.currentResult.getCopy();
-
-                this.logger.log(this.getWorkingResult(), temperature);
-
-                improved+=1;
-            }
-
-
-
-            //LOGGING
-            if (steps % 10000 == 0) {
-                this.logger.log(this.getWorkingResult(), temperature);
-            }
-
-            if(steps % 100000 == 0) {
-                this.logger.writeResult(this.getWorkingResult());
-            }
-
-
-            // - PREPARE FOR NEW ITERATION - -
-
-            //Copy for new iteration
-            this.workingResult = this.currentResult.getCopy();
-
-
-
-            //Keep temperature steady for a few steps before dropping
-            if(steady > 70) {
-                temperature = temperature * this.getParameters().getDECAY_RATE();
-                steady=0;
-            }
-            steady++;
-
-            //Reheating
-            if (temperature < 1.5) {
-                //temperature = 10.0 + random.nextDouble() * 40;
-            }
-
-            if(temperature < 0.007) {
-                break;
-            }
-
-
-            steps++;
-        }
-
-
-    }
-*/
-
-
-    public void simulatedAnnealingIterations() throws IOException {
         if(this.getParameters().isSA_TIMED()) {
             this.logger.logInfo("Starting SA: timed");
             this.logger.logInfo("Running for max: " + String.valueOf(this.getParameters().getRUN_TIME()) + "seconds");
-
-
+            this.logger.logInfo("START TEMP: " + this.parameters.getSTART_TEMP() + "; END TEMP:"
+                    + this.parameters.getEND_TEMP() + "; DECAY RATE:" + this.parameters.getDECAY_RATE());
         }else{
             this.logger.logInfo("Starting SA: iterations");
-            this.logger.logInfo("Running for:" + String.valueOf(this.getParameters().getITERATIONS()) + "steps");
-
+            this.logger.logInfo("Running for: " + String.valueOf(this.getParameters().getITERATIONS()) + "steps");
+            this.logger.logInfo("START TEMP: " + this.parameters.getSTART_TEMP() + "; END TEMP: "
+                    + this.parameters.getEND_TEMP() + "; DECAY RATE: " + this.parameters.getDECAY_RATE());
         }
-
 
         double temperature = this.getParameters().getSTART_TEMP();
         this.setSteps(0);
         int steady = 0;
         int noChange = 0;
+        int nBestResults = 0;
 
         while (System.currentTimeMillis() < this.getTIME_LIMIT() && this.steps <= this.getParameters().getITERATIONS()) {
 
+            //Move
             this.getMoveManager().doMove(this.workingResult);
+            //Evaluate
             this.getDecoder().decode(this.workingResult);
 
-            double deltaE = this.workingResult.getnSwitches() - this.bestResult.getnSwitches();
+            //Acceptence criterium
+            if((this.workingResult.getCost()) < (this.bestResult.getCost()) - temperature * Math.log(random.nextDouble())) {
+                //Accept
+                this.workingResult.setAccepted();
+                this.currentResult = this.workingResult;
+                accepted+=1;
+            }else{
+                //Reject
+                this.workingResult.setRejected();
+                rejected+=1;
+            }
 
+            //Improvement
+            if(this.workingResult.getCost() < this.bestResult.getCost()) {
+                this.workingResult.setImproved();
+                this.bestResult = this.workingResult.getCopy();
+                this.logger.log(this.workingResult, temperature);
+                this.logger.writeResult(this.workingResult);
+                improved+=1;
+            }
+
+            //Additional Stop criterium
+            if(this.getWorkingResult().getnSwitches() == this.getBestResult().getnSwitches()) {
+                noChange+=1;
+            }
+
+/*
             if(deltaE > 0) {
 
                 deltaE = this.workingResult.getCost() - this.bestResult.getCost();
@@ -1059,9 +1018,25 @@ public class ProblemManager {
 
                 this.workingResult.setImproved();
 
+                if(this.workingResult.getCost() <  this.bestResult.getCost()) {
+                    this.currentResult = this.workingResult.getCopy();
+                    nBestResults = 1;
+                    this.logger.log(this.workingResult);
+                }else if(this.workingResult.getCost() == this.bestResult.getCost()) {
+                    nBestResults+=1;
+                    float probability = 1/  (float)  nBestResults;
+                    if(random.nextDouble() <= probability) {
+                        this.currentResult = this.workingResult.getCopy();
+                    }
+                }
+
+
                 this.currentResult = this.workingResult;
                 this.bestResult = this.currentResult.getCopy();
                 this.logger.log(this.getWorkingResult(), temperature);
+
+
+                this.logger.writeResult(this.getWorkingResult());
 
 
                 //TODO: cleanup
@@ -1072,12 +1047,10 @@ public class ProblemManager {
 
                 improved+=1;
             }
-
-
-            //this.logger.log(this.getWorkingResult(), temperature);
+*/
 
             //LOGGING
-            if (steps % 10000 == 0) {
+            if (steps % 1000 == 0) {
                 this.logger.log(this.getWorkingResult(), temperature);
             }
 
@@ -1085,6 +1058,7 @@ public class ProblemManager {
                 this.logger.writeResult(this.getWorkingResult());
                 //this.getLogger().writeLiveResult(this.getWorkingResult());
             }
+
 
             // - PREPARE FOR NEW ITERATION - -
 
@@ -1099,29 +1073,36 @@ public class ProblemManager {
             steady++;*/
 
 
-            if(noChange > 1000) {
+            if(noChange > 7000) {
                 this.logger.logInfo("SA Stopped: result not changing");
                 break;
             }
 
-
+            //Reduce temperature
             temperature = temperature * this.getParameters().getDECAY_RATE();
 
 
             if(temperature < this.getParameters().getEND_TEMP()) {
+                this.logger.logInfo("SA Stopped: min temp reached");
+
                 break;
             }
-
 
 
             steps++;
         }
 
+
+        if(!(System.currentTimeMillis() < this.getTIME_LIMIT())) {
+            this.logger.logInfo("SA Stopped: time limit exceeded");
+        }else{
+            this.logger.logInfo("SA Stopped: max steps reached");
+
+        }
+
         this.logger.logInfo("Number of steps used:" + String.valueOf(steps));
 
-
     }
-
 
 
 
@@ -1138,6 +1119,10 @@ public class ProblemManager {
 
     public Job getJob(int id) {
         return this.getJobs()[id];
+    }
+
+    public boolean legalJob(int id) {
+        return id >= 0 && id < this.getN_JOBS();
     }
 
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
@@ -1169,14 +1154,6 @@ public class ProblemManager {
 
     public void setJOB_TOOL_MATRIX(int[][] JOB_TOOL_MATRIX) {
         this.JOB_TOOL_MATRIX = JOB_TOOL_MATRIX;
-    }
-
-    public int[][] getDIFFERENCE_MATRIX() {
-        return DIFFERENCE_MATRIX;
-    }
-
-    public void setDIFFERENCE_MATRIX(int[][] DIFFERENCE_MATRIX) {
-        this.DIFFERENCE_MATRIX = DIFFERENCE_MATRIX;
     }
 
     public int[][][] getSHARED_TOOLS_MATRIX() {
@@ -1252,14 +1229,6 @@ public class ProblemManager {
         return parameters;
     }
 
-    public String[] getLogTitles() {
-        return logTitles;
-    }
-
-    public void setLogTitles(String[] logTitles) {
-        this.logTitles = logTitles;
-    }
-
     public int[][] getSWITCHES_LB_MATRIX() {
         return SWITCHES_LB_MATRIX;
     }
@@ -1327,6 +1296,15 @@ public class ProblemManager {
 
     public long getImproved() {
         return improved;
+    }
+
+
+    public int[][] getDIFFERENCE_MATRIX() {
+        return DIFFERENCE_MATRIX;
+    }
+
+    public void setDIFFERENCE_MATRIX(int[][] DIFFERENCE_MATRIX) {
+        this.DIFFERENCE_MATRIX = DIFFERENCE_MATRIX;
     }
 
     public void setImproved(long improved) {

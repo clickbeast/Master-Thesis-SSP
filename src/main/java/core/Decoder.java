@@ -60,7 +60,11 @@ public class Decoder {
     public void decodeRR(Result result) throws IOException{
         switch (this.problemManager.getParameters().getDecode()) {
             case "full": {
-                this.decode(result);
+
+
+                //this.decode(result);
+                this.decodeV2RR(result);
+
                 break;
             }
 
@@ -155,6 +159,72 @@ public class Decoder {
         }
 
         this.evaluate(result);
+    }
+
+    public void decodeV2RR(Result result) throws IOException {
+
+        //TODO: refine
+        result.setJobToolMatrix(General.copyGrid(this.problemManager.getJOB_TOOL_MATRIX()));
+
+        //for all jobs
+        for (int seqPos = 0; seqPos < result.getSequence().length; seqPos++) {
+
+            Job job = result.getJobSeqPos(seqPos);
+
+            //base case
+            if (seqPos == 0) {
+                //resultJobToolMatrix[job.getId()] = Arrays.copyOf(job.getTOOLS(),job.getTOOLS().length);
+            }else{
+
+                Job prevJob = result.prevJob(job);
+
+                LinkedList<Integer> diffPrevCurTools = this.getDifTools(result.getJobToolMatrix()[prevJob.getId()], job.getAntiSet());
+
+                int unionPrevCurJobSize = diffPrevCurTools.size() + job.getSet().length;
+                int nToolsDelete = Math.max(0, unionPrevCurJobSize - this.problemManager.getMAGAZINE_SIZE());
+                int nToolsKeep = unionPrevCurJobSize - nToolsDelete;
+                int nToolsAdd = nToolsKeep - job.getSet().length;
+
+
+                Job nextJob = result.nextJob(job);
+
+                while(nToolsAdd != 0 & nextJob != null & diffPrevCurTools.size() > 0) {
+
+                    ListIterator<Integer> iter = diffPrevCurTools.listIterator();
+
+                    while (iter.hasNext() && nToolsAdd != 0) {
+                        int toolAddId = iter.next();
+
+
+                        if(result.getJobToolMatrix()[nextJob.getId()][toolAddId] == 1) {
+                            result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
+                            nToolsAdd-=1;
+                            iter.remove();
+                        }
+                    }
+
+                    nextJob = result.nextJob(nextJob);
+                }
+
+
+
+                //Fill remaining nToolsAdd with any tool
+                ListIterator<Integer> remainingIter = diffPrevCurTools.listIterator();
+                while(nToolsAdd != 0) {
+
+
+                    int toolAddId = remainingIter.next();
+
+                    result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
+                    remainingIter.remove();
+                    nToolsAdd-=1;
+                }
+
+            }
+
+        }
+
+        this.evaluateRR(result);
     }
 
 
@@ -267,7 +337,7 @@ public class Decoder {
 
 
 
-
+    //TODO: preprocess for all
     public LinkedList<Integer> getDifTools(int[] toolsA, int[] antiToolSetB) {
 
         LinkedList<Integer> list = new LinkedList<>();
@@ -310,6 +380,56 @@ public class Decoder {
     //- - - - - - - -
 
 
+    public void evaluateRR(Result result) {
+        int[] switches = this.count_switches(result);
+        result.setSwitches(switches);
+        result.setnSwitches(nSwitches(switches));
+
+        //NEW TYPE OF COST
+        result.setZeroBlockLength(this.zeroBlockLength(result));
+        result.setTieBreakingCost(this.calculateTieBreakingCost(result));
+        //result.setToolDistance(this.calculateToolDistance(result));
+
+        //result.setToolDistance(new int[this.problemManager.getN_JOBS()][]);
+        //result.toolDistanceCost = this.calculateToolDistanceCost(result);
+        //result.penaltyCost = this.calculatePenaltyCost(result);
+
+        result.setCost((double) result.getnSwitches());
+        //result.setCost(result.getTieBreakingCost());
+
+
+      /*  switch (this.problemManager.getParameters().getObjective()) {
+            case "switches": {
+                result.setCost((double) result.getnSwitches());
+                break;
+            }
+
+            case "tieBreaking": {
+                result.setCost(result.getTieBreakingCost());
+                break;
+            }
+
+            case "toolDistance": {
+                result.setCost(result.getToolDistanceCost());
+                break;
+            }
+
+            case "penalty": {
+                result.setCost(result.getPenaltyCost());
+                break;
+            }
+
+            default: {
+                this.problemManager.getLogger().logInfo("NO OBJECTIVE CHOSEN");
+                return;
+            }
+        }*/
+
+
+    }
+
+
+
     public void evaluate(Result result) {
         int[] switches = this.count_switches(result);
         result.setSwitches(switches);
@@ -318,12 +438,14 @@ public class Decoder {
         //NEW TYPE OF COST
         result.setZeroBlockLength(this.zeroBlockLength(result));
         result.setTieBreakingCost(this.calculateTieBreakingCost(result));
-        result.setToolDistance(this.calculateToolDistance(result));
+        //result.setToolDistance(this.calculateToolDistance(result));
 
+        //result.setToolDistance(new int[this.problemManager.getN_JOBS()][]);
+        //result.toolDistanceCost = this.calculateToolDistanceCost(result);
+        //result.penaltyCost = this.calculatePenaltyCost(result);
 
-        result.toolDistanceCost = this.calculateToolDistanceCost(result);
-        result.penaltyCost = this.calculatePenaltyCost(result);
-
+        //result.setCost((double) result.getnSwitches());
+        //result.setCost(result.getTieBreakingCost());
 
         switch (this.problemManager.getParameters().getObjective()) {
             case "switches": {
@@ -345,7 +467,6 @@ public class Decoder {
                 result.setCost(result.getPenaltyCost());
                 break;
             }
-
 
             default: {
                 this.problemManager.getLogger().logInfo("NO OBJECTIVE CHOSEN");

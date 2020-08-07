@@ -8,6 +8,7 @@ import models.elemental.Job;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -43,19 +44,7 @@ public class MoveManager {
 
 
     public Result swap(Result result) {
-
- /*       //Selection policy
-        int[] select = {0};
-        int picked = select[this.random.nextInt(select.length)];
-
-        if(picked == 0) {
-            return  swapTwoJobs(result);
-        }else{
-            return  swapTwoBlocks(result);
-        }
-        */
         return swapTwoJobs(result);
-
     }
 
     public Result swapTwoJobs(Result result) {
@@ -172,6 +161,14 @@ public class MoveManager {
         public void setKeep(LinkedList<Integer> keep) {
             this.keep = keep;
         }
+
+        @Override
+        public String toString() {
+            return "Ruin{" +
+                    "remove=" + remove +
+                    ", keep=" + keep +
+                    '}';
+        }
     }
 
     // STEP 1: Ruin
@@ -209,15 +206,18 @@ public class MoveManager {
                 //Remove associated tools, that qualify as KTNS tools:
                 for(int i = 0; i < result.getSequence().length; i++) {
                     Job job = result.getJobSeqPos(i);
-                    if(result.getJobToolMatrix()[job.getId()][selectedToolId] == 1) {
-                        if(job.getTOOLS()[selectedToolId] == 0) {
+                    if (result.getJobToolMatrix()[job.getId()][selectedToolId] == 1) {
+                        if (job.getTOOLS()[selectedToolId] == 0) {
                             //KTNS tool
                             ruined.getRemove().add(job.getId());
+                        }else{
+                            ruined.getKeep().add(job.getId());
                         }
-                    }
-                    ruined.getRemove().add(job.getId());
-                }
+                    } else {
+                        ruined.getRemove().add(job.getId());
 
+                    }
+                }
 
                 break;
             }
@@ -258,7 +258,51 @@ public class MoveManager {
         }
 
 
+        //Sort procedures:
+        Comparator<Integer> byNumberOfSwitchesCreated = Comparator.comparingInt(
+                jobId -> {
 
+                    int[] toolsJob = result.getJobToolMatrix()[jobId];
+                    int prevJobId = result.prevJobId(jobId);
+                    if(!problemManager.legalJob(prevJobId)) {
+                        return 0;
+                    }
+                    int[] toolsPrevJob = result.getJobToolMatrix()[prevJobId];
+
+                    int count = 0;
+                    for (int toolId = 0; toolId < problemManager.getN_TOOLS(); toolId++) {
+                        if(toolsPrevJob[toolId] == 1 && toolsJob[toolId] == 0) {
+                            count+=1;
+                        }
+                    }
+
+                    return count;
+                });
+
+
+        Comparator<Integer> byNumberOfKTNSFail = Comparator.comparingInt(
+                jobId -> {
+
+                    int[] toolsJob = result.getJobToolMatrix()[jobId];
+                    int prevJobId = result.prevJobId(jobId);
+                    if(!problemManager.legalJob(prevJobId)) {
+                        return 0;
+                    }
+                    int[] toolsPrevJob = result.getJobToolMatrix()[prevJobId];
+
+                    int count = 0;
+                    for (int toolId = 0; toolId < problemManager.getN_TOOLS(); toolId++) {
+                        if(toolsPrevJob[toolId] == 1 && toolsJob[toolId] == 0) {
+                            if(problemManager.getJOB_TOOL_MATRIX()[prevJobId][toolId] == 0) {
+                                count += 1;
+                            }
+                        }
+                    }
+                    return count;
+                });
+
+
+        //TODO
 
         //FILTER
         switch (this.problemManager.getParameters().getFilter()) {
@@ -289,14 +333,24 @@ public class MoveManager {
 
             }
 
-
             case "worst": {
                 //TODO: Remove the worst performing ones
                 /*
+
                     1) ktnsFailure -> failed ktns
                     2) hopCreator
                     3) Most switches
                  */
+
+
+                int remove = ruined.getRemove().size() - this.problemManager.getParameters().getAVG_RUIN();
+
+                //sort
+                ruined.getRemove().sort(byNumberOfKTNSFail.thenComparing(byNumberOfSwitchesCreated));
+
+                for (int i = 0; i < remove; i++) {
+                    ruined.getKeep().add(ruined.getRemove().removeLast());
+                }
 
                 break;
             }
@@ -417,20 +471,22 @@ public class MoveManager {
 
     //TODO
     public void insertJobsRemovedRandomBestPositionsBlinks(Result result, Ruin ruined) {
+
+
     }
 
 
 
     public void insertJobsRandomBestPositionBlinks(Result result , Ruin ruined) throws IOException{
-
         LinkedList<Integer> sequence = ruined.getKeep();
         int[] seq = sequence.stream().mapToInt(i -> i).toArray();
         Result temp = new Result(seq, problemManager);
 
-
         //Shuffle Randomly
         Collections.shuffle(ruined.getRemove(), this.random);
 
+
+        //System.out.println(ruined.toString());
 
          for (Integer jobId : ruined.getRemove()) {
 
@@ -478,11 +534,15 @@ public class MoveManager {
 
 
         int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
-        result.setSequence(seqOut);
+         result.setSequence(seqOut);
         this.problemManager.getDecoder().decode(result);
     }
 
 
 
+    /*//TODO
+    public Result shake(Result result) {
+
+    }*/
 
 }

@@ -19,9 +19,9 @@ public class Logger {
     //CsvWriter csvWriter;
     ColoredPrinter cp;
 
-    String spacing = "%-5s %-15s %-5s %-15s %-5s %-15s %-5s %-20s %-10s %-10s %-20s %-10s %-10s %-15s %-10s %-30s %-20s \n";
+    String spacing = "%-5s %-15s %-5s %-15s %-5s %-15s %-5s %-15s %-5s %-20s %-10s %-10s %-20s %-10s %-10s %-15s %-10s %-30s %-20s \n";
     //String[] logTitles2 = {"Switches", "Best Switches", "Rem Dist" , "Best Rem Dist" , "Accepted", "Rejected" , "Improved", "Step" , "Time Remaining" , "Sequence"};
-    String[] logTitles = {"SW", "B_SW", "THOP" , "B_THOP" , "TAD", "B_TAD" , "TRD", "B_TRD" , "ACCEPT" , "REJECT", "IMPROVE", "STEP", "T_RUN","T_REM", "TEMP", "SEQ","TYPE","TYPEID"};
+    String[] logTitles = {"COST","B_COST","SW", "B_SW", "THOP" , "B_THOP" , "TAD", "B_TAD" , "TRD", "B_TRD" , "ACCEPT" , "REJECT", "IMPROVE", "STEP", "T_RUN","T_REM", "TEMP", "SEQ","TYPE","TYPEID"};
 
 
     private PrintWriter logWriter;
@@ -96,14 +96,14 @@ public class Logger {
 
     /* PROGRESS ------------------------------------------------------------------ */
 
-    public void logLegend(String[] titles)  {
+    public void logLegend()  {
         PrintWriter out = this.getLogWriter();
 
         System.out.println();
         System.out.printf(spacing, (Object[]) logTitles);
         System.out.println();
 
-        String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s";
+        String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s";
         out.printf(logSpacing, (Object[]) logTitles);
         out.println();
 
@@ -132,6 +132,10 @@ public class Logger {
             if (this.getProblemManager().getParameters().isLOG_VERBOSE()) {
 
                 System.out.printf(spacing,
+                        //COST
+                        result.getCost(),
+                        //B_COST
+                        this.problemManager.getBestResult().getCost(),
                         //SW
                         switches,
                         // B_SW
@@ -140,7 +144,7 @@ public class Logger {
                         df.format(result.getTieBreakingCost()),
                         //result.getTieBreakingCost(),
                         // B_THOP
-                        df.format(result.getPenaltyCost()),
+                        df.format(this.problemManager.getBestResult().getTieBreakingCost()),
                         // TAD
                         df.format(result.getToolDistanceCost()),
                         // B_TAD
@@ -174,17 +178,22 @@ public class Logger {
             }
 
 
-            String logSpacing = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,\"%s\"j,%s";
+            String logSpacing = "%s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,\"%s\"j,%s";
 
             out.printf(logSpacing,
+                    //COST
+                    result.getCost(),
+                    //B_COST
+                    this.problemManager.getBestResult().getCost(),
                     //SW
                     switches,
                     // B_SW
                     bestSwitches,
                     // HOP
-                    "",
+                    df.format(result.getTieBreakingCost()),
+                    //result.getTieBreakingCost(),
                     // B_THOP
-                    "",
+                    df.format(this.problemManager.getBestResult().getTieBreakingCost()),
                     // TAD
                     "",
                     // B_TAD
@@ -250,27 +259,6 @@ public class Logger {
         System.out.println(a);
         System.out.println(this.problemManager.getParameters().getSOLUTION_PATH());
 
-
-
-
-/*
-
-        try (
-                FileWriter lfw = new FileWriter(this.problemManager.getParameters().getSOLUTION_PATH(), false);
-                BufferedWriter lbw = new BufferedWriter(lfw);
-                PrintWriter liveWriter = new PrintWriter(lbw);
-        ) {
-
-            liveWriter.println("bonsoir");
-            System.out.println("yaaas");
-        } catch (IOException io) {
-            System.out.println("error writing update");
-        }
-*/
-
-
-
-        //this.printResult(result, out);
     }
 
 

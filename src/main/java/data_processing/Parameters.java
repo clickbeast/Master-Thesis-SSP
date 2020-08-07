@@ -23,13 +23,16 @@ public class Parameters {
     //cat_30_40_17_9
     //yan_8_15_10_29
     @Option(names = {"--instance"})
-    private String INSTANCE                 =   "cat_30_40_17_9";
+    //private String INSTANCE                 =   "cat_30_40_17_9";
     //private String INSTANCE                 =   "cat_40_60_20_10";
+    private String INSTANCE                 =   "cat_10_10_4_1";
+
 
     //private String INSTANCE                   =   "yan_8_15_10_29";
-    //private String INSTANCE                   =   "yan_5_6_3_1";
+    //private String INSTANCE
+    // =   "yan_5_6_3_1";
     //private String INSTANCE                 =   "yan_5_6_3_1";
-
+    //private String INSTANCE                 =   "mec_70_105_55_1";
 
     @Option(names = {"--run_type"})
     private String RUN_TYPE                 =   "TEST";
@@ -48,7 +51,7 @@ public class Parameters {
 
 
     @Option(names = {"--run_time"})
-    private  long RUN_TIME                  =   120;
+    private  long RUN_TIME                  =   1000;
     private  long START_TIME                =   0;
 
 
@@ -64,14 +67,16 @@ public class Parameters {
     @Option(names = {"--decode_version"})
     private String decodeVersion = "default";
     @Option(names = {"--run_backup_SD"})
-    private boolean runBackupSD = true;
+    private boolean runBackupSD = false;
     @Option(names = {"--parallel"})
     private boolean parallel = false;
 
 
 
+
     //FORCE SEQUECE
-    private int[] forceSequence = {0,2,3,4,1};
+    private int[] forceSequence = {0,1,2,3,4,5,7,6};
+    //private int[] forceSequence = {6,7,5,4,3,2,1,0};
 
 
     //OBJ
@@ -95,13 +100,13 @@ public class Parameters {
     @Option(names = {"--blink_rate"})
     private double BLINK_RATE               =   0.01;
     @Option(names = {"--avg_ruin"})
-    private int AVG_RUIN                    =   10;
+    private int AVG_RUIN                    =   7;
 
     //RR
     @Option(names = {"--select"})
     private String select                   =   "randomTool";
     @Option(names = {"--match"})
-    private String match               =   "ktnsTool";
+    private String match               =   "requiredTool";
     @Option(names = {"--insert"})
     private String insert               =   "best";
     @Option(names = {"--insert_positions"})
@@ -110,8 +115,6 @@ public class Parameters {
     private String decode               =   "full";
     @Option(names = {"--filter"})
     private String filter               =   "random";
-
-
 
 
     //STOCHASTIC
@@ -124,22 +127,36 @@ public class Parameters {
     private  boolean SA_TIMED               =   false;
 
     @Option(names = {"--start_temp"})
-    private  double  START_TEMP             =   100;
+    private  double  START_TEMP             =   70;
     @Option(names = {"--end_temp"})
-    private  double  END_TEMP               =   0.007;
+    private  double  END_TEMP               =   0.0027;
     @Option(names = {"--decay_rate"})
     private  double  DECAY_RATE             =   -1;
     //private  double  DECAY_RATE             =   0.99997;
     @Option(names = {"--force_alpha"})
-    private  boolean FORCE_ALPHA            =   true;
+    private  boolean FORCE_ALPHA            =   false;
     @Option(names = {"--force_iterations"})
-    private  boolean FORCE_ITERATIONS            =   true;
+    private  boolean FORCE_ITERATIONS            =   false;
     @Option(names = {"--iterations"})
-    private  long    ITERATIONS             =   300000;
+    private  long    ITERATIONS             =   100000;
+
+
+
+    @Option(names = {"--itmin"})
+    private  int  itmin                  =   1000;
+    @Option(names = {"--itmax"})
+    private  int  itmax                   =   700000;
     @Option(names = {"--alpha"})
-    private  double  ALPHA                  =   -1;
+    private  double  ALPHA                  =   1;
     @Option(names = {"--beta"})
-    private  double  BETA                   =   0;
+    private  double  BETA                   =   0.7;
+    @Option(names = {"--theta"})
+    private double THETA =                  -1;
+
+
+
+
+
     @Option(names = {"--w_iterations"})
     private  double  W_F                    =   1;
     @Option(names = {"--w_alpha"})
@@ -220,9 +237,41 @@ public class Parameters {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-
-
     public void generateSAParameters() {
+
+        if(isSA_TIMED()) {
+            this.setITERATIONS(Long.MAX_VALUE);
+        }else if(!isFORCE_ITERATIONS()){
+            int vmin_job = 8;
+            int vmin_tool = 10;
+            int vmin_mag = 10 ;
+
+            int vmax_job = 70;
+            int vmax_tool = 105;
+            int vmax_mag = 40;
+
+            double vmin = calculateV(vmin_job,vmin_tool,vmin_mag);
+            double vmax = calculateV(vmax_job,vmax_tool,vmax_mag);
+
+            double v = calculateV(this.getN_JOBS(), this.getN_TOOLS(),this.getMAGAZINE_SIZE());
+
+            System.out.println("vmin=" + vmin + "; vmax=" +  vmax  + "; v=" +  v);
+
+            //Linear interpolation
+            long iterations = (long) (this.getItmin()  + (((this.getItmax() - this.getItmin())/(vmax-vmin)) * (v - vmin)));
+
+            this.setITERATIONS(iterations);
+        }
+
+        this.calculateDecayRate();
+    }
+
+
+    public double calculateV(int nJobs, int nTools, int magazineSize) {
+        return getALPHA() * nJobs + getBETA() * nTools + getTHETA() * magazineSize;
+    }
+
+    public void generateSAParametersOld() {
 
         if(isSA_TIMED()) {
             this.setITERATIONS(Long.MAX_VALUE);
@@ -293,6 +342,8 @@ public class Parameters {
         if(this.isFORCE_ITERATIONS()) {
             this.forceIterations();
         }
+
+
 
         this.setITERATIONS(
                 (long) (getW_F() * Math.pow(10,(this.getALPHA() + this.getBETA()))));
@@ -893,11 +944,37 @@ public class Parameters {
                 '}';
     }
 
+
+    public double getTHETA() {
+        return THETA;
+    }
+
+    public void setTHETA(double THETA) {
+        this.THETA = THETA;
+    }
+
     public boolean isFORCE_ALPHA() {
         return FORCE_ALPHA;
     }
 
     public void setFORCE_ALPHA(boolean FORCE_ALPHA) {
         this.FORCE_ALPHA = FORCE_ALPHA;
+    }
+
+
+    public int getItmin() {
+        return itmin;
+    }
+
+    public void setItmin(int itmin) {
+        this.itmin = itmin;
+    }
+
+    public int getItmax() {
+        return itmax;
+    }
+
+    public void setItmax(int itmax) {
+        this.itmax = itmax;
     }
 }
