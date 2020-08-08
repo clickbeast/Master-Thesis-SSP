@@ -56,18 +56,13 @@ public class Decoder {
         //this.decodeV3(result);
     }
 
-
     public void decodeRR(Result result) throws IOException{
         switch (this.problemManager.getParameters().getDecode()) {
             case "full": {
-
-
                 //this.decode(result);
-                this.decodeV2RR(result);
-
+                this.decode(result);
                 break;
             }
-
             case "hybrid": {
                 this.hybridDecode(result);
                 break;

@@ -57,7 +57,7 @@ public class Parameters {
 
 
     @Option(names = {"--constructive_heuristic"})
-    private String constructiveHeuristic = "toolSequencing";
+    private String constructiveHeuristic = "random";
     @Option(names = {"--local_search"})
     private String localSearch = "ruinAndRecreate";
     @Option(names = {"--meta_heuristic"})
@@ -100,7 +100,7 @@ public class Parameters {
     @Option(names = {"--blink_rate"})
     private double BLINK_RATE               =   0.01;
     @Option(names = {"--avg_ruin"})
-    private int AVG_RUIN                    =   7;
+    private int AVG_RUIN                    =   4;
 
     //RR
     @Option(names = {"--select"})
@@ -138,14 +138,14 @@ public class Parameters {
     @Option(names = {"--force_iterations"})
     private  boolean FORCE_ITERATIONS            =   false;
     @Option(names = {"--iterations"})
-    private  long    ITERATIONS             =   100000;
+    private  long    ITERATIONS             =   20;
 
 
 
     @Option(names = {"--itmin"})
     private  int  itmin                  =   1000;
     @Option(names = {"--itmax"})
-    private  int  itmax                   =   700000;
+    private  int  itmax                   =   10000;
     @Option(names = {"--alpha"})
     private  double  ALPHA                  =   1;
     @Option(names = {"--beta"})
@@ -171,9 +171,6 @@ public class Parameters {
     private  double  W_TM                   =   0.2;
 
 
-
-
-
     //PROBLEM
     private int N_JOBS                      = -1;
     private int N_TOOLS                     = -1;
@@ -188,7 +185,7 @@ public class Parameters {
     @Option(names = {"--log"})
     private boolean LOG                     = true;
     @Option(names = {"--write_results"})
-    private boolean WRITE_RESULTS           = false;
+    private boolean WRITE_RESULTS           = true;
     @Option(names = {"--live_result"})
     private boolean LIVE_RESULT             = false;
 
@@ -216,7 +213,6 @@ public class Parameters {
                 FileWriter sfw = new FileWriter(getSTATE_PATH(), false);
                 BufferedWriter sbw = new BufferedWriter(sfw);
                 PrintWriter stateWriter = new PrintWriter(sbw);
-
         ){
             stateWriter.println(this.getINSTANCE_FOLDER());
             stateWriter.println(this.getINSTANCE());
@@ -242,6 +238,7 @@ public class Parameters {
         if(isSA_TIMED()) {
             this.setITERATIONS(Long.MAX_VALUE);
         }else if(!isFORCE_ITERATIONS()){
+
             int vmin_job = 8;
             int vmin_tool = 10;
             int vmin_mag = 10 ;
@@ -250,8 +247,8 @@ public class Parameters {
             int vmax_tool = 105;
             int vmax_mag = 40;
 
-            double vmin = calculateV(vmin_job,vmin_tool,vmin_mag);
-            double vmax = calculateV(vmax_job,vmax_tool,vmax_mag);
+            double vmin = calculateV(vmin_job, vmin_tool, vmin_mag);
+            double vmax = calculateV(vmax_job, vmax_tool, vmax_mag);
 
             double v = calculateV(this.getN_JOBS(), this.getN_TOOLS(),this.getMAGAZINE_SIZE());
 

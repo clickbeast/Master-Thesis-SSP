@@ -126,12 +126,22 @@ public class Result {
 
     public int prevJobId(int jobId) {
         int prevJobPos = this.getJobPositions()[jobId] - 1;
-        return prevJobPos;
+
+        if(prevJobPos < 0) {
+            return -1;
+        }
+
+        return this.getSequence()[prevJobPos];
     }
 
     public int nextJobId(int jobId) {
         int nextJobPos = this.getJobPositions()[jobId] + 1;
-        return nextJobPos;
+
+        if(nextJobPos > this.sequence.length - 1) {
+            return -1;
+        }
+
+        return this.getSequence()[nextJobPos];
     }
 
     public Job nextJob(Job job) {

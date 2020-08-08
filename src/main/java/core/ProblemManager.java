@@ -92,7 +92,8 @@ public class ProblemManager {
         this.TIME_LIMIT = System.currentTimeMillis() + 1000 * this.getParameters().getRUN_TIME();
 
         //
-        this.random = new Random();
+        //this.random = new Random();
+        this.random = new Random(this.parameters.getSEED());
 
         this.moveManager = new MoveManager(this);
         this.solutionManager = new SolutionManager(this);
@@ -142,6 +143,10 @@ public class ProblemManager {
                 return;
             }
         }
+
+        this.getLogger().writeResult(this.workingResult);
+        this.getLogger().writeLiveResult(this.workingResult);
+
 
         switch (this.getParameters().getMetaHeuristic()) {
             case "simulatedAnnealing": {
@@ -997,6 +1002,7 @@ public class ProblemManager {
                 noChange+=1;
             }
 
+
 /*
             if(deltaE > 0) {
 
@@ -1049,8 +1055,12 @@ public class ProblemManager {
             }
 */
 
+
+            //this.logger.writeResult(this.getWorkingResult());
+
+
             //LOGGING
-            if (steps % 1000 == 0) {
+            if (steps % 100 == 0) {
                 this.logger.log(this.getWorkingResult(), temperature);
             }
 

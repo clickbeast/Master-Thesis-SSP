@@ -1,0 +1,736 @@
+{
+  "base": "SSP",
+  "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+  "root_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/",
+  "files": [
+
+
+    {
+      "original": "L2-1.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_1",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 1
+    },
+    {
+      "original": "L2-2.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_2",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 2
+    },
+    {
+      "original": "L2-3.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_3",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 3
+    },
+    {
+      "original": "L2-4.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_4",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 4
+    },
+    {
+      "original": "L2-5.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_5",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 5
+    },
+    {
+      "original": "L2-6.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_6",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 6
+    },
+    {
+      "original": "L2-7.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_7",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 7
+    },
+    {
+      "original": "L2-8.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_8",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 8
+    },
+    {
+      "original": "L2-9.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_9",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 9
+    },
+    {
+      "original": "L2-10.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_10",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 10
+    },
+    {
+      "original": "L3-1.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_11",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 11
+    },
+    {
+      "original": "L3-2.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_12",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 12
+    },
+    {
+      "original": "L3-3.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_13",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 13
+    },
+    {
+      "original": "L3-4.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_14",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 14
+    },
+    {
+      "original": "L3-5.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_15",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 15
+    },
+    {
+      "original": "L3-6.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_16",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 16
+    },
+    {
+      "original": "L3-7.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_17",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 17
+    },
+    {
+      "original": "L3-8.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_18",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 18
+    },
+    {
+      "original": "L3-9.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_19",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 19
+    },
+    {
+      "original": "L3-10.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_20",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 20
+    },
+    {
+      "original": "L4-1.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_21",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 21
+    },
+    {
+      "original": "L4-2.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_22",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 22
+    },
+    {
+      "original": "L4-3.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_23",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 23
+    },
+    {
+      "original": "L4-4.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_24",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 24
+    },
+    {
+      "original": "L4-5.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_25",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 25
+    },
+    {
+      "original": "L4-6.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_26",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 26
+    },
+    {
+      "original": "L4-7.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_27",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 27
+    },
+    {
+      "original": "L4-8.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_28",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 28
+    },
+    {
+      "original": "L4-9.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_29",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 29
+    },
+    {
+      "original": "L4-10.txt",
+      "root_folder": "yanasse",
+      "instance": "yan_8_15_10_30",
+      "author": "yan",
+      "n_jobs": 8,
+      "n_tools": 15,
+      "magazine_size": 10,
+      "variation": 30
+    },
+
+
+
+
+    {
+      "original": "s3-1.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_25_1",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 25,
+      "variation": 1
+    },
+    {
+      "original": "s3-2.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_25_2",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 25,
+      "variation": 2
+    },
+    {
+      "original": "s3-3.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_25_3",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 25,
+      "variation": 3
+    },
+    {
+      "original": "s3-4.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_25_4",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 25,
+      "variation": 4
+    },
+    {
+      "original": "s3-5.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_25_5",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 25,
+      "variation": 5
+    },
+    {
+      "original": "s3-6.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_25_6",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 25,
+      "variation": 6
+    },
+    {
+      "original": "s3-7.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_25_7",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 25,
+      "variation": 7
+    },
+    {
+      "original": "s3-8.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_25_8",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 25,
+      "variation": 8
+    },
+    {
+      "original": "s3-9.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_25_9",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 25,
+      "variation": 9
+    },
+    {
+      "original": "s3-10.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_25_10",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 25,
+      "variation": 10
+    },
+
+
+
+
+
+
+
+
+    {
+      "original": "datB-1",
+      "root_folder": "catanzaro",
+      "instance": "cat_15_20_12_1",
+      "author": "cat",
+      "n_jobs": 15,
+      "n_tools": 20,
+      "magazine_size": 12,
+      "variation": 1
+    },
+    {
+      "original": "datB-2",
+      "root_folder": "catanzaro",
+      "instance": "cat_15_20_12_2",
+      "author": "cat",
+      "n_jobs": 15,
+      "n_tools": 20,
+      "magazine_size": 12,
+      "variation": 2
+    },
+    {
+      "original": "datB-3",
+      "root_folder": "catanzaro",
+      "instance": "cat_15_20_12_3",
+      "author": "cat",
+      "n_jobs": 15,
+      "n_tools": 20,
+      "magazine_size": 12,
+      "variation": 3
+    },
+    {
+      "original": "datB-4",
+      "root_folder": "catanzaro",
+      "instance": "cat_15_20_12_4",
+      "author": "cat",
+      "n_jobs": 15,
+      "n_tools": 20,
+      "magazine_size": 12,
+      "variation": 4
+    },
+    {
+      "original": "datB-5",
+      "root_folder": "catanzaro",
+      "instance": "cat_15_20_12_5",
+      "author": "cat",
+      "n_jobs": 15,
+      "n_tools": 20,
+      "magazine_size": 12,
+      "variation": 5
+    },
+    {
+      "original": "datB-6",
+      "root_folder": "catanzaro",
+      "instance": "cat_15_20_12_6",
+      "author": "cat",
+      "n_jobs": 15,
+      "n_tools": 20,
+      "magazine_size": 12,
+      "variation": 6
+    },
+    {
+      "original": "datB-7",
+      "root_folder": "catanzaro",
+      "instance": "cat_15_20_12_7",
+      "author": "cat",
+      "n_jobs": 15,
+      "n_tools": 20,
+      "magazine_size": 12,
+      "variation": 7
+    },
+    {
+      "original": "datB-8",
+      "root_folder": "catanzaro",
+      "instance": "cat_15_20_12_8",
+      "author": "cat",
+      "n_jobs": 15,
+      "n_tools": 20,
+      "magazine_size": 12,
+      "variation": 8
+    },
+    {
+      "original": "datB-9",
+      "root_folder": "catanzaro",
+      "instance": "cat_15_20_12_9",
+      "author": "cat",
+      "n_jobs": 15,
+      "n_tools": 20,
+      "magazine_size": 12,
+      "variation": 9
+    },
+    {
+      "original": "datB-10",
+      "root_folder": "catanzaro",
+      "instance": "cat_15_20_12_10",
+      "author": "cat",
+      "n_jobs": 15,
+      "n_tools": 20,
+      "magazine_size": 12,
+      "variation": 10
+    }
+
+
+    ,
+
+
+
+
+    {
+      "original": "datC-1",
+      "root_folder": "catanzaro",
+      "instance": "cat_30_40_17_1",
+      "author": "cat",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 1
+    },
+    {
+      "original": "datC-2",
+      "root_folder": "catanzaro",
+      "instance": "cat_30_40_17_2",
+      "author": "cat",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 2
+    },
+    {
+      "original": "datC-3",
+      "root_folder": "catanzaro",
+      "instance": "cat_30_40_17_3",
+      "author": "cat",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 3
+    },
+    {
+      "original": "datC-4",
+      "root_folder": "catanzaro",
+      "instance": "cat_30_40_17_4",
+      "author": "cat",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 4
+    },
+    {
+      "original": "datC-5",
+      "root_folder": "catanzaro",
+      "instance": "cat_30_40_17_5",
+      "author": "cat",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 5
+    },
+    {
+      "original": "datC-6",
+      "root_folder": "catanzaro",
+      "instance": "cat_30_40_17_6",
+      "author": "cat",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 6
+    },
+    {
+      "original": "datC-7",
+      "root_folder": "catanzaro",
+      "instance": "cat_30_40_17_7",
+      "author": "cat",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 7
+    },
+    {
+      "original": "datC-8",
+      "root_folder": "catanzaro",
+      "instance": "cat_30_40_17_8",
+      "author": "cat",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 8
+    },
+    {
+      "original": "datC-9",
+      "root_folder": "catanzaro",
+      "instance": "cat_30_40_17_9",
+      "author": "cat",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 9
+    },
+    {
+      "original": "datC-10",
+      "root_folder": "catanzaro",
+      "instance": "cat_30_40_17_10",
+      "author": "cat",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 10
+    },
+
+
+
+
+
+
+    {
+      "original": "datD-1",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_30_1",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 30,
+      "variation": 1
+    },
+    {
+      "original": "datD-2",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_30_2",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 30,
+      "variation": 2
+    },
+    {
+      "original": "datD-3",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_30_3",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 30,
+      "variation": 3
+    },
+    {
+      "original": "datD-4",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_30_4",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 30,
+      "variation": 4
+    },
+    {
+      "original": "datD-5",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_30_5",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 30,
+      "variation": 5
+    },
+    {
+      "original": "datD-6",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_30_6",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 30,
+      "variation": 6
+    },
+    {
+      "original": "datD-7",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_30_7",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 30,
+      "variation": 7
+    },
+    {
+      "original": "datD-8",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_30_8",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 30,
+      "variation": 8
+    },
+    {
+      "original": "datD-9",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_30_9",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 30,
+      "variation": 9
+    },
+    {
+      "original": "datD-10",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_30_10",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 30,
+      "variation": 10
+    }
+
+
+  ]
+}

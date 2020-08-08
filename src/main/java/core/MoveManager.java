@@ -28,15 +28,12 @@ public class MoveManager {
 
 
     public Result doMove(Result result) throws IOException {
-
         if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
             return this.swap(result);
         }else if(problemManager.getParameters().getLocalSearch().equals("ruinAndRecreate")){
             return this.ruinAndRecreate(result);
         }
-
         return null;
-
     }
 
     /* SWAP ------------------------------------------------------------------ */
@@ -301,12 +298,10 @@ public class MoveManager {
                     return count;
                 });
 
-
-        //TODO
-
         //FILTER
         switch (this.problemManager.getParameters().getFilter()) {
 
+            //OK
             case "random": {
                 //Remove at random
 
@@ -320,8 +315,9 @@ public class MoveManager {
                 int remove = ruined.getRemove().size() - this.problemManager.getParameters().getAVG_RUIN();
                 //ystem.out.println("Have to remove:" + remove);
 
-                //TODO: check for behavuoir of linked list during remove
 
+
+                //TODO: check for behavuoir of linked list during remove
                 if(remove > 0) {
                     for (int i = 0; i < remove; i++) {
                         //int removed = ruined.getRemove().remove(i);
@@ -341,12 +337,10 @@ public class MoveManager {
                     2) hopCreator
                     3) Most switches
                  */
-
-
                 int remove = ruined.getRemove().size() - this.problemManager.getParameters().getAVG_RUIN();
-
-                //sort
-                ruined.getRemove().sort(byNumberOfKTNSFail.thenComparing(byNumberOfSwitchesCreated));
+                this.problemManager.getLogger().writeLiveResult(result);
+                //sorts ascending
+                ruined.getRemove().sort(byNumberOfSwitchesCreated.thenComparing(byNumberOfKTNSFail));
 
                 for (int i = 0; i < remove; i++) {
                     ruined.getKeep().add(ruined.getRemove().removeLast());
@@ -506,7 +500,7 @@ public class MoveManager {
                     this.problemManager.getDecoder().decodeRR(temp);
 
 
-                    //this.problemManager.getLogger().writeLiveResult(temp);
+                    //this.problemManager.getLogger().writeResult(temp);
 
                     if(temp.getCost() <  bestCost) {
 

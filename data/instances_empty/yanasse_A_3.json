@@ -1,0 +1,107 @@
+{
+    "base": "SSP",
+    "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+    "root_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/",
+    "files": [
+        {
+            "original": "L32-1.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_20_5_1",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 20,
+            "magazine_size": 5,
+            "variation": 1
+        },
+        {
+            "original": "L32-2.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_20_5_2",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 20,
+            "magazine_size": 5,
+            "variation": 2
+        },
+        {
+            "original": "L32-3.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_20_5_3",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 20,
+            "magazine_size": 5,
+            "variation": 3
+        },
+        {
+            "original": "L32-4.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_20_5_4",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 20,
+            "magazine_size": 5,
+            "variation": 4
+        },
+        {
+            "original": "L32-5.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_20_5_5",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 20,
+            "magazine_size": 5,
+            "variation": 5
+        },
+        {
+            "original": "L32-6.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_20_5_6",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 20,
+            "magazine_size": 5,
+            "variation": 6
+        },
+        {
+            "original": "L32-7.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_20_5_7",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 20,
+            "magazine_size": 5,
+            "variation": 7
+        },
+        {
+            "original": "L32-8.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_20_5_8",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 20,
+            "magazine_size": 5,
+            "variation": 8
+        },
+        {
+            "original": "L32-9.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_20_5_9",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 20,
+            "magazine_size": 5,
+            "variation": 9
+        },
+        {
+            "original": "L32-10.txt",
+            "root_folder": "yanasse",
+            "instance": "yan_8_20_5_10",
+            "author": "yan",
+            "n_jobs": 8,
+            "n_tools": 20,
+            "magazine_size": 5,
+            "variation": 10
+        }
+    ]
+}

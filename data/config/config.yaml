@@ -2,11 +2,11 @@
 root_path: "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
 files: 'catanzaro_files.json' #filename of file containing instances to be run
 runs: 3  #int; amount of runs of each instance
-parallel: false      #(bool); run instances parallel
+parallel: true      #(bool); run instances parallel
 background: False    #(bool); run everything as a background task; only applicable when running parallel
 multi: True         #(bool); run multiple params versions
 use_runs: True      #(bool); run each instance multiple times
-jobs: 16             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
+jobs: 4             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
 use_filter: false   #(bool); only use the instances that match the filter
 open_results: true #(bool); calculate the results of the runs and open after running
 
@@ -23,7 +23,7 @@ params:
   # General: run info
   #
 
-  - run_type: TIEBREAKING          #name of the run , configured with the paramaters below
+  - run_type: GENERAL          #name of the run , configured with the paramaters below
     run: 0                    #(0); indicates which run it is
     root_folder: ''           #(empty); indicates the folder of the author, containing the problem and aux file.
     instance: ''              #(empty); indicates the instance being used
@@ -40,7 +40,7 @@ params:
     #
 
     constructive_heuristic: toolSequencing    #(ordered, toolSequencing, random)
-    local_search: swaps     #(ruinAndRecreate, swaps)
+    local_search: ruinAndRecreate     #(ruinAndRecreate, swaps)
     meta_heuristic: simulatedAnnealing #(steepestDescentBestRandom, steepestDescentBestFirst, simulatedAnnealing, hillClimbing, permutations, forceSequence, multiForceSequence)
     objective: switches              #(switches, tieBreaking, toolDistance, penalty); the objective function needed to be used
     run_backup_SD: true             #(bool)
@@ -113,7 +113,7 @@ params:
 
     log: true                      #(bool); write logs in general
     log_verbose: true              #(bool); write logs to stdout
-    write_results: true            #(bool); write results to file
+    write_results: false            #(bool); write results to file
     live_result: false             #(bool); transmit live results
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
