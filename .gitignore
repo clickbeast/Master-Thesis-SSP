@@ -1,5 +1,13 @@
 # Compiled class file
 *.class
 venv
+
+#ignore instance results
 data/instances_archive
+data/instances/catanzaro
+data/instances/crama
+data/instances/mecler
+data/instances/yanasse
+
+
 .gradle
