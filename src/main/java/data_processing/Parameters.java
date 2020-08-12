@@ -23,9 +23,9 @@ public class Parameters {
     //cat_30_40_17_9
     //yan_8_15_10_29
     @Option(names = {"--instance"})
-    //private String INSTANCE                 =   "cat_30_40_17_9";
+    private String INSTANCE                 =   "cat_30_40_17_9";
     //private String INSTANCE                 =   "cat_40_60_20_10";
-    private String INSTANCE                 =   "cat_10_10_4_1";
+    //private String INSTANCE                 =   "cat_10_10_4_1";
 
 
     //private String INSTANCE                   =   "yan_8_15_10_29";
@@ -127,9 +127,9 @@ public class Parameters {
     private  boolean SA_TIMED               =   false;
 
     @Option(names = {"--start_temp"})
-    private  double  START_TEMP             =   70;
+    private  double  START_TEMP             =   100;
     @Option(names = {"--end_temp"})
-    private  double  END_TEMP               =   0.0027;
+    private  double  END_TEMP               =   1;
     @Option(names = {"--decay_rate"})
     private  double  DECAY_RATE             =   -1;
     //private  double  DECAY_RATE             =   0.99997;
@@ -143,18 +143,15 @@ public class Parameters {
 
 
     @Option(names = {"--itmin"})
-    private  int  itmin                  =   1000;
+    private  int  itmin                  =   10000;
     @Option(names = {"--itmax"})
-    private  int  itmax                   =   10000;
+    private  int  itmax                   =   100000;
     @Option(names = {"--alpha"})
     private  double  ALPHA                  =   1;
     @Option(names = {"--beta"})
     private  double  BETA                   =   0.7;
     @Option(names = {"--theta"})
     private double THETA =                  -1;
-
-
-
 
 
     @Option(names = {"--w_iterations"})
@@ -347,6 +344,8 @@ public class Parameters {
     }
 
     public void calculateDecayRate() {
+
+
         this.setDECAY_RATE(Math.pow((this.getEND_TEMP()/this.getSTART_TEMP()), ( (float) 1/getITERATIONS())));
     }
 

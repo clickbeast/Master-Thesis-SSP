@@ -34,18 +34,17 @@ public class ProblemManager {
     private final int N_JOBS;
     private int[][] JOB_TOOL_MATRIX;
 
+    private int[][] SWITCHES_MATRIX;
 
-
-
-    private int[][] DIFFERENCE_MATRIX;
-
-    //The jobs A and B , difference int[A][B][Tool]
-/*    private int[][][] DIFFERENCE_TOOLS_MATRIX;*/
-    //common tools
     private int[][][] SHARED_TOOLS_MATRIX;
+    private int[][][] DIFFERENCE_TOOLS_MATRIX;
+
 
     private int[][] SWITCHES_LB_MATRIX;
     private int[][] TOOL_PAIR_MATRIX;
+
+
+
     private  MutableValueGraph<Integer, Integer> TOOL_PAIR_GRAPH;
 
     //MANAGERS
@@ -214,11 +213,13 @@ public class ProblemManager {
     public void initialize(){
         this.jobs = this.initializeJobs();
         this.initializeTools();
-        //this.DIFFERENCE_TOOLS_MATRIX = this.initializeDifferenceMatrix();
+        this.DIFFERENCE_TOOLS_MATRIX = this.initializeDifferenceMatrix();
+        this.SWITCHES_MATRIX = this.initializeSwitchesMatrix();
         this.SHARED_TOOLS_MATRIX = initializeSharedToolsMatrix();
         this.SWITCHES_LB_MATRIX = this.initializeSwitchesLowerBoundMatrix();
         this.TOOL_PAIR_MATRIX = this.initializeToolPairMatrix();
         this.TOOL_PAIR_GRAPH = this.initializeToolPairGraph();
+
     }
 
 
@@ -248,31 +249,34 @@ public class ProblemManager {
     }
 
 
+    public int[][] initializeSwitchesMatrix() {
+
+        int[][] switchesMatrix = new int[this.getN_JOBS()][this.getN_JOBS()];
+
+        for (int jobIdA = 0; jobIdA < this.getN_JOBS(); jobIdA++) {
+            for (int jobIdB = 0; jobIdB < this.getN_JOBS(); jobIdB++) {
+
+                //- -> +
+                int remove = 0;
+                //+ -> -
+                int insert = 0;
 
 
-    public int[][][] initializeSharedToolsBinaryMatrix() {
-
-        int[][][] sharedTools = new int[this.getN_JOBS()][this.getN_JOBS()][];
-
-        for (int job1Id = 0; job1Id < this.getN_JOBS(); job1Id++) {
-
-            for (int job2Id = job1Id; job2Id < this.getN_JOBS(); job2Id++) {
-
-                int[] shared = new int[this.getN_TOOLS()];
                 for (int toolId = 0; toolId < this.getN_TOOLS(); toolId++) {
-                    if (this.getJOB_TOOL_MATRIX()[job1Id][toolId] == this.getJOB_TOOL_MATRIX()[job2Id][toolId]) {
-                        shared[toolId] = this.getJOB_TOOL_MATRIX()[job1Id][toolId];
+                    if(this.getJOB_TOOL_MATRIX()[jobIdA][toolId]== 0 && this.getJOB_TOOL_MATRIX()[jobIdB][toolId] == 1) {
+                        insert+=1;
+                    }else if(this.getJOB_TOOL_MATRIX()[jobIdA][toolId] == 1 && this.getJOB_TOOL_MATRIX()[jobIdB][toolId] == 0) {
+                        remove+=1;
                     }
                 }
 
-                //Assign to both sides
-                sharedTools[job1Id][job2Id] = shared;
-                sharedTools[job2Id][job1Id]= shared;
+                int switches = Math.min(remove,insert);
 
+                switchesMatrix[jobIdA][jobIdB] = switches;
             }
         }
 
-        return sharedTools;
+        return null;
     }
 
 
@@ -989,7 +993,7 @@ public class ProblemManager {
             }
 
             //Improvement
-            if(this.workingResult.getCost() < this.bestResult.getCost()) {
+            if(this.workingResult.getnSwitches() < this.bestResult.getnSwitches()) {
                 this.workingResult.setImproved();
                 this.bestResult = this.workingResult.getCopy();
                 this.logger.log(this.workingResult, temperature);
@@ -1002,65 +1006,8 @@ public class ProblemManager {
                 noChange+=1;
             }
 
-
-/*
-            if(deltaE > 0) {
-
-                deltaE = this.workingResult.getCost() - this.bestResult.getCost();
-                double acceptance = Math.exp(-deltaE/ temperature);
-                double ran = random.nextDouble();
-
-                if(acceptance > ran) {
-                    //accept move -> not the best solution
-                    this.workingResult.setAccepted();
-                    this.currentResult = this.workingResult;
-                    accepted+=1;
-                }else {
-                    rejected += 1;
-                    this.workingResult.setRejected();
-                    //cancel move
-                }
-            }else{
-
-                this.workingResult.setImproved();
-
-                if(this.workingResult.getCost() <  this.bestResult.getCost()) {
-                    this.currentResult = this.workingResult.getCopy();
-                    nBestResults = 1;
-                    this.logger.log(this.workingResult);
-                }else if(this.workingResult.getCost() == this.bestResult.getCost()) {
-                    nBestResults+=1;
-                    float probability = 1/  (float)  nBestResults;
-                    if(random.nextDouble() <= probability) {
-                        this.currentResult = this.workingResult.getCopy();
-                    }
-                }
-
-
-                this.currentResult = this.workingResult;
-                this.bestResult = this.currentResult.getCopy();
-                this.logger.log(this.getWorkingResult(), temperature);
-
-
-                this.logger.writeResult(this.getWorkingResult());
-
-
-                //TODO: cleanup
-                if(this.getWorkingResult().getnSwitches() == this.getBestResult().getnSwitches()) {
-                    noChange+=1;
-                }
-
-
-                improved+=1;
-            }
-*/
-
-
-            //this.logger.writeResult(this.getWorkingResult());
-
-
             //LOGGING
-            if (steps % 100 == 0) {
+            if (steps % 3000 == 0) {
                 this.logger.log(this.getWorkingResult(), temperature);
             }
 
@@ -1308,13 +1255,12 @@ public class ProblemManager {
         return improved;
     }
 
-
-    public int[][] getDIFFERENCE_MATRIX() {
-        return DIFFERENCE_MATRIX;
+    public int[][][] getDIFFERENCE_TOOLS_MATRIX() {
+        return DIFFERENCE_TOOLS_MATRIX;
     }
 
-    public void setDIFFERENCE_MATRIX(int[][] DIFFERENCE_MATRIX) {
-        this.DIFFERENCE_MATRIX = DIFFERENCE_MATRIX;
+    public void setDIFFERENCE_TOOLS_MATRIX(int[][][] DIFFERENCE_TOOLS_MATRIX) {
+        this.DIFFERENCE_TOOLS_MATRIX = DIFFERENCE_TOOLS_MATRIX;
     }
 
     public void setImproved(long improved) {
@@ -1328,5 +1274,14 @@ public class ProblemManager {
 
     public MutableValueGraph<Integer, Integer> getTOOL_PAIR_GRAPH() {
         return TOOL_PAIR_GRAPH;
+    }
+
+
+    public int[][] getSWITCHES_MATRIX() {
+        return SWITCHES_MATRIX;
+    }
+
+    public void setSWITCHES_MATRIX(int[][] SWITCHES_MATRIX) {
+        this.SWITCHES_MATRIX = SWITCHES_MATRIX;
     }
 }

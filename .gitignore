@@ -4,10 +4,15 @@ venv
 
 #ignore instance results
 data/instances_archive
+data/instances_remote
+data/instances_local
 data/instances/catanzaro
 data/instances/crama
 data/instances/mecler
 data/instances/yanasse
+
+
+
 
 
 .gradle

@@ -362,6 +362,14 @@ public class MoveManager {
 
 
 
+    public Ruin selectZeroBlock(Result result) {
+
+        return null;
+    }
+
+
+
+
     //<editor-fold desc="RR sub routines">
 
 
