@@ -25,14 +25,14 @@ public class OutputData {
     private String instance = "bonjour";
 
 
-    public OutputData(String instance, int MAGAZINE_SIZE, int n_TOOLS, int n_JOBS, int[][] JOB_TOOL_MATRIX, int[][] DIFFERENCE_MATRIX,
+    public OutputData(String instance, int MAGAZINE_SIZE, int n_TOOLS, int n_JOBS, int[][] JOB_TOOL_MATRIX,
                       int[][][] SHARED_TOOLS_MATRIX, int[][] SWITCHES_LB_MATRIX, int[][] TOOL_PAIR_MATRIX) {
         this.instance = instance;
         this.magazineSize = MAGAZINE_SIZE;
         nTools = n_TOOLS;
         nJobs = n_JOBS;
         this.jobToolMatrix = JOB_TOOL_MATRIX;
-        this.differenceMatrix = DIFFERENCE_MATRIX;
+        this.differenceMatrix = null;
         this.sharedToolsMatrix = SHARED_TOOLS_MATRIX;
         this.switchesLbMatrix = SWITCHES_LB_MATRIX;
         this.toolPairMatrix = TOOL_PAIR_MATRIX;

@@ -1,6 +1,7 @@
 package core;
 
 import data_processing.Parameters;
+import models.Feedback;
 import models.elemental.Job;
 import util.General;
 
@@ -27,12 +28,16 @@ public class Decoder {
     //aux
     int[] visited;
 
+
+    int trackKtns;
+
     /* SETUP ------------------------------------------------------------------------------------------------------- */
 
 
     public Decoder(ProblemManager problemManager) {
         this.problemManager = problemManager;
         this.parameters = problemManager.getParameters();
+        this.trackKtns = 0;
     }
 
 
@@ -155,6 +160,8 @@ public class Decoder {
 
         this.evaluate(result);
     }
+
+
 
     public void decodeV2RR(Result result) throws IOException {
 

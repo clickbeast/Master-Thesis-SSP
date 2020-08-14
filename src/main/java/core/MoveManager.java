@@ -1,8 +1,6 @@
 package core;
 
 import core.moves.Move;
-import core.moves.RR;
-import core.moves.Swap;
 import models.elemental.Job;
 
 
@@ -11,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MoveManager {
 
@@ -70,68 +69,27 @@ public class MoveManager {
     }
 
 
-    public Result rotateSequence(Result result) {
-
-        return result;
-    }
-
-    //TODO:
-    public Result jobPairSwap(Result result) {
-
-        //int jobA = this.random.nextInt(sequence.length);
-        return null;
-
-    }
-
-
-    //TODO:
-    public Result inversionBetweenTwoJobs(Result result) {
-        return null;
-    }
-
-    public Result swapTwoBlocks(Result result) {
-
-        int[] sequence = result.getSequence();
-
-        int maxLength = sequence.length/2;
-        int length = this.random.nextInt(maxLength);
-
-        int b1 = this.random.nextInt(sequence.length-length);
-
-        //TODO: makes sure they are spread out by a certain amount
-
-        int b2 = this.random.nextInt(sequence.length - length);
-        for (int i = 0; i < length; i++) {
-
-            //Swap
-            int tmp = sequence[b1];
-            sequence[b1] = sequence[b2];
-            sequence[b2] = tmp;
-
-            b1 += 1;
-            b2 += 1;
-
-        }
-        return result;
-    }
-
-
-    public Result swapTwoBlocksSeparated(Result result) {
-
-        return null;
-    }
-
-
-
     /* RUIN + RECREATE ------------------------------------------------------------------ */
 
 
     public Result ruinAndRecreate(Result result) throws IOException {
-        Ruin ruined = ruin(result);
-        recreate(result, ruined);
+        Ruin ruin = null;
+
+        int[] select = {0,0,0};
+        int picked = select[this.random.nextInt(select.length)];
+
+        if(picked == 0) {
+            ruin = ruinCross(result);
+        }else{
+            ruin = ruinBlock(result);
+        }
+
+
+
+        recreate(result, ruin);
+
         return result;
     }
-
 
 
     class Ruin {
@@ -170,7 +128,7 @@ public class MoveManager {
 
     // STEP 1: Ruin
     //- - - - - - - - - - - -
-    public Ruin ruin(Result result) {
+    public Ruin ruinCross(Result result) {
 
         Ruin ruined = new Ruin();
 
@@ -247,7 +205,6 @@ public class MoveManager {
 
                 break;
             }
-
 
             default: {
                 this.problemManager.getLogger().logInfo("NO SELECT CHOSEN");
@@ -360,95 +317,169 @@ public class MoveManager {
     }
 
 
+    public Ruin ruinMultiCross(Result result) {
+        Ruin ruined = new Ruin();
+
+        int nTools =  this.random.nextInt(this.problemManager.getMAX_N_TOOLS()) + 1;
+        int[] toolId = new int[nTools];
+
+        //select n tools at random
+        for (int i = 0; i < nTools; i++) {
+            int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
+            toolId[i] = selectedToolId;
+        }
+
+        boolean[] removed = new boolean[this.problemManager.getN_JOBS()];
+        int[] nMatchesPerJob = new int[this.problemManager.getN_JOBS()];
+        int max = 0;
+
+        //match jobs, count how much matches per job
+        jobLoop: for (int jobId = 0; jobId < this.problemManager.getN_JOBS(); jobId++) {
+            if(this.problemManager.getJobs()[jobId].getSet().length >= nTools) {
+                for (int j = 0; j < nTools; j++) {
+                    if(this.problemManager.getJOB_TOOL_MATRIX()[jobId][toolId[j]] == 1) {
+                        nMatchesPerJob[jobId]+= 1;
+                    }
+                }
+            }
+
+            if (nMatchesPerJob[jobId] > max) {
+                max = nMatchesPerJob[jobId];
+            }
+        }
 
 
-    public Ruin selectZeroBlock(Result result) {
+        //Only keep maximum matches
+        for(int jobId = 0; jobId < nMatchesPerJob.length; jobId++) {
+            if(nMatchesPerJob[jobId] == max) {
+                ruined.getRemove().add(jobId);
+                removed[jobId] =  true;
+            }
+        }
 
-        return null;
+
+        //Add remaining tools to keep
+        for (int seqPos = 0; seqPos < result.getSequence().length; seqPos++) {
+            int jobId = result.getSequence()[seqPos];
+            if(!removed[jobId]) {
+                ruined.getKeep().add(jobId);
+            }
+        }
+
+        return ruined;
     }
 
 
+    public Ruin ruinBlock(Result result) {
+        Ruin ruined = new Ruin();
+
+        //Select random tool
+        int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
+
+        //Select random job
+        int selectedJobId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_JOBS());
 
 
-    //<editor-fold desc="RR sub routines">
+        //int[] position = new int[this.problemManager.getN_JOBS()];
+        //int found
 
 
-    // STEP 1A: SELECT
-    //- - - - - - - - - - - -
+
+       /* //Find closest block
+        if(result.getJobToolMatrix()[selectedJobId][selectedToolId] > 0) {
+            if(selectedJobId > this.problemManager.getN_JOBS() / 2) {
+
+                boolean run = false;
+                ruined.getKeep().add(selectedJobId);
 
 
-    public  Ruin selectRandomTool(Result result) {
+                //RIGHT TRAVERSE
+                for (int i = selectedJobId; i < this.problemManager.getN_JOBS(); i++) {
+                    if(result.getJobToolMatrix()[i][selectedJobId] == 0) {
+                        run = true;
+                        ruined.getRemove().add(result.getSequence()[i]);
+                    }else{
+                        ruined.getKeep().add(result.getSequence()[i]);
+                    }
+                }
 
-        return null;
+                if(!run) {
+                    //LEFT TRAVERSE
+                    for (int i = selectedJobId; i > 0; i--) {
+                        if (result.getJobToolMatrix()[i][selectedJobId] == 0) {
+                            ruined.getRemove().add(result.getSequence()[i]);
+                        }else{
+                            ruined.getKeep().add(result.getSequence()[i]);
+                        }
+                    }
+                }else{
+                    //LEFT TRAVERSE
+                    for (int i = selectedJobId; i > 0; i--) {
+                        ruined.getKeep().add(result.getSequence()[i]);
+                    }
+                }
 
+            }else{
+                boolean run = false;
+                ruined.getKeep().add(selectedJobId);
+
+                //LEFT TRAVERSE
+                for (int i = selectedJobId; i > 0; i--) {
+                    if(result.getJobToolMatrix()[i][selectedJobId] == 0) {
+                        run = true;
+                        ruined.getRemove().add(result.getSequence()[i]);
+                    }else{
+                        ruined.getKeep().add(result.getSequence()[i]);
+                    }
+                }
+
+                if(!run) {
+                    //RIGHT TRAVERSE
+                    for (int i = selectedJobId; i < this.problemManager.getN_JOBS(); i++) {
+                        if (result.getJobToolMatrix()[i][selectedJobId] == 0) {
+                            ruined.getRemove().add(result.getSequence()[i]);
+                        }else{
+                            ruined.getKeep().add(result.getSequence()[i]);
+                        }
+                    }
+                }else{
+                    //RIGHT TRAVERSE
+                    for (int i = selectedJobId; i < this.problemManager.getN_JOBS(); i++) {
+                        ruined.getKeep().add(result.getSequence()[i]);
+                    }
+                }
+            }
+
+        }else{
+
+            //LEFT TRAVERSE
+            for (int i = selectedJobId; i > 0; i--) {
+                if (result.getJobToolMatrix()[i][selectedJobId] == 0) {
+                    ruined.getRemove().add(result.getSequence()[i]);
+                }else{
+                    ruined.getKeep().add(result.getSequence()[i]);
+                }
+            }
+
+
+            //RIGHT TRAVERSE
+            for (int i = selectedJobId; i < this.problemManager.getN_JOBS(); i++) {
+                if (result.getJobToolMatrix()[i][selectedJobId] == 0) {
+                    ruined.getRemove().add(result.getSequence()[i]);
+                }else{
+                    ruined.getKeep().add(result.getSequence()[i]);
+                }
+            }
+
+        }*/
+
+
+
+        //System.out.println(ruined.getKeep().size() + ruined.getRemove().size());
+        //System.out.println(ruined.getRemove());
+
+        return ruined;
     }
-
-
-    public Ruin selectRandomJob(Result result) {
-
-
-        return null;
-    }
-
-
-    public Ruin selectMostHopsRoulette(Result result) {
-
-
-        return null;
-    }
-
-
-    // STEP 1B: MATCH
-    //- - - - - - - - - - - -
-
-
-    public Ruin matchRequiredTool(Result result, int id) {
-
-        return null;
-    }
-
-
-    public Ruin matchNotRequiredTool(Result result, int id) {
-
-        return null;
-    }
-
-    public Ruin matchKtnsTool(Result result, int id) {
-
-        return null;
-    }
-
-
-    public Ruin matchKtnsFail(Result result, int id) {
-
-        return null;
-    }
-
-
-
-    // STEP 1B': REMOVE JOBS
-    //- - - - - - - - - - - -
-
-
-    public void remove() {
-
-    }
-
-    public void removeRandom() {
-
-
-
-    }
-
-    public void filterWorst() {
-
-
-
-    }
-
-
-
-    //</editor-fold>
 
 
     // STEP 2: Recreate
@@ -456,26 +487,22 @@ public class MoveManager {
 
 
     public Result recreate(Result result, Ruin ruined) throws IOException {
-        //System.out.println("allo");
+
+        insertJobsRandomBestPositionBlinks(result, ruined);
+
+        /*//System.out.println("allo");
         if(this.problemManager.getParameters().getInsertPositions().equals("all")) {
             insertJobsRandomBestPositionBlinks(result, ruined);
         }else if(this.problemManager.getParameters().getInsertPositions().equals("removed")){
             //TODO: recreate only on removed positions
         }
-
+*/
         return result;
     }
 
 
     // STEP 2A: Insert
     //- - - - - - - - - - - -
-
-
-    //TODO
-    public void insertJobsRemovedRandomBestPositionsBlinks(Result result, Ruin ruined) {
-
-
-    }
 
 
 
@@ -502,9 +529,10 @@ public class MoveManager {
                 if (random.nextDouble() <= (1 - this.problemManager.getParameters().getBLINK_RATE())) {
 
                     sequence.add(index, jobId);
+
+
                     //To Array -> optimize to linked list strucuture
                     temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
-
                     this.problemManager.getDecoder().decodeRR(temp);
 
 

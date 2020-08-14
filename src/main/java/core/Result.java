@@ -104,8 +104,14 @@ public class Result {
     }
 
 
-    /* DATA MODEL SETUP ------------------------------------------------------------------ */
 
+    public Result getDeltaCopy() {
+        //Jobtool matrix stays the same largley:
+        return null;
+    }
+
+
+    /* DATA MODEL SETUP ------------------------------------------------------------------ */
 
 
 

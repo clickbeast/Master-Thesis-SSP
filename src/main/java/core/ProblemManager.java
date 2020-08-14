@@ -43,7 +43,7 @@ public class ProblemManager {
     private int[][] SWITCHES_LB_MATRIX;
     private int[][] TOOL_PAIR_MATRIX;
 
-
+    private int MAX_N_TOOLS;
 
     private  MutableValueGraph<Integer, Integer> TOOL_PAIR_GRAPH;
 
@@ -197,17 +197,12 @@ public class ProblemManager {
             this.steepestDescentRandomBest();
         }
 
-
         this.logger.logInfo("FINAL SOLUTION FOUND: " + String.valueOf(this.bestResult.getCost()));
         this.logger.log(this.bestResult);
         this.logger.writeResult(bestResult);
         this.logger.writeSolution(this.bestResult);
         this.logger.writeParameters();
     }
-
-
-
-
 
 
     public void initialize(){
@@ -219,7 +214,7 @@ public class ProblemManager {
         this.SWITCHES_LB_MATRIX = this.initializeSwitchesLowerBoundMatrix();
         this.TOOL_PAIR_MATRIX = this.initializeToolPairMatrix();
         this.TOOL_PAIR_GRAPH = this.initializeToolPairGraph();
-
+        this.setMAX_N_TOOLS(this.findMaxNTools());
     }
 
 
@@ -235,6 +230,21 @@ public class ProblemManager {
         }
         return jobs;
     }
+
+
+    public int findMaxNTools() {
+        int max = 0;
+
+        for (int jobId = 0; jobId < this.getN_JOBS(); jobId++) {
+            int nTools = this.getJobs()[jobId].getSet().length;
+            if(nTools > max) {
+                max = nTools;
+            }
+        }
+        return max;
+    }
+
+
 
     public void initializeTools() {
 
@@ -947,10 +957,25 @@ public class ProblemManager {
     }
 
     //SA
-
-
     public void permutations() {
         this.logger.logInfo("Finding all permutations");
+    }
+
+
+
+    public boolean ignoreSequence(Result result) {
+        int forwardSeqPos = 0;
+        int valueForward = 0;
+        int valueBackward = 0;
+
+        for (int backwardSeqPos = this.getN_JOBS(); backwardSeqPos > 0 ; backwardSeqPos--) {
+            valueForward += (result.getSequence()[forwardSeqPos] * backwardSeqPos);
+            valueBackward += (result.getSequence()[backwardSeqPos-1] * backwardSeqPos);
+            forwardSeqPos += 1;
+        }
+
+        return valueForward >= valueBackward;
+
     }
 
     public void simulatedAnnealing() throws IOException {
@@ -977,6 +1002,14 @@ public class ProblemManager {
 
             //Move
             this.getMoveManager().doMove(this.workingResult);
+
+            //Reduce search spae
+
+            /*if(ignoreSequence(this.workingResult)) {
+                this.workingResult = this.currentResult.getCopy();
+                continue;
+            }*/
+
             //Evaluate
             this.getDecoder().decode(this.workingResult);
 
@@ -1283,5 +1316,14 @@ public class ProblemManager {
 
     public void setSWITCHES_MATRIX(int[][] SWITCHES_MATRIX) {
         this.SWITCHES_MATRIX = SWITCHES_MATRIX;
+    }
+
+
+    public int getMAX_N_TOOLS() {
+        return MAX_N_TOOLS;
+    }
+
+    public void setMAX_N_TOOLS(int MAX_N_TOOLS) {
+        this.MAX_N_TOOLS = MAX_N_TOOLS;
     }
 }
