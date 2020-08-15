@@ -12,3 +12,4 @@ data/instances_remote
 data/instances_local
 
 .gradle
+/data/instances_local/
