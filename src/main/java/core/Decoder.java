@@ -502,7 +502,7 @@ public class Decoder {
 
 
 
-    //OK
+    //TODO: FIX, counts first ones as zero block and does not count last one good -> retest
     public int[][] zeroBlockLength(Result result) {
 
         int[][] zeroBlocks = new int[this.problemManager.getN_TOOLS()][];

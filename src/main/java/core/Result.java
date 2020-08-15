@@ -140,6 +140,10 @@ public class Result {
         return this.getSequence()[prevJobPos];
     }
 
+    public int getJobIdAtSeqPos(int seqPos) {
+        return this.getSequence()[seqPos];
+    }
+
     public int nextJobId(int jobId) {
         int nextJobPos = this.getJobPositions()[jobId] + 1;
 
@@ -176,8 +180,8 @@ public class Result {
     }
 
 
-    public boolean toolUsedAtSeqPos(int i, int toolId) {
-        return this.getJobToolMatrix()[this.getJobSeqPos(i).getId()][toolId] == 1;
+    public boolean toolUsedAtSeqPos(int seqPos, int toolId) {
+        return this.getJobToolMatrix()[this.getJobSeqPos(seqPos).getId()][toolId] == 1;
     }
 
     public int[] getTools(Job job) {

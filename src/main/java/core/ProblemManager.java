@@ -76,7 +76,6 @@ public class ProblemManager {
     private long rejected = 0;
     private long improved = 0;
 
-
     public ProblemManager(InputData inputData) throws IOException {
         //Configure Constants
         this.MAGAZINE_SIZE = inputData.getMAGAZINE_SIZE();
@@ -91,8 +90,12 @@ public class ProblemManager {
         this.TIME_LIMIT = System.currentTimeMillis() + 1000 * this.getParameters().getRUN_TIME();
 
         //
-        //this.random = new Random();
-        this.random = new Random(this.parameters.getSEED());
+        if(this.getParameters().isUSE_SEED()) {
+            this.random = new Random(this.getParameters().getSEED());
+        }else{
+            this.random = new Random();
+        }
+
 
         this.moveManager = new MoveManager(this);
         this.solutionManager = new SolutionManager(this);
@@ -207,6 +210,7 @@ public class ProblemManager {
 
     public void initialize(){
         this.jobs = this.initializeJobs();
+        this.tools = this.initializeTools();
         this.initializeTools();
         this.DIFFERENCE_TOOLS_MATRIX = this.initializeDifferenceMatrix();
         this.SWITCHES_MATRIX = this.initializeSwitchesMatrix();
@@ -231,6 +235,17 @@ public class ProblemManager {
         return jobs;
     }
 
+    public Tool[] initializeTools() {
+
+        Tool[] tools = new Tool[N_TOOLS];
+
+        for (int i = 0; i < N_TOOLS; i++) {
+            Tool tool = new Tool(i,this);
+            tools[i] = tool;
+        }
+        return tools;
+
+    }
 
     public int findMaxNTools() {
         int max = 0;
@@ -245,10 +260,6 @@ public class ProblemManager {
     }
 
 
-
-    public void initializeTools() {
-
-    }
 
 
     //TODO: initializeDifferenceMatrix
@@ -1326,4 +1337,5 @@ public class ProblemManager {
     public void setMAX_N_TOOLS(int MAX_N_TOOLS) {
         this.MAX_N_TOOLS = MAX_N_TOOLS;
     }
+
 }

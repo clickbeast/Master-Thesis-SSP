@@ -34,6 +34,8 @@ public class Parameters {
     //private String INSTANCE                 =   "yan_5_6_3_1";
     //private String INSTANCE                 =   "mec_70_105_55_1";
 
+
+
     @Option(names = {"--run_type"})
     private String RUN_TYPE                 =   "TEST";
     @Option(names = {"--run"})
@@ -102,6 +104,9 @@ public class Parameters {
     @Option(names = {"--avg_ruin"})
     private int AVG_RUIN                    =   4;
 
+
+
+
     //RR
     @Option(names = {"--select"})
     private String select                   =   "randomTool";
@@ -120,6 +125,8 @@ public class Parameters {
     //STOCHASTIC
     @Option(names = {"--seed"})
     private  int SEED                       =   7;
+    @Option(names = {"--use_seed"})
+    private boolean USE_SEED                =  true;
 
 
     //SA
@@ -972,5 +979,14 @@ public class Parameters {
 
     public void setItmax(int itmax) {
         this.itmax = itmax;
+    }
+
+
+    public boolean isUSE_SEED() {
+        return USE_SEED;
+    }
+
+    public void setUSE_SEED(boolean USE_SEED) {
+        this.USE_SEED = USE_SEED;
     }
 }
