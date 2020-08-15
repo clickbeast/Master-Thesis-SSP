@@ -1,4 +1,4 @@
-/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_10_10_4_1
-cat_10_10_4_1
-TEST
+/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/crama/cram_30_40_25_6
+cram_30_40_25_6
+RR-BLOCK-A
 0

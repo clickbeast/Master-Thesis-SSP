@@ -73,16 +73,14 @@ public class MoveManager {
     public Result ruinAndRecreate(Result result) throws IOException {
         Ruin ruin = null;
 
-        int[] select = {0,0,0};
+        int[] select = {0,0,1};
         int picked = select[this.random.nextInt(select.length)];
 
         if(picked == 0) {
-            ruin = ruinBlock(result);
+            ruin = ruinMultiCross(result);
         }else{
             ruin = ruinBlock(result);
         }
-
-
 
         recreate(result, ruin);
 
@@ -502,6 +500,7 @@ public class MoveManager {
 
     public Ruin ruinMultiBlock(Result result) {
 
+        int nTools =  this.random.nextInt(this.problemManager.getMAX_N_TOOLS()) + 1;
 
 
         return null;
@@ -572,7 +571,6 @@ public class MoveManager {
                     //To Array -> optimize to linked list strucuture
                     temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
                     this.problemManager.getDecoder().decodeRR(temp);
-
 
                     //this.problemManager.getLogger().writeResult(temp);
 
