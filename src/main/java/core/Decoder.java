@@ -27,8 +27,6 @@ public class Decoder {
 
     //aux
     int[] visited;
-
-
     int trackKtns;
 
     /* SETUP ------------------------------------------------------------------------------------------------------- */
@@ -72,7 +70,6 @@ public class Decoder {
                 this.hybridDecode(result);
                 break;
             }
-
 
             case "shallow": {
                 this.shallowDecode(result);
@@ -488,16 +485,6 @@ public class Decoder {
     }
 
 
-    public int count_switches_delta(Result result) {
-
-        for (int jobId = 0; jobId < this.problemManager.getN_JOBS(); jobId++) {
-
-        }
-
-
-        return 0;
-    }
-
 
 
 
@@ -519,8 +506,12 @@ public class Decoder {
 
                 if(!run) {
                     if(!used) {
-                        run = true;
-                        length+=1;
+                        if(seqPos > 0) {
+                            if(result.toolUsedAtSeqPos(seqPos -1, toolId)) {
+                                run = true;
+                                length+=1;
+                            }
+                        }
                     }
 
                 }else{
@@ -534,11 +525,20 @@ public class Decoder {
                         run = false;
                     }
 
+                    //Run is finished
+                    if(seqPos == result.getSequence().length - 1) {
+                        run = false;
+                        blocks.add(length);
+                        length = 0;
+                    }
+
+
                 }
             }
 
             zeroBlocks[toolId] = blocks.stream().mapToInt(i->i).toArray();
         }
+
         return zeroBlocks;
     }
 

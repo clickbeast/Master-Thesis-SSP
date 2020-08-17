@@ -32,6 +32,8 @@ public class Parameters {
     //private String INSTANCE
     // =   "yan_5_6_3_1";
     //private String INSTANCE                 =   "yan_5_6_3_1";
+    //private String INSTANCE                 =   "yan_4_4_2_1";
+
     //private String INSTANCE                 =   "mec_70_105_55_1";
 
 
@@ -77,7 +79,9 @@ public class Parameters {
 
 
     //FORCE SEQUECE
-    private int[] forceSequence = {0,1,2,3,4,5,7,6};
+    private int[] forceSequence = {0,1,2,3};
+
+
     //private int[] forceSequence = {6,7,5,4,3,2,1,0};
 
 
@@ -134,9 +138,9 @@ public class Parameters {
     private  boolean SA_TIMED               =   false;
 
     @Option(names = {"--start_temp"})
-    private  double  START_TEMP             =   100;
+    private  double  START_TEMP             =   10;
     @Option(names = {"--end_temp"})
-    private  double  END_TEMP               =   1;
+    private  double  END_TEMP               =    0.001;
     @Option(names = {"--decay_rate"})
     private  double  DECAY_RATE             =   -1;
     //private  double  DECAY_RATE             =   0.99997;

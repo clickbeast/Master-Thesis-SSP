@@ -505,7 +505,6 @@ public class ProblemManager {
         this.logger.logInfo("Initial Solution Created");
         this.logger.log(this.workingResult);
 
-
     }
 
 
@@ -1030,6 +1029,10 @@ public class ProblemManager {
                 this.workingResult.setAccepted();
                 this.currentResult = this.workingResult;
                 accepted+=1;
+/*                if (steps % 10 == 0) {
+
+                    this.logger.log(this.workingResult, temperature);
+                }*/
             }else{
                 //Reject
                 this.workingResult.setRejected();

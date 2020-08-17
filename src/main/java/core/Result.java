@@ -29,7 +29,6 @@ public class Result {
     private int[] nToolsKeep;
     private int[] nToolsAdd;
 
-
     //
 
     //tools perspective
@@ -192,6 +191,10 @@ public class Result {
         return this.getTools(this.getJobSeqPos(i));
     }
 
+
+    public int getSeqPosAtJobId(int jobId) {
+        return this.getJobPositions()[jobId];
+    }
 
 
 

@@ -6,7 +6,7 @@ parallel: True      #(bool); run instances parallel
 background: False    #(bool); run everything as a background task; only applicable when running parallel
 multi: True         #(bool); run multiple params versions
 use_runs: True      #(bool); run each instance multiple times
-jobs: 6             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
+jobs: 8             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
 use_filter: false   #(bool); only use the instances that match the filter
 open_results: true #(bool); calculate the results of the runs and open after running
 
@@ -23,7 +23,7 @@ params:
   # General: run info
   #
 
-  - run_type: RR-BLOCK-A          #name of the run , configured with the paramaters below
+  - run_type: RR-MULTI-CROSS-BLOCK-favorCross-SA-TUNED      #name of the run , configured with the paramaters below
     run: 0                    #(0); indicates which run it is
     root_folder: ''           #(empty); indicates the folder of the author, containing the problem and aux file.
     instance: ''              #(empty); indicates the instance being used
@@ -93,8 +93,8 @@ params:
     # Simulated Annealing
     #
 
-    start_temp: 100                 #double; start temperature
-    end_temp:  1               #double; end temperature
+    start_temp: 10                 #double; start temperature
+    end_temp:   0.001               #double; end temperature
     sa_timed: false                 #double;
     decay_rate: -1                  #(double,-1: auto generate); the decay rate,
     force_iterations: false         #(bool); use hardcoded iterations function;
@@ -103,14 +103,14 @@ params:
     beta: 0.7
     theta: -1
     itmin: 30000
-    itmax: 400000
+    itmax: 700000
 
 
     #
     # Logging
 
     log: true                      #(bool); write logs in general
-    log_verbose: true              #(bool); write logs to stdout
+    log_verbose: false              #(bool); write logs to stdout
     write_results: false            #(bool); write results to file
     live_result: false             #(bool); transmit live results
 

@@ -1,4 +1,4 @@
-/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_30_40_17_2
-cat_30_40_17_2
-RR-BLOCK-A
+/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_40_60_30_10
+cat_40_60_30_10
+RR-MULTI-CROSS-BLOCK-favorCross-SA-TUNED
 0
