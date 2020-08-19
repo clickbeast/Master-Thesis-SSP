@@ -1,10 +1,10 @@
 package data_processing.serializable;
 
-import core.Result;
+import core.ResultOld;
 
 public class OutputData {
     //CHANGEABLE
-    private Result result;
+    private ResultOld result;
     private long id;
     private long timeRunning;
     private long timeRemaining;
@@ -39,18 +39,18 @@ public class OutputData {
     }
 
 
-    public void updateData(long id,  long  timeRunning, long timeRemaining, Result result) {
+    public void updateData(long id,  long  timeRunning, long timeRemaining, ResultOld result) {
         this.setResult(result);
         this.setId(id);
         this.setTimeRunning(timeRunning);
         this.setTimeRemaining(timeRemaining);
     }
 
-    public Result getResult() {
+    public ResultOld getResult() {
         return result;
     }
 
-    public void setResult(Result result) {
+    public void setResult(ResultOld result) {
         this.result = result;
     }
 

@@ -2,22 +2,17 @@ package core;
 
 import com.google.common.graph.EndpointPair;
 import com.google.common.graph.MutableValueGraph;
-import com.google.common.graph.ValueGraph;
 import com.google.common.graph.ValueGraphBuilder;
 import data_processing.DataProcessing;
 import data_processing.InputData;
 import data_processing.Logger;
 import data_processing.Parameters;
-import exception.NoToolFoundException;
 import models.elemental.Job;
 import models.elemental.Tool;
 import util.General;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 
 public class ProblemManager {
@@ -60,9 +55,9 @@ public class ProblemManager {
 
 
     // RESULT
-    private Result workingResult;
-    private Result currentResult;
-    private Result bestResult;
+    private ResultOld workingResult;
+    private ResultOld currentResult;
+    private ResultOld bestResult;
 
 
     //UTIL
@@ -380,9 +375,6 @@ public class ProblemManager {
         return count;
     }
 
-
-
-
     public MutableValueGraph<Integer, Integer> initializeToolPairGraph() {
 
 
@@ -406,9 +398,6 @@ public class ProblemManager {
 
 
 
-
-
-
     /* INITIAL SOLUTION ------------------------------------------------------------------ */
 
     public void initialOrderedSolution() throws IOException {
@@ -416,7 +405,7 @@ public class ProblemManager {
 
         int[] sequence = this.orderedInitialSequence();
 
-        this.workingResult = new Result(sequence,this);
+        this.workingResult = new ResultOld(sequence,this);
         this.decoder.decode(workingResult);
 
         //Set for all results
@@ -436,7 +425,7 @@ public class ProblemManager {
         int[] sequence = this.orderedInitialSequence();
         sequence = this.randomInitialSequence(sequence);
 
-        this.currentResult = new Result(sequence, this);
+        this.currentResult = new ResultOld(sequence, this);
         this.getDecoder().decode(this.currentResult);
         this.currentResult.setInitial();
 
@@ -460,7 +449,7 @@ public class ProblemManager {
         int[] sequence = this.orderedInitialSequence();
         sequence = this.randomInitialSequence(sequence);
 
-        this.currentResult = new Result(sequence, this);
+        this.currentResult = new ResultOld(sequence, this);
         this.getDecoder().decode(this.currentResult);
         this.currentResult.setInitial();
 
@@ -492,7 +481,7 @@ public class ProblemManager {
 
         int[] sequence = jobSequence.stream().mapToInt(i -> i).toArray();
 
-        this.currentResult = new Result(sequence, this);
+        this.currentResult = new ResultOld(sequence, this);
         this.getDecoder().decode(this.currentResult);
         this.currentResult.setInitial();
 
@@ -660,7 +649,7 @@ public class ProblemManager {
             jobSequence.add(c);
 
             int[] sequence = jobSequence.stream().mapToInt(i -> i).toArray();
-            Result partial = new Result(sequence,this);
+            ResultOld partial = new ResultOld(sequence,this);
             this.decoder.decode(partial);
             int value = partial.getnSwitches();
 
@@ -776,9 +765,6 @@ public class ProblemManager {
 
 
 
-
-
-
     /* LS ------------------------------------------------------------------ */
 
 
@@ -854,7 +840,6 @@ public class ProblemManager {
 
 
                     this.logger.writeResult(this.workingResult);
-
 
                 }
 
@@ -973,7 +958,7 @@ public class ProblemManager {
 
 
 
-    public boolean ignoreSequence(Result result) {
+    public boolean ignoreSequence(ResultOld result) {
         int forwardSeqPos = 0;
         int valueForward = 0;
         int valueBackward = 0;
@@ -1012,13 +997,6 @@ public class ProblemManager {
 
             //Move
             this.getMoveManager().doMove(this.workingResult);
-
-            //Reduce search spae
-
-            /*if(ignoreSequence(this.workingResult)) {
-                this.workingResult = this.currentResult.getCopy();
-                continue;
-            }*/
 
             //Evaluate
             this.getDecoder().decode(this.workingResult);
@@ -1112,15 +1090,6 @@ public class ProblemManager {
 
     /* UTILITIES ------------------------------------------------------------------ */
 
-
-    //TODO:
-    public void runDecodeExperiment() {
-
-    }
-
-
-
-
     public Job getJob(int id) {
         return this.getJobs()[id];
     }
@@ -1197,19 +1166,19 @@ public class ProblemManager {
         this.jobs = jobs;
     }
 
-    public Result getCurrentResult() {
+    public ResultOld getCurrentResult() {
         return currentResult;
     }
 
-    public void setCurrentResult(Result currentResult) {
+    public void setCurrentResult(ResultOld currentResult) {
         this.currentResult = currentResult;
     }
 
-    public Result getBestResult() {
+    public ResultOld getBestResult() {
         return bestResult;
     }
 
-    public void setBestResult(Result bestResult) {
+    public void setBestResult(ResultOld bestResult) {
         this.bestResult = bestResult;
     }
 
@@ -1257,11 +1226,11 @@ public class ProblemManager {
         this.tools = tools;
     }
 
-    public Result getWorkingResult() {
+    public ResultOld getWorkingResult() {
         return workingResult;
     }
 
-    public void setWorkingResult(Result workingResult) {
+    public void setWorkingResult(ResultOld workingResult) {
         this.workingResult = workingResult;
     }
 

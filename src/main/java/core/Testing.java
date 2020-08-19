@@ -31,7 +31,7 @@ public class Testing {
 
     public static void main(String[] args) {
         int[] seq = {1,2,3,3};
-        Result result = new Result(seq,null);
+        ResultOld result = new ResultOld(seq,null);
         Gson gson = new Gson();
         String hello = gson.toJson(result);
         System.out.println(hello);

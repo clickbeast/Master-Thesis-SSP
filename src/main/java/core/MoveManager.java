@@ -7,7 +7,6 @@ import util.General;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MoveManager {
 
@@ -23,7 +22,7 @@ public class MoveManager {
     }
 
 
-    public Result doMove(Result result) throws IOException {
+    public ResultOld doMove(ResultOld result) throws IOException {
         if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
             return this.swap(result);
         }else if(problemManager.getParameters().getLocalSearch().equals("ruinAndRecreate")){
@@ -36,11 +35,11 @@ public class MoveManager {
 
 
 
-    public Result swap(Result result) {
+    public ResultOld swap(ResultOld result) {
         return swapTwoJobs(result);
     }
 
-    public Result swapTwoJobs(Result result) {
+    public ResultOld swapTwoJobs(ResultOld result) {
         int[] sequence = result.getSequence();
 
         //Here it is out of a random neighbourhoud...
@@ -69,7 +68,7 @@ public class MoveManager {
     /* RUIN + RECREATE ------------------------------------------------------------------ */
 
 
-    public Result ruinAndRecreate(Result result) throws IOException {
+    public ResultOld ruinAndRecreate(ResultOld result) throws IOException {
         Ruin ruin = null;
 
         int[] select = {0,0,1};
@@ -124,7 +123,7 @@ public class MoveManager {
 
     // STEP 1: Ruin
     //- - - - - - - - - - - -
-    public Ruin ruinCross(Result result) {
+    public Ruin ruinCross(ResultOld result) {
 
         Ruin ruined = new Ruin();
 
@@ -323,7 +322,7 @@ public class MoveManager {
     }
 
 
-    public Ruin ruinMultiCross(Result result) {
+    public Ruin ruinMultiCross(ResultOld result) {
         Ruin ruined = new Ruin();
 
         int nTools =  this.random.nextInt(this.problemManager.getMAX_N_TOOLS()) + 1;
@@ -376,7 +375,7 @@ public class MoveManager {
     }
 
 
-    public Ruin ruinMultiCrossXBestMatch(Result result) {
+    public Ruin ruinMultiCrossXBestMatch(ResultOld result) {
         Ruin ruined = new Ruin();
 
         int nTools =  this.random.nextInt(this.problemManager.getMAX_N_TOOLS()) + 1;
@@ -455,7 +454,7 @@ public class MoveManager {
 
 
 
-    public Ruin ruinBlock(Result result) {
+    public Ruin ruinBlock(ResultOld result) {
         Ruin ruined = new Ruin();
 
         //Select random tool
@@ -465,7 +464,7 @@ public class MoveManager {
     }
 
 
-    public Ruin ruinBlockAtTool(Result result, Ruin ruined,int selectedToolId) {
+    public Ruin ruinBlockAtTool(ResultOld result, Ruin ruined, int selectedToolId) {
 
         //TODO: can be combined with tie breaking cost
         boolean[] zeroBlock = new boolean[result.getSequence().length];
@@ -560,7 +559,7 @@ public class MoveManager {
     }
 
 
-    public Ruin ruinMultiBlock(Result result) {
+    public Ruin ruinMultiBlock(ResultOld result) {
 
         Ruin ruined = new Ruin();
         int nTools =  this.random.nextInt(this.problemManager.getN_TOOLS()) + 1;
@@ -630,7 +629,7 @@ public class MoveManager {
     //- - - - - - - - - - - -
 
 
-    public Result recreate(Result result, Ruin ruined) throws IOException {
+    public ResultOld recreate(ResultOld result, Ruin ruined) throws IOException {
 
         insertJobsRandomBestPositionBlinks(result, ruined);
 
@@ -650,10 +649,10 @@ public class MoveManager {
 
 
 
-    public void insertJobsRandomBestPositionBlinks(Result result , Ruin ruined) throws IOException{
+    public void insertJobsRandomBestPositionBlinks(ResultOld result , Ruin ruined) throws IOException{
         LinkedList<Integer> sequence = ruined.getKeep();
         int[] seq = sequence.stream().mapToInt(i -> i).toArray();
-        Result temp = new Result(seq, problemManager);
+        ResultOld temp = new ResultOld(seq, problemManager);
 
         //Shuffle Randomly
         Collections.shuffle(ruined.getRemove(), this.random);
@@ -713,7 +712,6 @@ public class MoveManager {
          result.setSequence(seqOut);
         this.problemManager.getDecoder().decode(result);
     }
-
 
 
     /*//TODO

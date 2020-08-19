@@ -1,14 +1,11 @@
 package core;
 
 import data_processing.Parameters;
-import models.Feedback;
 import models.elemental.Job;
 import util.General;
 
-import javax.xml.stream.FactoryConfigurationError;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -39,11 +36,6 @@ public class Decoder {
     }
 
 
-    /* PREPROCESS -------------------------------------------------------------------------------------------------- */
-
-
-
-
     /* EVALUATION -------------------------------------------------------------------------------------------------- */
 
 
@@ -52,14 +44,14 @@ public class Decoder {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-    public void decode(Result result) throws IOException{
+    public void decode(ResultOld result) throws IOException{
         //this.decodeGroundTruth(result);
         //this.decodeV1(result);
         this.decodeV2(result);
         //this.decodeV3(result);
     }
 
-    public void decodeRR(Result result) throws IOException{
+    public void decodeRR(ResultOld result) throws IOException{
         switch (this.problemManager.getParameters().getDecode()) {
             case "full": {
                 //this.decode(result);
@@ -92,7 +84,7 @@ public class Decoder {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     //OK
-    public void decodeV2(Result result) throws IOException {
+    public void decodeV2(ResultOld result) throws IOException {
 
         //TODO: refine
         result.setJobToolMatrix(General.copyGrid(this.problemManager.getJOB_TOOL_MATRIX()));
@@ -160,7 +152,7 @@ public class Decoder {
 
 
 
-    public void decodeV2RR(Result result) throws IOException {
+    public void decodeV2RR(ResultOld result) throws IOException {
 
         //TODO: refine
         result.setJobToolMatrix(General.copyGrid(this.problemManager.getJOB_TOOL_MATRIX()));
@@ -242,7 +234,7 @@ public class Decoder {
     }
 
 
-    public Result shallowDecode(Result result) {
+    public ResultOld shallowDecode(ResultOld result) {
 
         int switches = 0;
         for (int i = 0; i < result.getSequence().length - 1; i++) {
@@ -257,7 +249,7 @@ public class Decoder {
         return result;
     }
 
-    public void hybridDecode(Result result) {
+    public void hybridDecode(ResultOld result) {
 
     }
 
@@ -269,7 +261,7 @@ public class Decoder {
     //- - - - - - - -
 
 
-    public void evaluateRR(Result result) {
+    public void evaluateRR(ResultOld result) {
         int[] switches = this.count_switches(result);
         result.setSwitches(switches);
         result.setnSwitches(nSwitches(switches));
@@ -319,7 +311,7 @@ public class Decoder {
 
 
 
-    public void evaluate(Result result) {
+    public void evaluate(ResultOld result) {
         int[] switches = this.count_switches(result);
         result.setSwitches(switches);
         result.setnSwitches(nSwitches(switches));
@@ -367,7 +359,7 @@ public class Decoder {
     }
 
     //OK
-    public double calculateTieBreakingCost(Result result) {
+    public double calculateTieBreakingCost(ResultOld result) {
         double total = 0;
 
         for (int toolId = 0; toolId < result.getZeroBlockLength().length; toolId++) {
@@ -382,14 +374,14 @@ public class Decoder {
 
 
 
-    public double calculatePenaltyCost(Result result) {
+    public double calculatePenaltyCost(ResultOld result) {
         //Calculate the number of failed KTNS Attempts
         return this.getParameters().getW_S()*result.getnSwitches() + this.getParameters().getwFailKTNS()*nFailedKTNS(result);
     }
 
 
     //OK
-    public double calculateToolDistanceCost(Result result) {
+    public double calculateToolDistanceCost(ResultOld result) {
 
         //Calculate max and min distance
 
@@ -414,7 +406,7 @@ public class Decoder {
 
     //TODO: can be integrated into decoder
     //OK
-    public int nFailedKTNS(Result result) {
+    public int nFailedKTNS(ResultOld result) {
 
         int ktnsFail = 0;
 
@@ -442,7 +434,7 @@ public class Decoder {
     }
 
     //OK
-    public int[] count_switches(Result result) {
+    public int[] count_switches(ResultOld result) {
 
         //Count first tool loadings
 
@@ -490,7 +482,7 @@ public class Decoder {
 
 
     //TODO: FIX, counts first ones as zero block and does not count last one good -> retest
-    public int[][] zeroBlockLength(Result result) {
+    public int[][] zeroBlockLength(ResultOld result) {
 
         int[][] zeroBlocks = new int[this.problemManager.getN_TOOLS()][];
 
@@ -548,7 +540,7 @@ public class Decoder {
 
     //TODO: VERY INNEFICIENT -> INTEGRATE WITH DECODE
     //OK
-    public int[][] calculateToolDistance(Result result) {
+    public int[][] calculateToolDistance(ResultOld result) {
 
         //Create a new tool distance matrix
         int[][] toolDistance = new int[problemManager.getN_JOBS()][problemManager.getN_TOOLS()];
@@ -601,7 +593,7 @@ public class Decoder {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     //GROUND-TRUTH
-    public void decodeGroundTruth(Result result) throws IOException {
+    public void decodeGroundTruth(ResultOld result) throws IOException {
 
         int[][] resultJobToolMatrix = result.getJobToolMatrix();
         resultJobToolMatrix  = new int[this.problemManager.getN_JOBS()][this.problemManager.getN_TOOLS()];
@@ -629,7 +621,7 @@ public class Decoder {
     }
 
 
-    public void step2(int n, int[] toolRowJob, Result result) throws IOException {
+    public void step2(int n, int[] toolRowJob, ResultOld result) throws IOException {
         if(n != this.problemManager.getN_JOBS()) {
             result.getJobToolMatrix()[n-1] = toolRowJob.clone();
             step3(n, toolRowJob,result);
@@ -639,7 +631,7 @@ public class Decoder {
     }
 
     //STEP 3 : If each i having L(i, n) = n also has Ji = 1, set n = n + 1 and go to Step 2.
-    public void step3(int n, int[] toolRowJob , Result result) throws IOException {
+    public void step3(int n, int[] toolRowJob , ResultOld result) throws IOException {
 
         boolean goToStep2 = true;
         for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
@@ -665,7 +657,7 @@ public class Decoder {
 
 
     //Pick i having L(i, n) = n and Ji = 0. Set Ji = 1. IE INSERT THE REQUIRED TOOLS
-    public void step4(int n, int[] toolRowJob, Result result) throws IOException {
+    public void step4(int n, int[] toolRowJob, ResultOld result) throws IOException {
 
         //Maybe for only 1 tool
         for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
@@ -681,7 +673,7 @@ public class Decoder {
 
     //Set Jk = 0 for a k that maximizes L(p, n) over {p: Jp = 1}. Go to Step 3. IE DELETE THE LEAST IMPORTANT TOOL
 
-    public void step5(int n , int[] toolRowJob, Result result) throws IOException {
+    public void step5(int n , int[] toolRowJob, ResultOld result) throws IOException {
 
         //Step How many tools to remove?
         //Not explicitlely mentioned??
@@ -725,7 +717,7 @@ public class Decoder {
 
 
 
-    public void stop(int n, int[] toolRowJob, Result result) throws IOException {
+    public void stop(int n, int[] toolRowJob, ResultOld result) throws IOException {
         //Evaluate
         this.evaluate(result);
         //this.problemManager.getLogger().writeResult(result);
@@ -734,7 +726,7 @@ public class Decoder {
 
 
 
-    public int L(int toolId, int n, Result result) {
+    public int L(int toolId, int n, ResultOld result) {
 
         if(result.getSequence()[0] == 0) {
             //System.out.println("helloo");
@@ -761,7 +753,7 @@ public class Decoder {
 
 
 
-    public void decodeV1(Result result) throws IOException {
+    public void decodeV1(ResultOld result) throws IOException {
         result.setJobToolMatrix(decodeV1GetAugmentedJobToolMatrix(result.getSequence()));
         this.evaluate(result);
     }
