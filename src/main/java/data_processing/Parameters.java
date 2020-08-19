@@ -138,9 +138,9 @@ public class Parameters {
     private  boolean SA_TIMED               =   false;
 
     @Option(names = {"--start_temp"})
-    private  double  START_TEMP             =   10;
+    private  double  START_TEMP             =   100;
     @Option(names = {"--end_temp"})
-    private  double  END_TEMP               =    0.001;
+    private  double  END_TEMP               =    1;
     @Option(names = {"--decay_rate"})
     private  double  DECAY_RATE             =   -1;
     //private  double  DECAY_RATE             =   0.99997;
