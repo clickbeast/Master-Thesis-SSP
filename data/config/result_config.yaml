@@ -1,5 +1,6 @@
 root_path: "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
-files: 'mixed_files.json' #filename of file containing instances to be run
+#files: 'mixed_files.json' #filename of file containing instances to be run
+files: 'catanzaro_large_files.json'
 bundle_variations: false
 bundle_runs: false
 use_run_type: false

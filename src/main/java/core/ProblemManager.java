@@ -1008,7 +1008,7 @@ public class ProblemManager {
         int noChange = 0;
         int nBestResults = 0;
 
-        while (System.currentTimeMillis() < this.getTIME_LIMIT() && this.steps <= this.getParameters().getITERATIONS()) {
+        while (System.currentTimeMillis() < this.getTIME_LIMIT() && this.steps <= 300) {
 
             //Move
             this.getMoveManager().doMove(this.workingResult);
@@ -1029,9 +1029,11 @@ public class ProblemManager {
                 this.workingResult.setAccepted();
                 this.currentResult = this.workingResult;
                 accepted+=1;
-                if (steps % 10 == 0) {
+                if (steps % 100 == 0) {
 
                     this.logger.log(this.workingResult, temperature);
+                    this.logger.writeResult(this.getWorkingResult());
+
                 }
             }else{
                 //Reject

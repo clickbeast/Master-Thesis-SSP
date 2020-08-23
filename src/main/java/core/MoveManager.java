@@ -77,7 +77,7 @@ public class MoveManager {
 
 
         if(picked == 0) {
-            ruin = ruinMultiCross(result);
+            ruin = ruinMultiBlock(result);
         }else if(picked == 1){
             ruin = ruinBlock(result);
         }
@@ -560,6 +560,11 @@ public class MoveManager {
     }
 
 
+    //TODO:
+    public Ruin ruinOneBlock(Result result) {
+        return null;
+    }
+
     public Ruin ruinMultiBlock(Result result) {
 
         Ruin ruined = new Ruin();
@@ -569,9 +574,10 @@ public class MoveManager {
         int selectedToolId = this.random.nextInt(this.problemManager.getN_TOOLS());
         ruined = this.ruinBlockAtTool(result, ruined,selectedToolId);
 
-        General.printGridP(result);
-        General.printArrayP(this.problemManager.getTools()[selectedToolId].getJOBS(), result.getSequence());
-        System.out.println(Arrays.toString(result.getSequence()));
+        //General.printGridP(result);
+        //General.printArrayP(this.problemManager.getTools()[selectedToolId].getJOBS(), result.getSequence());
+        //System.out.println(Arrays.toString(result.getSequence()));
+
         int[] nMatchesPerJob = new int[this.problemManager.getN_JOBS()];
         int max = 0;
 
@@ -631,22 +637,90 @@ public class MoveManager {
 
 
     public Result recreate(Result result, Ruin ruined) throws IOException {
+        //insertJobsRandomBestPositionBlinks(result, ruined);
+        //insertJobsRandom(result, ruined);
 
-        insertJobsRandomBestPositionBlinks(result, ruined);
+        int[] select = {0,0,0};
+        int picked = select[this.random.nextInt(select.length)];
 
-        /*//System.out.println("allo");
-        if(this.problemManager.getParameters().getInsertPositions().equals("all")) {
+        if(picked == 0) {
             insertJobsRandomBestPositionBlinks(result, ruined);
-        }else if(this.problemManager.getParameters().getInsertPositions().equals("removed")){
-            //TODO: recreate only on removed positions
+        }else if(picked == 1){
+            insertJobsRandom(result, ruined);
         }
-*/
+
         return result;
     }
 
 
     // STEP 2A: Insert
     //- - - - - - - - - - - -
+
+
+    //TODO
+    public void insertJobsRandomBestFilteredPositionBlinks(Result result , Ruin ruined) throws IOException{
+        LinkedList<Integer> sequence = ruined.getKeep();
+        int[] seq = sequence.stream().mapToInt(i -> i).toArray();
+        Result temp = new Result(seq, problemManager);
+
+        //Shuffle Randomly
+        Collections.shuffle(ruined.getRemove(), this.random);
+
+
+        //System.out.println(ruined.toString());
+
+        for (Integer jobId : ruined.getRemove()) {
+
+            Double bestCost = Double.MAX_VALUE;
+            int bestPosition = 0;
+            int nBestPositions = 0;
+
+            for (int index = 0; index < sequence.size(); index++) {
+
+                //Blink
+                if (random.nextDouble() <= (1 - this.problemManager.getParameters().getBLINK_RATE())) {
+
+                    sequence.add(index, jobId);
+
+
+                    //To Array -> optimize to linked list strucuture
+                    temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
+                    this.problemManager.getDecoder().decodeRR(temp);
+
+                    //this.problemManager.getLogger().writeResult(temp);
+
+                    if(temp.getCost() <  bestCost) {
+
+                        nBestPositions = 1;
+                        bestPosition = index;
+                        bestCost = temp.getCost();
+
+
+                    }else if(temp.getCost() == bestCost) {
+                        nBestPositions += 1;
+                        float probability = 1 / (float) nBestPositions;
+                        if (random.nextDouble() <= probability) {
+                            bestPosition = index;
+                            bestCost = temp.getCost();
+                        }
+                    }
+
+                    sequence.remove(index);
+                }
+            }
+
+            sequence.add(bestPosition, jobId);
+
+        }
+
+
+
+
+
+        int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
+        result.setSequence(seqOut);
+        this.problemManager.getDecoder().decode(result);
+    }
 
 
 
@@ -716,9 +790,23 @@ public class MoveManager {
 
 
 
-    /*//TODO
-    public Result shake(Result result) {
+    public void insertJobsRandom(Result result, Ruin ruined) throws IOException {
 
-    }*/
+        for (Integer jobId : ruined.getRemove()) {
+
+            int position = 0;
+            if(ruined.getKeep().size() != 0) {
+                position = this.random.nextInt(ruined.getKeep().size());
+
+            }
+
+            ruined.getKeep().add(position, jobId);
+        }
+
+        int[] seqOut = ruined.getKeep().stream().mapToInt(i -> i).toArray();
+        result.setSequence(seqOut);
+        this.problemManager.getDecoder().decode(result);
+    }
+
 
 }

@@ -17,22 +17,22 @@ public class Parameters {
     @Option(names = {"--root_folder"})
     private String ROOT_FOLDER              =   "/Users/simonvermeir/Documents/industrial-engineering/" +
                                                 "SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/" +
-                                                "catanzaro";
+                                                "yanasse";
     @Option(names = {"--instance_folder"})
-    private String INSTANCE_FOLDER          =   "catanzaro";
+    private String INSTANCE_FOLDER          =   "yanasse";
     //cat_30_40_17_9
     //yan_8_15_10_29
     @Option(names = {"--instance"})
-    private String INSTANCE                 =   "cat_30_40_17_9";
+    //private String INSTANCE                 =   "cat_10_10_6_1";
     //private String INSTANCE                 =   "cat_40_60_20_10";
     //private String INSTANCE                 =   "cat_10_10_4_1";
 
 
-    //private String INSTANCE                   =   "yan_8_15_10_29";
-    //private String INSTANCE
-    // =   "yan_5_6_3_1";
+    //private String INSTANCE                  =   "yan_8_15_10_29";
+    //private String INSTANCE                  =   "yan_5_6_3_1";
     //private String INSTANCE                 =   "yan_5_6_3_1";
     //private String INSTANCE                 =   "yan_4_4_2_1";
+    private String INSTANCE                   =   "yan_4_4_3_1";
 
     //private String INSTANCE                 =   "mec_70_105_55_1";
 
@@ -65,7 +65,7 @@ public class Parameters {
     @Option(names = {"--local_search"})
     private String localSearch = "ruinAndRecreate";
     @Option(names = {"--meta_heuristic"})
-    private String metaHeuristic = "simulatedAnnealing";
+    private String metaHeuristic = "forceSequence";
     @Option(names = {"--objective"})
     private String objective = "switches";
     @Option(names = {"--decode_version"})
@@ -79,7 +79,7 @@ public class Parameters {
 
 
     //FORCE SEQUECE
-    private int[] forceSequence = {0,1,2,3};
+    //private int[] forceSequence = {0,1,2,3};
 
 
     //private int[] forceSequence = {6,7,5,4,3,2,1,0};
@@ -156,7 +156,7 @@ public class Parameters {
     @Option(names = {"--itmin"})
     private  int  itmin                  =   10000;
     @Option(names = {"--itmax"})
-    private  int  itmax                   =   100000;
+    private  int  itmax                   =   10000000;
     @Option(names = {"--alpha"})
     private  double  ALPHA                  =   1;
     @Option(names = {"--beta"})

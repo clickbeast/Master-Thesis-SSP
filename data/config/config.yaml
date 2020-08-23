@@ -1,6 +1,6 @@
 ---
 root_path: "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
-files: 'mixed_files.json' #filename of file containing instances to be run
+files: 'catanzaro_large_files.json' #filename of file containing instances to be run
 runs: 1  #int; amount of runs of each instance
 parallel: True      #(bool); run instances parallel
 background: False    #(bool); run everything as a background task; only applicable when running parallel
@@ -23,7 +23,7 @@ params:
   # General: run info
   #
 
-  - run_type: RR-MULTI-CROSS-BLOCK-favorCross-SA-TUNED      #name of the run , configured with the paramaters below
+  - run_type: RR-V2     #name of the run , configured with the paramaters below
     run: 0                    #(0); indicates which run it is
     root_folder: ''           #(empty); indicates the folder of the author, containing the problem and aux file.
     instance: ''              #(empty); indicates the instance being used
