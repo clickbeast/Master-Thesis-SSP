@@ -23,7 +23,7 @@ params:
   # General: run info
   #
 
-  - run_type: RR-V2     #name of the run , configured with the paramaters below
+  - run_type: MAIN-V2     #name of the run , configured with the paramaters below
     run: 0                    #(0); indicates which run it is
     root_folder: ''           #(empty); indicates the folder of the author, containing the problem and aux file.
     instance: ''              #(empty); indicates the instance being used
@@ -110,7 +110,7 @@ params:
     # Logging
 
     log: true                      #(bool); write logs in general
-    log_verbose: false              #(bool); write logs to stdout
+    log_verbose: true              #(bool); write logs to stdout
     write_results: false            #(bool); write results to file
     live_result: false             #(bool); transmit live results
 

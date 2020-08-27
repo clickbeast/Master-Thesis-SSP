@@ -2,12 +2,10 @@ package core;
 
 import core.moves.Move;
 import models.elemental.Job;
-import util.General;
 
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MoveManager {
 
@@ -78,7 +76,7 @@ public class MoveManager {
 
         if(picked == 0) {
             ruin = ruinMultiBlock(result);
-        }else if(picked == 1){
+        }else{
             ruin = ruinBlock(result);
         }
 
@@ -91,6 +89,8 @@ public class MoveManager {
     class Ruin {
         LinkedList<Integer> remove;
         LinkedList<Integer> keep;
+
+        int toolId;
 
         public Ruin() {
             remove = new LinkedList<>();
@@ -644,7 +644,7 @@ public class MoveManager {
         int picked = select[this.random.nextInt(select.length)];
 
         if(picked == 0) {
-            insertJobsRandomBestPositionBlinks(result, ruined);
+            bestInsertWithBlinks(result, ruined);
         }else if(picked == 1){
             insertJobsRandom(result, ruined);
         }
@@ -724,7 +724,7 @@ public class MoveManager {
 
 
 
-    public void insertJobsRandomBestPositionBlinks(Result result , Ruin ruined) throws IOException{
+    public void bestInsertWithBlinks(Result result , Ruin ruined) throws IOException{
         LinkedList<Integer> sequence = ruined.getKeep();
         int[] seq = sequence.stream().mapToInt(i -> i).toArray();
         Result temp = new Result(seq, problemManager);
@@ -788,6 +788,72 @@ public class MoveManager {
         this.problemManager.getDecoder().decode(result);
     }
 
+
+
+    public void constrainedBestInsertWithBlinks(Result result , Ruin ruined) throws IOException{
+        LinkedList<Integer> sequence = ruined.getKeep();
+        int[] seq = sequence.stream().mapToInt(i -> i).toArray();
+        Result temp = new Result(seq, problemManager);
+
+        //Shuffle Randomly
+        Collections.shuffle(ruined.getRemove(), this.random);
+
+        //Only consider the places where tool is 1
+
+        //System.out.println(ruined.toString());
+
+        for (Integer jobId : ruined.getRemove()) {
+
+            Double bestCost = Double.MAX_VALUE;
+            int bestPosition = 0;
+            int nBestPositions = 0;
+
+            for (int index = 0; index < sequence.size(); index++) {
+
+                //Blink
+                if (random.nextDouble() <= (1 - this.problemManager.getParameters().getBLINK_RATE())) {
+
+                    sequence.add(index, jobId);
+
+
+                    //To Array -> optimize to linked list strucuture
+                    temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
+                    this.problemManager.getDecoder().decodeRR(temp);
+
+                    //this.problemManager.getLogger().writeResult(temp);
+
+                    if(temp.getCost() <  bestCost) {
+
+                        nBestPositions = 1;
+                        bestPosition = index;
+                        bestCost = temp.getCost();
+
+
+                    }else if(temp.getCost() == bestCost) {
+                        nBestPositions += 1;
+                        float probability = 1 / (float) nBestPositions;
+                        if (random.nextDouble() <= probability) {
+                            bestPosition = index;
+                            bestCost = temp.getCost();
+                        }
+                    }
+
+                    sequence.remove(index);
+                }
+            }
+
+            sequence.add(bestPosition, jobId);
+
+        }
+
+
+
+
+
+        int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
+        result.setSequence(seqOut);
+        this.problemManager.getDecoder().decode(result);
+    }
 
 
     public void insertJobsRandom(Result result, Ruin ruined) throws IOException {

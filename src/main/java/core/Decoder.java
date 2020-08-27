@@ -7,10 +7,7 @@ import util.General;
 
 import javax.xml.stream.FactoryConfigurationError;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 
 /**
  *  Decoder is able to decode solutions by using the KTNS mechanism in a fast and efficient way
@@ -320,9 +317,12 @@ public class Decoder {
 
 
     public void evaluate(Result result) {
-        int[] switches = this.count_switches(result);
-        result.setSwitches(switches);
-        result.setnSwitches(nSwitches(switches));
+        //int[] switches = this.count_switches(result);
+        result.setSwitches(new int[result.getSequence().length]);
+
+        //result.setnSwitches(nSwitches(switches));
+
+        result.setnSwitches(nSwitchesSetupBased(result));
 
         //NEW TYPE OF COST
         //result.setZeroBlockLength(this.zeroBlockLength(result));
@@ -333,10 +333,10 @@ public class Decoder {
         //result.toolDistanceCost = this.calculateToolDistanceCost(result);
         //result.penaltyCost = this.calculatePenaltyCos t(result);
 
-        //result.setCost((double) result.getnSwitches());
+        result.setCost((double) result.getnSwitches());
         //result.setCost(result.getTieBreakingCost());
 
-        switch (this.problemManager.getParameters().getObjective()) {
+        /*switch (this.problemManager.getParameters().getObjective()) {
             case "switches": {
                 result.setCost((double) result.getnSwitches());
                 break;
@@ -361,8 +361,7 @@ public class Decoder {
                 this.problemManager.getLogger().logInfo("NO OBJECTIVE CHOSEN");
                 return;
             }
-        }
-
+        }*/
 
     }
 
@@ -440,6 +439,42 @@ public class Decoder {
         }
         return count;
     }
+
+
+    public int nSwitchesSetupBased(Result result) {
+
+        //Inserstions
+        int setupCount = 0;
+        for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
+            if (result.getJobToolMatrix()[result.getSequence()[0]][i] == 1) {
+                setupCount += 1;
+            }
+        }
+
+
+
+        for (int seqPos = 1; seqPos < result.getSequence().length; seqPos++) {
+            int swapCount = 0;
+
+            Job job = result.getJobSeqPos(seqPos);
+            Job prevJob = result.prevJob(job);
+
+
+            for (int j = 0; j < result.getTools(job).length; j++) {
+                //CHECK: current implementation: when a tool gets loaded a "switch" is performed
+                if (result.getTools(prevJob)[j] ==  0 &  result.getTools(job)[j] ==  1) {
+                    swapCount+=1;
+                }
+            }
+
+            setupCount+=swapCount;
+        }
+
+
+        return  setupCount - this.problemManager.getMAGAZINE_SIZE();
+    }
+
+
 
     //OK
     public int[] count_switches(Result result) {
@@ -526,13 +561,11 @@ public class Decoder {
                     }
 
                     //Run is finished
-                    if(seqPos == result.getSequence().length - 1) {
+                   /* if(seqPos == result.getSequence().length - 1) {
                         run = false;
                         blocks.add(length);
                         length = 0;
-                    }
-
-
+                    }*/
                 }
             }
 
