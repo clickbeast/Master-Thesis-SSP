@@ -6,8 +6,7 @@ import util.General;
 import java.util.Arrays;
 
 
-
-public class ResultOld {
+public class ResultOldTemp {
 
     private ProblemManager problemManager;
 
@@ -56,7 +55,7 @@ public class ResultOld {
     //TODO: ADD PROPER DELTA EVAL: VERY VERY VERY IMPORTANT TOO...
 
 
-    public ResultOld(int[] sequence, ProblemManager problemManager) {
+    public ResultOldTemp(int[] sequence, ProblemManager problemManager) {
         this.problemManager = problemManager;
         this.sequence = sequence;
         if (problemManager != null) {
@@ -73,7 +72,7 @@ public class ResultOld {
         }
     }
 
-    public ResultOld getCopy() {
+    public ResultOldTemp getCopy() {
 
         int[] sequence = Arrays.copyOf(this.getSequence(), this.getSequence().length);
         int[] switches = Arrays.copyOf(this.getSwitches(), this.getSwitches().length);
@@ -82,7 +81,7 @@ public class ResultOld {
         int[][] jobToolMatrix = General.copyGrid(this.getJobToolMatrix());
 
 
-        ResultOld result = new ResultOld(sequence, this.getProblemManager());
+        ResultOldTemp result = new ResultOldTemp(sequence, this.getProblemManager());
 
 
         result.setCost(this.getCost());
@@ -103,7 +102,7 @@ public class ResultOld {
 
 
 
-    public ResultOld getDeltaCopy() {
+    public Result getDeltaCopy() {
         //Jobtool matrix stays the same largley:
         return null;
     }
@@ -228,7 +227,6 @@ public class ResultOld {
 
     public void setRejected() {
         this.setType("rejected");
-
     }
 
     public void setBackup() {

@@ -1,6 +1,6 @@
 package util;
 
-import core.ResultOld;
+import core.Result;
 
 import java.util.Arrays;
 
@@ -27,7 +27,7 @@ public class General {
     }
 
 
-    public static void printGridP(ResultOld result) {
+    public static void printGridP(Result result) {
         printTransposeGrid(mapToSequence(result.getJobToolMatrix(),result.getSequence()));
     }
 

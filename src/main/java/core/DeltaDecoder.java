@@ -5,7 +5,6 @@ import models.elemental.Job;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.ListIterator;
 
 
 public class DeltaDecoder {
@@ -15,7 +14,7 @@ public class DeltaDecoder {
     private Parameters parameters;
 
     class DecodeFeedback {
-        Result result;
+        ResultDelta result;
         int ktnsSuccess = 0;
     }
 
@@ -32,62 +31,51 @@ public class DeltaDecoder {
 
 
 
-    public void KTNS(Result result) {
+    public void KTNS(Result result){
+
         result.setKtnsId(result.getKtnsId() + 1);
+        int ktnsSuccess = 0;
 
         for (int seqPos = 0; seqPos < result.getSequence().length; seqPos++) {
 
             Job job = result.getJobAtSeqPos(seqPos);
 
-            //base case
             if (seqPos != 0) {
+                int prevJobId = result.getJobIdAtSeqPos(seqPos - 1);
+                int nToolsAdd = Math.max(0,this.problemManager.getMAGAZINE_SIZE() - job.getSet().length);
+                int nextJobSeqPos = seqPos + 1;
+                int nextJobId = result.getJobIdAtSeqPos(nextJobSeqPos);
 
-                Job prevJob = result.getJobAtSeqPos(seqPos - 1);
-
-                LinkedList<Integer> diffPrevCurTools = this.getDifTools(result.getJobToolMatrix()[prevJob.getId()], job.getAntiSet());
-
-                int unionPrevCurJobSize = diffPrevCurTools.size() + job.getSet().length;
-                int nToolsDelete = Math.max(0, unionPrevCurJobSize - this.problemManager.getMAGAZINE_SIZE());
-                int nToolsKeep = unionPrevCurJobSize - nToolsDelete;
-                int nToolsAdd = nToolsKeep - job.getSet().length;
-
-
-                Job nextJob = result.nextJob(job);
-
-                while(nToolsAdd != 0 & nextJob != null & diffPrevCurTools.size() > 0) {
-
-                    ListIterator<Integer> iter = diffPrevCurTools.listIterator();
-
-                    while (iter.hasNext() && nToolsAdd != 0) {
-                        int toolAddId = iter.next();
-                        if(result.getJobToolMatrix()[nextJob.getId()][toolAddId] == 1) {
-                            result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
-                            nToolsAdd-=1;
-                            iter.remove();
+                while(nToolsAdd != 0 & nextJobId != -1) {
+                    for(int toolId: job.getAntiSet()) {
+                        if(result.isToolUsedAtJobId(toolId,prevJobId) && !result.isToolKTNSAtJobId(toolId, job.getId()) && result.isToolUsedAtJobId(toolId, nextJobId)) {
+                            result.getJobToolMatrix()[job.getId()][toolId] = result.getKtnsId();
+                            nToolsAdd--;
                         }
                     }
 
-                    nextJob = result.nextJob(nextJob);
+                    nextJobSeqPos = nextJobSeqPos + 1;
+                    nextJobId = result.getJobIdAtSeqPos(nextJobSeqPos);
                 }
 
-                //Fill remaining nToolsAdd with any tool
-                ListIterator<Integer> remainingIter = diffPrevCurTools.listIterator();
                 while(nToolsAdd != 0) {
-                    int toolAddId = remainingIter.next();
-
-                    result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
-                    remainingIter.remove();
-                    nToolsAdd-=1;
+                    for(int toolId: job.getAntiSet()) {
+                        if(result.isToolUsedAtJobId(toolId,prevJobId) && !result.isToolKTNSAtJobId(toolId, job.getId())) {
+                            result.getJobToolMatrix()[job.getId()][toolId] = result.getKtnsId();
+                            nToolsAdd--;
+                        }
+                    }
                 }
 
             }
-
         }
-
     }
 
 
+    public void evaluate(DecodeFeedback decodeFeedback) {
 
+
+    }
     public LinkedList<Integer> getDifTools(int[] toolsA, int[] antiToolSetB) {
 
         LinkedList<Integer> list = new LinkedList<>();
@@ -104,10 +92,7 @@ public class DeltaDecoder {
     }
 
 
-    public void evaluate(DecodeFeedback decodeFeedback) {
 
-
-    }
 
 
 

@@ -4,7 +4,7 @@ import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.google.gson.Gson;
 import core.ProblemManager;
-import core.ResultOld;
+import core.Result;
 import data_processing.serializable.OutputData;
 
 import java.io.*;
@@ -110,15 +110,15 @@ public class Logger {
 
 
 
-    public void log(ResultOld result) throws IOException {
+    public void log(Result result) throws IOException {
         this.log(result, -1);
     }
 
-    public void log(ResultOld result, double temperature) throws IOException {
+    public void log(Result result, double temperature) throws IOException {
         this.log(result, result.getnSwitches(),this.problemManager.getBestResult().getnSwitches(), this.problemManager.getAccepted(),this.problemManager.getRejected(), this.problemManager.getImproved(), temperature, result.getSequence(), result.getType());
     }
 
-    public void log(ResultOld result , int switches, int bestSwitches, long accepted, long rejected, long improved, double temperature, int[] sequence, String type) throws IOException {
+    public void log(Result result , int switches, int bestSwitches, long accepted, long rejected, long improved, double temperature, int[] sequence, String type) throws IOException {
 
         DecimalFormat df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.CEILING);
@@ -145,7 +145,7 @@ public class Logger {
                         // B_THOP
                         df.format(this.problemManager.getBestResult().getTieBreakingCost()),
                         // TAD
-                        df.format(result.getToolDistanceCost()),
+                        "",
                         // B_TAD
                         "",
                         // TRD
@@ -246,7 +246,7 @@ public class Logger {
     }
 
 
-    public void writeSolution(ResultOld result) throws IOException {
+    public void writeSolution(Result result) throws IOException {
         this.logInfo("WRITE SOLUTION ");
         PrintWriter out = this.getSolutionWriter();
 
@@ -261,7 +261,7 @@ public class Logger {
     }
 
 
-    public void writeResult(ResultOld result) throws IOException {
+    public void writeResult(Result result) throws IOException {
          if(this.getProblemManager().getParameters().isWRITE_RESULTS()) {
              PrintWriter out = this.getResultsWriter();
 
@@ -278,7 +278,7 @@ public class Logger {
          }
     }
 
-    public void printResult(ResultOld result, PrintWriter out) {
+    public void printResult(Result result, PrintWriter out) {
         long timeRunning = this.getTimeRunning();
         long timeRemaining = this.getTimeRemaining();
 
@@ -318,7 +318,7 @@ public class Logger {
     }
 
     //Costly operation use only f
-    public void writeLiveResult(ResultOld result) {
+    public void writeLiveResult(Result result) {
         if(this.getProblemManager().getParameters().isLIVE_RESULT()) {
 
             try (

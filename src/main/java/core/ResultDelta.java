@@ -1,12 +1,9 @@
 package core;
 
 import models.elemental.Job;
-import util.General;
-
-import java.util.Arrays;
 
 
-public class Result {
+public class ResultDelta {
 
     //Reference to problemmanager
     private ProblemManager problemManager;
@@ -14,34 +11,30 @@ public class Result {
     //General
     private Double cost;
     private double tieBreakingCost;
-    private int nSwitches;
+    private double nSwitches;
 
     private int[][] jobToolMatrix;
     private int[] sequence;
+    private int[] jobPositions;
 
     private int ktnsId;
 
+
+
     private String type;
 
-    public Result(int[] sequence, ProblemManager problemManager) {
+
+
+
+    public ResultDelta(int[] sequence, ProblemManager problemManager) {
         this.problemManager = problemManager;
     }
 
 
     public Result getCopy() {
-        int[] sequence = Arrays.copyOf(this.getSequence(), this.getSequence().length);
-        int[][] jobToolMatrix = General.copyGrid(this.getJobToolMatrix());
-
-        Result result = new Result(sequence, this.getProblemManager());
-
-        result.setCost(this.getCost());
-        result.setJobToolMatrix(jobToolMatrix);
-        result.setnSwitches(this.getnSwitches());
-        result.setType(this.getType());
-        result.setTieBreakingCost(this.getTieBreakingCost());
-
-        return result;
+        return null;
     }
+
 
 
     /* DATA MODEL INTERACTION ------------------------------------------------------------------ */
@@ -104,36 +97,6 @@ public class Result {
         return problemManager;
     }
 
-    public void setImproved() {
-        this.setType("improved");
-
-    }
-
-    public void setAccepted() {
-        this.setType("accepted");
-
-    }
-
-    public void setRejected() {
-        this.setType("rejected");
-    }
-
-
-    public void setBackup() {
-        this.setType("backup");
-    }
-
-    public void setTrial() {
-        this.setType("trial");
-    }
-
-    public void setInitial() {
-        this.setType("Initial");
-    }
-
-
-
-
     public void setProblemManager(ProblemManager problemManager) {
         this.problemManager = problemManager;
     }
@@ -154,11 +117,11 @@ public class Result {
         this.tieBreakingCost = tieBreakingCost;
     }
 
-    public int getnSwitches() {
+    public double getnSwitches() {
         return nSwitches;
     }
 
-    public void setnSwitches(int nSwitches) {
+    public void setnSwitches(double nSwitches) {
         this.nSwitches = nSwitches;
     }
 
@@ -178,6 +141,14 @@ public class Result {
         this.sequence = sequence;
     }
 
+    public int[] getJobPositions() {
+        return jobPositions;
+    }
+
+    public void setJobPositions(int[] jobPositions) {
+        this.jobPositions = jobPositions;
+    }
+
     public int getKtnsId() {
         return ktnsId;
     }
@@ -193,6 +164,4 @@ public class Result {
     public void setType(String type) {
         this.type = type;
     }
-
-
 }

@@ -46,7 +46,7 @@ public class ProblemManager {
     private MoveManager moveManager;
     private final SolutionManager solutionManager;
     private DataProcessing dataProcessing;
-    private Decoder decoder;
+    private DeltaDecoder decoder;
 
 
     //VARIABLES
@@ -55,9 +55,9 @@ public class ProblemManager {
 
 
     // RESULT
-    private ResultOld workingResult;
-    private ResultOld currentResult;
-    private ResultOld bestResult;
+    private Result workingResult;
+    private Result currentResult;
+    private Result bestResult;
 
 
     //UTIL
@@ -95,7 +95,7 @@ public class ProblemManager {
         this.moveManager = new MoveManager(this);
         this.solutionManager = new SolutionManager(this);
 
-        this.decoder = new Decoder(this);
+        this.decoder = new DeltaDecoder(this, parameters);
 
         this.steps = 0;
         this.initialize();
@@ -292,7 +292,7 @@ public class ProblemManager {
             }
         }
 
-        return null;
+        return switchesMatrix;
     }
 
 
@@ -405,7 +405,7 @@ public class ProblemManager {
 
         int[] sequence = this.orderedInitialSequence();
 
-        this.workingResult = new ResultOld(sequence,this);
+        this.workingResult = new Result(sequence,this);
         this.decoder.decode(workingResult);
 
         //Set for all results
@@ -425,7 +425,7 @@ public class ProblemManager {
         int[] sequence = this.orderedInitialSequence();
         sequence = this.randomInitialSequence(sequence);
 
-        this.currentResult = new ResultOld(sequence, this);
+        this.currentResult = new Result(sequence, this);
         this.getDecoder().decode(this.currentResult);
         this.currentResult.setInitial();
 
@@ -449,7 +449,7 @@ public class ProblemManager {
         int[] sequence = this.orderedInitialSequence();
         sequence = this.randomInitialSequence(sequence);
 
-        this.currentResult = new ResultOld(sequence, this);
+        this.currentResult = new Result(sequence, this);
         this.getDecoder().decode(this.currentResult);
         this.currentResult.setInitial();
 
@@ -481,7 +481,7 @@ public class ProblemManager {
 
         int[] sequence = jobSequence.stream().mapToInt(i -> i).toArray();
 
-        this.currentResult = new ResultOld(sequence, this);
+        this.currentResult = new Result(sequence, this);
         this.getDecoder().decode(this.currentResult);
         this.currentResult.setInitial();
 
@@ -649,7 +649,7 @@ public class ProblemManager {
             jobSequence.add(c);
 
             int[] sequence = jobSequence.stream().mapToInt(i -> i).toArray();
-            ResultOld partial = new ResultOld(sequence,this);
+            Result partial = new Result(sequence,this);
             this.decoder.decode(partial);
             int value = partial.getnSwitches();
 
@@ -781,7 +781,6 @@ public class ProblemManager {
 
                 //this.logger.writeResult(this.getWorkingResult());
 
-                this.workingResult.reloadJobPositions();
                 this.logger.writeResult(this.workingResult);
                 this.decoder.decode(this.workingResult);
                 this.logger.writeResult(this.workingResult);
@@ -818,7 +817,6 @@ public class ProblemManager {
                     seq[j] = temp;
 
 
-                    this.workingResult.reloadJobPositions();
                     this.decoder.decode(this.workingResult);
 
 
@@ -876,9 +874,7 @@ public class ProblemManager {
                     seq[i] = seq[j];
                     seq[j] = temp;
 
-                    this.workingResult.reloadJobPositions();
                     this.decoder.decode(this.workingResult);
-
 
                     if(this.workingResult.getCost() < this.bestResult.getCost()) {
                         improved = true;
@@ -943,9 +939,7 @@ public class ProblemManager {
 
     public void forceSequence(int[] sequence) throws IOException {
         this.logger.logInfo("RUNNING FORCE SEQUENCE");
-        this.bestResult.reloadJobPositions();
         this.bestResult.setSequence(sequence);
-        this.bestResult.reloadJobPositions();
         this.decoder.decode(this.bestResult);
         this.getLogger().writeLiveResult(this.bestResult);
         this.logger.writeResult(this.bestResult);
@@ -958,7 +952,7 @@ public class ProblemManager {
 
 
 
-    public boolean ignoreSequence(ResultOld result) {
+    public boolean ignoreSequence(Result result) {
         int forwardSeqPos = 0;
         int valueForward = 0;
         int valueBackward = 0;
@@ -1166,19 +1160,19 @@ public class ProblemManager {
         this.jobs = jobs;
     }
 
-    public ResultOld getCurrentResult() {
+    public Result getCurrentResult() {
         return currentResult;
     }
 
-    public void setCurrentResult(ResultOld currentResult) {
+    public void setCurrentResult(Result currentResult) {
         this.currentResult = currentResult;
     }
 
-    public ResultOld getBestResult() {
+    public Result getBestResult() {
         return bestResult;
     }
 
-    public void setBestResult(ResultOld bestResult) {
+    public void setBestResult(Result bestResult) {
         this.bestResult = bestResult;
     }
 
@@ -1226,11 +1220,11 @@ public class ProblemManager {
         this.tools = tools;
     }
 
-    public ResultOld getWorkingResult() {
+    public Result getWorkingResult() {
         return workingResult;
     }
 
-    public void setWorkingResult(ResultOld workingResult) {
+    public void setWorkingResult(Result workingResult) {
         this.workingResult = workingResult;
     }
 
@@ -1242,12 +1236,11 @@ public class ProblemManager {
         this.steps = steps;
     }
 
-
-    public Decoder getDecoder() {
+    public DeltaDecoder getDecoder() {
         return decoder;
     }
 
-    public void setDecoder(Decoder decoder) {
+    public void setDecoder(DeltaDecoder decoder) {
         this.decoder = decoder;
     }
 

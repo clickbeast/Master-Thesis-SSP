@@ -1,7 +1,7 @@
 package core.moves;
 
-import core.ResultOld;
+import core.Result;
 
 public interface Move {
-    public ResultOld doMove(ResultOld result);
+    public Result doMove(Result result);
 }

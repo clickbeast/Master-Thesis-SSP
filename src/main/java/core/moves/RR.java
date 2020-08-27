@@ -1,14 +1,14 @@
 package core.moves;
 
 import core.ProblemManager;
-import core.ResultOld;
+import core.Result;
 
 public class RR implements Move {
 
     ProblemManager problemManager;
 
     @Override
-    public ResultOld doMove(ResultOld result) {
+    public Result doMove(Result result) {
         return null;
     }
 
