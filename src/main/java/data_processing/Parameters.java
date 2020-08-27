@@ -23,9 +23,9 @@ public class Parameters {
     //cat_30_40_17_9
     //yan_8_15_10_29
     @Option(names = {"--instance"})
-    private String INSTANCE                 =   "cat_30_40_17_9";
+    //private String INSTANCE                 =   "cat_30_40_17_9";
     //private String INSTANCE                 =   "cat_40_60_20_10";
-    //private String INSTANCE                 =   "cat_10_10_4_1";
+    private String INSTANCE                 =   "cat_10_10_4_1";
 
 
     //private String INSTANCE                   =   "yan_8_15_10_29";

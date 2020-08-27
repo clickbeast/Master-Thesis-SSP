@@ -25,6 +25,16 @@ public class Result {
 
     public Result(int[] sequence, ProblemManager problemManager) {
         this.problemManager = problemManager;
+        this.setSequence(sequence);
+
+        int[][] jobToolMatrix = General.copyGrid(problemManager.getJOB_TOOL_MATRIX());
+
+        this.setCost(this.getCost());
+        this.setJobToolMatrix(jobToolMatrix);
+        this.setnSwitches(-1);
+        this.setType("Initial");
+        this.setTieBreakingCost(-1);
+        this.setKtnsId(2);
     }
 
 
@@ -39,6 +49,7 @@ public class Result {
         result.setnSwitches(this.getnSwitches());
         result.setType(this.getType());
         result.setTieBreakingCost(this.getTieBreakingCost());
+        result.setKtnsId(ktnsId);
 
         return result;
     }
@@ -48,10 +59,7 @@ public class Result {
 
 
     public boolean isToolUsedAtJobId(int toolId, int jobId) {
-        if(this.getJobToolMatrix()[jobId][toolId] == (1 | this.getKtnsId())) {
-            return true;
-        }
-        return false;
+        return this.getJobToolMatrix()[jobId][toolId] == 1 || this.getJobToolMatrix()[jobId][toolId] == this.getKtnsId();
     }
 
     public boolean isToolUsedAtSeqPos(int toolId, int seqPos) {
@@ -86,6 +94,10 @@ public class Result {
     }
 
     public int getJobIdAtSeqPos(int seqPos) {
+        if(seqPos >= this.problemManager.getN_JOBS()) {
+            return -1;
+        }
+
         return this.getSequence()[seqPos];
     }
 

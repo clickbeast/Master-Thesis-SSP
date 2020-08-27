@@ -23,12 +23,15 @@ public class MoveManager {
 
 
     public Result doMove(Result result) throws IOException {
-        if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
+
+        return this.swap(result);
+
+       /* if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
             return this.swap(result);
         }else if(problemManager.getParameters().getLocalSearch().equals("ruinAndRecreate")){
             return this.ruinAndRecreate(result);
         }
-        return null;
+        return null;*/
     }
 
     /* SWAP ------------------------------------------------------------------ */
