@@ -141,9 +141,10 @@ public class ProblemManager {
             }
         }
 
-        this.getLogger().writeResult(this.workingResult);
-        this.getLogger().writeLiveResult(this.workingResult);
 
+      /*  this.forceSequence(this.parameters.getForceSequence());
+        this.getLogger().writeResult(this.workingResult);
+        this.getLogger().writeLiveResult(this.workingResult);*/
 
         switch (this.getParameters().getMetaHeuristic()) {
             case "simulatedAnnealing": {
@@ -943,6 +944,9 @@ public class ProblemManager {
         this.decoder.decode(this.bestResult);
         this.getLogger().writeLiveResult(this.bestResult);
         this.logger.writeResult(this.bestResult);
+
+        this.workingResult = this.bestResult.getCopy();
+        this.currentResult = this.bestResult.getCopy();
     }
 
     //SA
@@ -987,6 +991,10 @@ public class ProblemManager {
         int noChange = 0;
         int nBestResults = 0;
 
+
+
+        long stopTime = System.currentTimeMillis() + (1000 * 200);
+
         while (System.currentTimeMillis() < this.getTIME_LIMIT() && this.steps <= this.getParameters().getITERATIONS()) {
 
             //Move
@@ -1001,9 +1009,11 @@ public class ProblemManager {
                 this.workingResult.setAccepted();
                 this.currentResult = this.workingResult;
                 accepted+=1;
-/*                if (steps % 10 == 0) {
+                /*if (steps % 10 == 0) {
 
                     this.logger.log(this.workingResult, temperature);
+                    this.logger.writeResult(this.getWorkingResult());
+
                 }*/
             }else{
                 //Reject
@@ -1018,12 +1028,21 @@ public class ProblemManager {
                 this.logger.log(this.workingResult, temperature);
                 this.logger.writeResult(this.workingResult);
                 improved+=1;
+                stopTime = System.currentTimeMillis() + (1000 * 200);
             }
 
             //Additional Stop criterium
             if(this.getWorkingResult().getnSwitches() == this.getBestResult().getnSwitches()) {
                 noChange+=1;
             }
+
+
+
+            //Additional Stop Criterium : stop after 100 seconds of not improving
+            /*if(this.getWorkingResult().getnSwitches() == this.getBestResult().getnSwitches()) {
+                noChange+=1;
+            }*/
+
 
             //LOGGING
             if (steps % 3000 == 0) {
@@ -1054,6 +1073,13 @@ public class ProblemManager {
                 break;
             }
 
+            if(System.currentTimeMillis() > stopTime) {
+                this.logger.logInfo("SA Stopped: result not changing within time limit");
+                break;
+            }
+
+
+
             //Reduce temperature
             temperature = temperature * this.getParameters().getDECAY_RATE();
 
@@ -1063,7 +1089,6 @@ public class ProblemManager {
 
                 break;
             }
-
 
             steps++;
         }

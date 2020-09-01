@@ -3814,19 +3814,11 @@
       "n_tools": 6,
       "magazine_size": 3,
       "variation": 1
-    },
-
-
-    {
-      "original": "Simon2020Example",
-      "root_folder": "yanasse",
-      "instance": "yan_4_4_2_1",
-      "author": "yan",
-      "n_jobs": 4,
-      "n_tools": 4,
-      "magazine_size": 2,
-      "variation": 1
     }
+
+
+
+
 
     ,
 
