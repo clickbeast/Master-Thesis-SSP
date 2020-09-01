@@ -29,7 +29,6 @@ public class Result {
     private int[] nToolsKeep;
     private int[] nToolsAdd;
 
-
     //
 
     //tools perspective
@@ -104,8 +103,14 @@ public class Result {
     }
 
 
-    /* DATA MODEL SETUP ------------------------------------------------------------------ */
 
+    public Result getDeltaCopy() {
+        //Jobtool matrix stays the same largley:
+        return null;
+    }
+
+
+    /* DATA MODEL SETUP ------------------------------------------------------------------ */
 
 
 
@@ -132,6 +137,10 @@ public class Result {
         }
 
         return this.getSequence()[prevJobPos];
+    }
+
+    public int getJobIdAtSeqPos(int seqPos) {
+        return this.getSequence()[seqPos];
     }
 
     public int nextJobId(int jobId) {
@@ -170,8 +179,8 @@ public class Result {
     }
 
 
-    public boolean toolUsedAtSeqPos(int i, int toolId) {
-        return this.getJobToolMatrix()[this.getJobSeqPos(i).getId()][toolId] == 1;
+    public boolean toolUsedAtSeqPos(int seqPos, int toolId) {
+        return this.getJobToolMatrix()[this.getJobSeqPos(seqPos).getId()][toolId] == 1;
     }
 
     public int[] getTools(Job job) {
@@ -182,6 +191,10 @@ public class Result {
         return this.getTools(this.getJobSeqPos(i));
     }
 
+
+    public int getSeqPosAtJobId(int jobId) {
+        return this.getJobPositions()[jobId];
+    }
 
 
 

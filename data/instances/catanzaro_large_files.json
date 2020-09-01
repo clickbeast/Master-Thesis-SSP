@@ -1,0 +1,913 @@
+{
+    "base": "SSP",
+    "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+    "root_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/",
+    "files": [
+        {
+            "original": "datC-1",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_15_1",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 1
+        },
+        {
+            "original": "datC-2",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_15_2",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 2
+        },
+        {
+            "original": "datC-3",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_15_3",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 3
+        },
+        {
+            "original": "datC-4",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_15_4",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 4
+        },
+        {
+            "original": "datC-5",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_15_5",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 5
+        },
+        {
+            "original": "datC-6",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_15_6",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 6
+        },
+        {
+            "original": "datC-7",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_15_7",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 7
+        },
+        {
+            "original": "datC-8",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_15_8",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 8
+        },
+        {
+            "original": "datC-9",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_15_9",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 9
+        },
+        {
+            "original": "datC-10",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_15_10",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 10
+        },
+        {
+            "original": "datD-1",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_20_1",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 1
+        },
+        {
+            "original": "datD-2",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_20_2",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 2
+        },
+        {
+            "original": "datD-3",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_20_3",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 3
+        },
+        {
+            "original": "datD-4",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_20_4",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 4
+        },
+        {
+            "original": "datD-5",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_20_5",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 5
+        },
+        {
+            "original": "datD-6",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_20_6",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 6
+        },
+        {
+            "original": "datD-7",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_20_7",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 7
+        },
+        {
+            "original": "datD-8",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_20_8",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 8
+        },
+        {
+            "original": "datD-9",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_20_9",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 9
+        },
+        {
+            "original": "datD-10",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_20_10",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 10
+        },
+        {
+            "original": "datC-1",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_17_1",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 1
+        },
+        {
+            "original": "datC-2",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_17_2",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 2
+        },
+        {
+            "original": "datC-3",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_17_3",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 3
+        },
+        {
+            "original": "datC-4",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_17_4",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 4
+        },
+        {
+            "original": "datC-5",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_17_5",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 5
+        },
+        {
+            "original": "datC-6",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_17_6",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 6
+        },
+        {
+            "original": "datC-7",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_17_7",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 7
+        },
+        {
+            "original": "datC-8",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_17_8",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 8
+        },
+        {
+            "original": "datC-9",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_17_9",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 9
+        },
+        {
+            "original": "datC-10",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_17_10",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 10
+        },
+        {
+            "original": "datD-1",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_22_1",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 1
+        },
+        {
+            "original": "datD-2",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_22_2",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 2
+        },
+        {
+            "original": "datD-3",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_22_3",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 3
+        },
+        {
+            "original": "datD-4",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_22_4",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 4
+        },
+        {
+            "original": "datD-5",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_22_5",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 5
+        },
+        {
+            "original": "datD-6",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_22_6",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 6
+        },
+        {
+            "original": "datD-7",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_22_7",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 7
+        },
+        {
+            "original": "datD-8",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_22_8",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 8
+        },
+        {
+            "original": "datD-9",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_22_9",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 9
+        },
+        {
+            "original": "datD-10",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_22_10",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 10
+        },
+        {
+            "original": "datC-1",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_20_1",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 1
+        },
+        {
+            "original": "datC-2",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_20_2",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 2
+        },
+        {
+            "original": "datC-3",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_20_3",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 3
+        },
+        {
+            "original": "datC-4",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_20_4",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 4
+        },
+        {
+            "original": "datC-5",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_20_5",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 5
+        },
+        {
+            "original": "datC-6",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_20_6",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 6
+        },
+        {
+            "original": "datC-7",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_20_7",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 7
+        },
+        {
+            "original": "datC-8",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_20_8",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 8
+        },
+        {
+            "original": "datC-9",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_20_9",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 9
+        },
+        {
+            "original": "datC-10",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_20_10",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 10
+        },
+        {
+            "original": "datD-1",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_25_1",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 1
+        },
+        {
+            "original": "datD-2",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_25_2",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 2
+        },
+        {
+            "original": "datD-3",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_25_3",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 3
+        },
+        {
+            "original": "datD-4",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_25_4",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 4
+        },
+        {
+            "original": "datD-5",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_25_5",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 5
+        },
+        {
+            "original": "datD-6",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_25_6",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 6
+        },
+        {
+            "original": "datD-7",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_25_7",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 7
+        },
+        {
+            "original": "datD-8",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_25_8",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 8
+        },
+        {
+            "original": "datD-9",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_25_9",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 9
+        },
+        {
+            "original": "datD-10",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_25_10",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 10
+        },
+        {
+            "original": "datC-1",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_25_1",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 1
+        },
+        {
+            "original": "datC-2",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_25_2",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 2
+        },
+        {
+            "original": "datC-3",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_25_3",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 3
+        },
+        {
+            "original": "datC-4",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_25_4",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 4
+        },
+        {
+            "original": "datC-5",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_25_5",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 5
+        },
+        {
+            "original": "datC-6",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_25_6",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 6
+        },
+        {
+            "original": "datC-7",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_25_7",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 7
+        },
+        {
+            "original": "datC-8",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_25_8",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 8
+        },
+        {
+            "original": "datC-9",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_25_9",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 9
+        },
+        {
+            "original": "datC-10",
+            "root_folder": "catanzaro",
+            "instance": "cat_30_40_25_10",
+            "author": "cat",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 10
+        },
+        {
+            "original": "datD-1",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_30_1",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 1
+        },
+        {
+            "original": "datD-2",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_30_2",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 2
+        },
+        {
+            "original": "datD-3",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_30_3",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 3
+        },
+        {
+            "original": "datD-4",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_30_4",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 4
+        },
+        {
+            "original": "datD-5",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_30_5",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 5
+        },
+        {
+            "original": "datD-6",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_30_6",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 6
+        },
+        {
+            "original": "datD-7",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_30_7",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 7
+        },
+        {
+            "original": "datD-8",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_30_8",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 8
+        },
+        {
+            "original": "datD-9",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_30_9",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 9
+        },
+        {
+            "original": "datD-10",
+            "root_folder": "catanzaro",
+            "instance": "cat_40_60_30_10",
+            "author": "cat",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 10
+        },
+
+
+
+        {
+            "original": "F2001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_40_1",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 40,
+            "variation": 1
+        },
+        {
+            "original": "F2002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_40_2",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 40,
+            "variation": 2
+        },
+        {
+            "original": "F2003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_40_3",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 40,
+            "variation": 3
+        },
+        {
+            "original": "F2004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_40_4",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 40,
+            "variation": 4
+        },
+        {
+            "original": "F2005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_40_5",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 40,
+            "variation": 5
+        },
+
+
+        {
+            "original": "F3001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_55_1",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 55,
+            "variation": 1
+        },
+        {
+            "original": "F3002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_55_2",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 55,
+            "variation": 2
+        },
+        {
+            "original": "F3003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_55_3",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 55,
+            "variation": 3
+        },
+        {
+            "original": "F3004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_55_4",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 55,
+            "variation": 4
+        },
+        {
+            "original": "F3005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_55_5",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 55,
+            "variation": 5
+        }
+    ]
+
+}

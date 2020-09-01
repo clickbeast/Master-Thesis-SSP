@@ -64,7 +64,6 @@ public class Logger {
                 this.getProblemManager().getN_TOOLS(),
                 this.getProblemManager().getN_JOBS(),
                 this.getProblemManager().getJOB_TOOL_MATRIX(),
-                this.getProblemManager().getDIFFERENCE_MATRIX(),
                 this.getProblemManager().getSHARED_TOOLS_MATRIX(),
                 this.getProblemManager().getSWITCHES_LB_MATRIX(),
                 this.getProblemManager().getTOOL_PAIR_MATRIX()

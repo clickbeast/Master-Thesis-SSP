@@ -1,20 +1,20 @@
 ---
 root_path: "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
-files: 'catanzaro_files.json' #filename of file containing instances to be run
-runs: 3  #int; amount of runs of each instance
-parallel: true      #(bool); run instances parallel
+files: 'mixed_files.json' #filename of file containing instances to be run
+runs: 2  #int; amount of runs of each instance
+parallel: True      #(bool); run instances parallel
 background: False    #(bool); run everything as a background task; only applicable when running parallel
 multi: True         #(bool); run multiple params versions
 use_runs: True      #(bool); run each instance multiple times
-jobs: 4             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
+jobs: 6             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
 use_filter: false   #(bool); only use the instances that match the filter
 open_results: true #(bool); calculate the results of the runs and open after running
 
 filter:
   author: 'cat'
-  n_jobs: 10
-  n_tools: 10
-  magazine_size: 4
+  n_jobs: 40
+  n_tools: 60
+  magazine_size: 30
   variation: 1
 
 params:
@@ -23,7 +23,7 @@ params:
   # General: run info
   #
 
-  - run_type: GENERAL          #name of the run , configured with the paramaters below
+  - run_type: TIE-BABY        #name of the run , configured with the paramaters below
     run: 0                    #(0); indicates which run it is
     root_folder: ''           #(empty); indicates the folder of the author, containing the problem and aux file.
     instance: ''              #(empty); indicates the instance being used
@@ -32,8 +32,9 @@ params:
     # General: parameters
     #
 
-    run_time: 420             #int; seconds; max run time
+    run_time: 1000             #int; seconds; max run time
     seed: 7                   #int; seed of random generator
+    use_seed: false           #(boolean); use a seed or not
 
     #
     # General: Method
@@ -52,9 +53,9 @@ params:
     blink_rate: 0.01                  #(double);
     avg_ruin: 10                      #(int); max allowed ruined solutions
     select: randomTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
-    match: requiredTool                   #(requiredTool, ktnsTool, notRequiredTool, hopCreator, ktnsFail)
-    insert: best                       #(best); where to insert the removed jobs
-    filter: random                     #(random, worst); when making a choice how many to remove, which ones to keep
+    match: requiredTool               #(requiredTool, ktnsTool, notRequiredTool, hopCreator, ktnsFail)
+    insert: best                      #(best); where to insert the removed jobs
+    filter: random                    #(random, worst); when making a choice how many to remove, which ones to keep
     insert_positions: all             #(all, removed); insert at all possible positions, or only in the removed positions
     decode: full                      #(full, shallow, hybrid); rank insert position quality with a full decode, shallow or hybrid (Depending if there are a lot of ktns tools that can be added)
 
@@ -87,16 +88,13 @@ params:
     # Objective: Tool Hops
     #
 
-    ##TODO
-
 
     #
     # Simulated Annealing
     #
 
-
-    start_temp: 100                 #double; start temperature
-    end_temp:  0.0097               #double; end temperature
+    start_temp: 10                 #double; start temperature
+    end_temp:   0.001               #double; end temperature
     sa_timed: false                 #double;
     decay_rate: -1                  #(double,-1: auto generate); the decay rate,
     force_iterations: false         #(bool); use hardcoded iterations function;
@@ -104,8 +102,8 @@ params:
     alpha: 1
     beta: 0.7
     theta: -1
-    itmin: 10000
-    itmax: 1000000
+    itmin: 30000
+    itmax: 300000
 
 
     #
@@ -117,3 +115,10 @@ params:
     live_result: false             #(bool); transmit live results
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+
+
+
+
+

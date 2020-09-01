@@ -1,9 +1,10 @@
 root_path: "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
-files: 'mixed_files.json' #filename of file containing instances to be run
+#files: 'mixed_files.json' #filename of file containing instances to be run
+files: 'all_files.json'
 bundle_variations: false
 bundle_runs: false
 use_run_type: false
-run_type: [ORDERED-SD,RANDOM-SD]  #(str, true)
+run_type: [SA-Z]  #(str, true)
 use_filter: false
 title: ''
 filter:

@@ -23,16 +23,21 @@ public class Parameters {
     //cat_30_40_17_9
     //yan_8_15_10_29
     @Option(names = {"--instance"})
-    //private String INSTANCE                 =   "cat_30_40_17_9";
-    //private String INSTANCE                 =   "cat_40_60_20_10";
+    //private String INSTANCE                 =   "cat_10_10_6_1";
     private String INSTANCE                 =   "cat_10_10_4_1";
+    //private  String INSTANCE = "cat_30_40_17_9";
+    //private String INSTANCE                 =   "cat_40_60_20_10";
 
 
-    //private String INSTANCE                   =   "yan_8_15_10_29";
-    //private String INSTANCE
-    // =   "yan_5_6_3_1";
+    //private String INSTANCE                  =   "yan_8_15_10_29";
+    //private String INSTANCE                  =   "yan_5_6_3_1";
     //private String INSTANCE                 =   "yan_5_6_3_1";
+    //private String INSTANCE                 =   "yan_4_4_2_1";
+    //private String INSTANCE                   =   "yan_4_4_3_1";
+
     //private String INSTANCE                 =   "mec_70_105_55_1";
+
+
 
     @Option(names = {"--run_type"})
     private String RUN_TYPE                 =   "TEST";
@@ -59,7 +64,7 @@ public class Parameters {
     @Option(names = {"--constructive_heuristic"})
     private String constructiveHeuristic = "random";
     @Option(names = {"--local_search"})
-    private String localSearch = "ruinAndRecreate";
+    private String localSearch = "swaps";
     @Option(names = {"--meta_heuristic"})
     private String metaHeuristic = "simulatedAnnealing";
     @Option(names = {"--objective"})
@@ -72,10 +77,10 @@ public class Parameters {
     private boolean parallel = false;
 
 
-
-
     //FORCE SEQUECE
-    private int[] forceSequence = {0,1,2,3,4,5,7,6};
+    private int[] forceSequence = {2,0,3,1};
+
+
     //private int[] forceSequence = {6,7,5,4,3,2,1,0};
 
 
@@ -102,6 +107,9 @@ public class Parameters {
     @Option(names = {"--avg_ruin"})
     private int AVG_RUIN                    =   4;
 
+
+
+
     //RR
     @Option(names = {"--select"})
     private String select                   =   "randomTool";
@@ -120,6 +128,8 @@ public class Parameters {
     //STOCHASTIC
     @Option(names = {"--seed"})
     private  int SEED                       =   7;
+    @Option(names = {"--use_seed"})
+    private boolean USE_SEED                =  true;
 
 
     //SA
@@ -127,9 +137,9 @@ public class Parameters {
     private  boolean SA_TIMED               =   false;
 
     @Option(names = {"--start_temp"})
-    private  double  START_TEMP             =   70;
+    private  double  START_TEMP             =   10;
     @Option(names = {"--end_temp"})
-    private  double  END_TEMP               =   0.0027;
+    private  double  END_TEMP               =    0.001;
     @Option(names = {"--decay_rate"})
     private  double  DECAY_RATE             =   -1;
     //private  double  DECAY_RATE             =   0.99997;
@@ -143,18 +153,15 @@ public class Parameters {
 
 
     @Option(names = {"--itmin"})
-    private  int  itmin                  =   1000;
+    private  int  itmin                  =   30000;
     @Option(names = {"--itmax"})
-    private  int  itmax                   =   10000;
+    private  int  itmax                   =   670000;
     @Option(names = {"--alpha"})
     private  double  ALPHA                  =   1;
     @Option(names = {"--beta"})
     private  double  BETA                   =   0.7;
     @Option(names = {"--theta"})
     private double THETA =                  -1;
-
-
-
 
 
     @Option(names = {"--w_iterations"})
@@ -347,6 +354,8 @@ public class Parameters {
     }
 
     public void calculateDecayRate() {
+
+
         this.setDECAY_RATE(Math.pow((this.getEND_TEMP()/this.getSTART_TEMP()), ( (float) 1/getITERATIONS())));
     }
 
@@ -973,5 +982,14 @@ public class Parameters {
 
     public void setItmax(int itmax) {
         this.itmax = itmax;
+    }
+
+
+    public boolean isUSE_SEED() {
+        return USE_SEED;
+    }
+
+    public void setUSE_SEED(boolean USE_SEED) {
+        this.USE_SEED = USE_SEED;
     }
 }

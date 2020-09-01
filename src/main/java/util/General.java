@@ -1,5 +1,9 @@
 package util;
 
+import core.Result;
+
+import java.util.Arrays;
+
 public class General {
 
 
@@ -11,6 +15,24 @@ public class General {
         }
 
         return out;
+    }
+
+    public static int[] mapToSequence(int[] array, int[] sequence) {
+        int[] out = new int[array.length];
+
+        for (int seqPos = 0; seqPos < sequence.length; seqPos++) {
+            out[seqPos] = array[sequence[seqPos]];
+        }
+        return out;
+    }
+
+
+    public static void printGridP(Result result) {
+        printTransposeGrid(mapToSequence(result.getJobToolMatrix(),result.getSequence()));
+    }
+
+    public static void printArrayP(int[] array, int[] sequence){
+        System.out.println(Arrays.toString(mapToSequence(array, sequence)));
     }
 
 

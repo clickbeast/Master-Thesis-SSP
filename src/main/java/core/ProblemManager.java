@@ -34,18 +34,17 @@ public class ProblemManager {
     private final int N_JOBS;
     private int[][] JOB_TOOL_MATRIX;
 
+    private int[][] SWITCHES_MATRIX;
 
-
-
-    private int[][] DIFFERENCE_MATRIX;
-
-    //The jobs A and B , difference int[A][B][Tool]
-/*    private int[][][] DIFFERENCE_TOOLS_MATRIX;*/
-    //common tools
     private int[][][] SHARED_TOOLS_MATRIX;
+    private int[][][] DIFFERENCE_TOOLS_MATRIX;
+
 
     private int[][] SWITCHES_LB_MATRIX;
     private int[][] TOOL_PAIR_MATRIX;
+
+    private int MAX_N_TOOLS;
+
     private  MutableValueGraph<Integer, Integer> TOOL_PAIR_GRAPH;
 
     //MANAGERS
@@ -77,7 +76,6 @@ public class ProblemManager {
     private long rejected = 0;
     private long improved = 0;
 
-
     public ProblemManager(InputData inputData) throws IOException {
         //Configure Constants
         this.MAGAZINE_SIZE = inputData.getMAGAZINE_SIZE();
@@ -92,8 +90,12 @@ public class ProblemManager {
         this.TIME_LIMIT = System.currentTimeMillis() + 1000 * this.getParameters().getRUN_TIME();
 
         //
-        //this.random = new Random();
-        this.random = new Random(this.parameters.getSEED());
+        if(this.getParameters().isUSE_SEED()) {
+            this.random = new Random(this.getParameters().getSEED());
+        }else{
+            this.random = new Random();
+        }
+
 
         this.moveManager = new MoveManager(this);
         this.solutionManager = new SolutionManager(this);
@@ -144,9 +146,10 @@ public class ProblemManager {
             }
         }
 
-        this.getLogger().writeResult(this.workingResult);
-        this.getLogger().writeLiveResult(this.workingResult);
 
+      /*  this.forceSequence(this.parameters.getForceSequence());
+        this.getLogger().writeResult(this.workingResult);
+        this.getLogger().writeLiveResult(this.workingResult);*/
 
         switch (this.getParameters().getMetaHeuristic()) {
             case "simulatedAnnealing": {
@@ -198,7 +201,6 @@ public class ProblemManager {
             this.steepestDescentRandomBest();
         }
 
-
         this.logger.logInfo("FINAL SOLUTION FOUND: " + String.valueOf(this.bestResult.getCost()));
         this.logger.log(this.bestResult);
         this.logger.writeResult(bestResult);
@@ -207,18 +209,17 @@ public class ProblemManager {
     }
 
 
-
-
-
-
     public void initialize(){
         this.jobs = this.initializeJobs();
+        this.tools = this.initializeTools();
         this.initializeTools();
-        //this.DIFFERENCE_TOOLS_MATRIX = this.initializeDifferenceMatrix();
+        this.DIFFERENCE_TOOLS_MATRIX = this.initializeDifferenceMatrix();
+        this.SWITCHES_MATRIX = this.initializeSwitchesMatrix();
         this.SHARED_TOOLS_MATRIX = initializeSharedToolsMatrix();
         this.SWITCHES_LB_MATRIX = this.initializeSwitchesLowerBoundMatrix();
         this.TOOL_PAIR_MATRIX = this.initializeToolPairMatrix();
         this.TOOL_PAIR_GRAPH = this.initializeToolPairGraph();
+        this.setMAX_N_TOOLS(this.findMaxNTools());
     }
 
 
@@ -235,9 +236,31 @@ public class ProblemManager {
         return jobs;
     }
 
-    public void initializeTools() {
+    public Tool[] initializeTools() {
+
+        Tool[] tools = new Tool[N_TOOLS];
+
+        for (int i = 0; i < N_TOOLS; i++) {
+            Tool tool = new Tool(i,this);
+            tools[i] = tool;
+        }
+        return tools;
 
     }
+
+    public int findMaxNTools() {
+        int max = 0;
+
+        for (int jobId = 0; jobId < this.getN_JOBS(); jobId++) {
+            int nTools = this.getJobs()[jobId].getSet().length;
+            if(nTools > max) {
+                max = nTools;
+            }
+        }
+        return max;
+    }
+
+
 
 
     //TODO: initializeDifferenceMatrix
@@ -248,31 +271,34 @@ public class ProblemManager {
     }
 
 
+    public int[][] initializeSwitchesMatrix() {
+
+        int[][] switchesMatrix = new int[this.getN_JOBS()][this.getN_JOBS()];
+
+        for (int jobIdA = 0; jobIdA < this.getN_JOBS(); jobIdA++) {
+            for (int jobIdB = 0; jobIdB < this.getN_JOBS(); jobIdB++) {
+
+                //- -> +
+                int remove = 0;
+                //+ -> -
+                int insert = 0;
 
 
-    public int[][][] initializeSharedToolsBinaryMatrix() {
-
-        int[][][] sharedTools = new int[this.getN_JOBS()][this.getN_JOBS()][];
-
-        for (int job1Id = 0; job1Id < this.getN_JOBS(); job1Id++) {
-
-            for (int job2Id = job1Id; job2Id < this.getN_JOBS(); job2Id++) {
-
-                int[] shared = new int[this.getN_TOOLS()];
                 for (int toolId = 0; toolId < this.getN_TOOLS(); toolId++) {
-                    if (this.getJOB_TOOL_MATRIX()[job1Id][toolId] == this.getJOB_TOOL_MATRIX()[job2Id][toolId]) {
-                        shared[toolId] = this.getJOB_TOOL_MATRIX()[job1Id][toolId];
+                    if(this.getJOB_TOOL_MATRIX()[jobIdA][toolId]== 0 && this.getJOB_TOOL_MATRIX()[jobIdB][toolId] == 1) {
+                        insert+=1;
+                    }else if(this.getJOB_TOOL_MATRIX()[jobIdA][toolId] == 1 && this.getJOB_TOOL_MATRIX()[jobIdB][toolId] == 0) {
+                        remove+=1;
                     }
                 }
 
-                //Assign to both sides
-                sharedTools[job1Id][job2Id] = shared;
-                sharedTools[job2Id][job1Id]= shared;
+                int switches = Math.min(remove,insert);
 
+                switchesMatrix[jobIdA][jobIdB] = switches;
             }
         }
 
-        return sharedTools;
+        return null;
     }
 
 
@@ -479,7 +505,6 @@ public class ProblemManager {
         this.logger.logInfo(String.valueOf(this.workingResult.getCost()));
         this.logger.logInfo("Initial Solution Created");
         this.logger.log(this.workingResult);
-
 
     }
 
@@ -940,13 +965,31 @@ public class ProblemManager {
         this.decoder.decode(this.bestResult);
         this.getLogger().writeLiveResult(this.bestResult);
         this.logger.writeResult(this.bestResult);
+
+        this.workingResult = this.bestResult.getCopy();
+        this.currentResult = this.bestResult.getCopy();
     }
 
     //SA
-
-
     public void permutations() {
         this.logger.logInfo("Finding all permutations");
+    }
+
+
+
+    public boolean ignoreSequence(Result result) {
+        int forwardSeqPos = 0;
+        int valueForward = 0;
+        int valueBackward = 0;
+
+        for (int backwardSeqPos = this.getN_JOBS(); backwardSeqPos > 0 ; backwardSeqPos--) {
+            valueForward += (result.getSequence()[forwardSeqPos] * backwardSeqPos);
+            valueBackward += (result.getSequence()[backwardSeqPos-1] * backwardSeqPos);
+            forwardSeqPos += 1;
+        }
+
+        return valueForward >= valueBackward;
+
     }
 
     public void simulatedAnnealing() throws IOException {
@@ -969,10 +1012,22 @@ public class ProblemManager {
         int noChange = 0;
         int nBestResults = 0;
 
+
+
+        long stopTime = System.currentTimeMillis() + (1000 * 200);
+
         while (System.currentTimeMillis() < this.getTIME_LIMIT() && this.steps <= this.getParameters().getITERATIONS()) {
 
             //Move
             this.getMoveManager().doMove(this.workingResult);
+
+            //Reduce search spae
+
+            /*if(ignoreSequence(this.workingResult)) {
+                this.workingResult = this.currentResult.getCopy();
+                continue;
+            }*/
+
             //Evaluate
             this.getDecoder().decode(this.workingResult);
 
@@ -982,6 +1037,12 @@ public class ProblemManager {
                 this.workingResult.setAccepted();
                 this.currentResult = this.workingResult;
                 accepted+=1;
+                /*if (steps % 10 == 0) {
+
+                    this.logger.log(this.workingResult, temperature);
+                    this.logger.writeResult(this.getWorkingResult());
+
+                }*/
             }else{
                 //Reject
                 this.workingResult.setRejected();
@@ -989,12 +1050,13 @@ public class ProblemManager {
             }
 
             //Improvement
-            if(this.workingResult.getCost() < this.bestResult.getCost()) {
+            if(this.workingResult.getnSwitches() < this.bestResult.getnSwitches()) {
                 this.workingResult.setImproved();
                 this.bestResult = this.workingResult.getCopy();
                 this.logger.log(this.workingResult, temperature);
                 this.logger.writeResult(this.workingResult);
                 improved+=1;
+                stopTime = System.currentTimeMillis() + (1000 * 200);
             }
 
             //Additional Stop criterium
@@ -1003,64 +1065,15 @@ public class ProblemManager {
             }
 
 
-/*
-            if(deltaE > 0) {
 
-                deltaE = this.workingResult.getCost() - this.bestResult.getCost();
-                double acceptance = Math.exp(-deltaE/ temperature);
-                double ran = random.nextDouble();
-
-                if(acceptance > ran) {
-                    //accept move -> not the best solution
-                    this.workingResult.setAccepted();
-                    this.currentResult = this.workingResult;
-                    accepted+=1;
-                }else {
-                    rejected += 1;
-                    this.workingResult.setRejected();
-                    //cancel move
-                }
-            }else{
-
-                this.workingResult.setImproved();
-
-                if(this.workingResult.getCost() <  this.bestResult.getCost()) {
-                    this.currentResult = this.workingResult.getCopy();
-                    nBestResults = 1;
-                    this.logger.log(this.workingResult);
-                }else if(this.workingResult.getCost() == this.bestResult.getCost()) {
-                    nBestResults+=1;
-                    float probability = 1/  (float)  nBestResults;
-                    if(random.nextDouble() <= probability) {
-                        this.currentResult = this.workingResult.getCopy();
-                    }
-                }
-
-
-                this.currentResult = this.workingResult;
-                this.bestResult = this.currentResult.getCopy();
-                this.logger.log(this.getWorkingResult(), temperature);
-
-
-                this.logger.writeResult(this.getWorkingResult());
-
-
-                //TODO: cleanup
-                if(this.getWorkingResult().getnSwitches() == this.getBestResult().getnSwitches()) {
-                    noChange+=1;
-                }
-
-
-                improved+=1;
-            }
-*/
-
-
-            //this.logger.writeResult(this.getWorkingResult());
+            //Additional Stop Criterium : stop after 100 seconds of not improving
+            /*if(this.getWorkingResult().getnSwitches() == this.getBestResult().getnSwitches()) {
+                noChange+=1;
+            }*/
 
 
             //LOGGING
-            if (steps % 100 == 0) {
+            if (steps % 3000 == 0) {
                 this.logger.log(this.getWorkingResult(), temperature);
             }
 
@@ -1088,6 +1101,13 @@ public class ProblemManager {
                 break;
             }
 
+            if(System.currentTimeMillis() > stopTime) {
+                this.logger.logInfo("SA Stopped: result not changing within time limit");
+                break;
+            }
+
+
+
             //Reduce temperature
             temperature = temperature * this.getParameters().getDECAY_RATE();
 
@@ -1097,7 +1117,6 @@ public class ProblemManager {
 
                 break;
             }
-
 
             steps++;
         }
@@ -1308,13 +1327,12 @@ public class ProblemManager {
         return improved;
     }
 
-
-    public int[][] getDIFFERENCE_MATRIX() {
-        return DIFFERENCE_MATRIX;
+    public int[][][] getDIFFERENCE_TOOLS_MATRIX() {
+        return DIFFERENCE_TOOLS_MATRIX;
     }
 
-    public void setDIFFERENCE_MATRIX(int[][] DIFFERENCE_MATRIX) {
-        this.DIFFERENCE_MATRIX = DIFFERENCE_MATRIX;
+    public void setDIFFERENCE_TOOLS_MATRIX(int[][][] DIFFERENCE_TOOLS_MATRIX) {
+        this.DIFFERENCE_TOOLS_MATRIX = DIFFERENCE_TOOLS_MATRIX;
     }
 
     public void setImproved(long improved) {
@@ -1329,4 +1347,23 @@ public class ProblemManager {
     public MutableValueGraph<Integer, Integer> getTOOL_PAIR_GRAPH() {
         return TOOL_PAIR_GRAPH;
     }
+
+
+    public int[][] getSWITCHES_MATRIX() {
+        return SWITCHES_MATRIX;
+    }
+
+    public void setSWITCHES_MATRIX(int[][] SWITCHES_MATRIX) {
+        this.SWITCHES_MATRIX = SWITCHES_MATRIX;
+    }
+
+
+    public int getMAX_N_TOOLS() {
+        return MAX_N_TOOLS;
+    }
+
+    public void setMAX_N_TOOLS(int MAX_N_TOOLS) {
+        this.MAX_N_TOOLS = MAX_N_TOOLS;
+    }
+
 }
