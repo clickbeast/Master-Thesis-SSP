@@ -1,0 +1,6 @@
+instance,n_jobs,n_tools,magazine_size,variations,n_switches,time_running,run_type,sequence,switches
+"('yan', 8, 15, 10)",8,15,10,30,7.47,3.06167,"9,7-SD-TOOL-SEQ",[],
+"('cram', 30, 40, 25)",30,40,25,10,40.1,4.686100000000001,"9,7-SD-TOOL-SEQ",[],
+"('cat', 15, 20, 12)",15,20,12,10,7.7,3.5981,"9,7-SD-TOOL-SEQ",[],
+"('cat', 30, 40, 17)",30,40,17,10,88.3,5.5375,"9,7-SD-TOOL-SEQ",[],
+"('cat', 40, 60, 30)",40,60,30,10,119.9,5.3628,"9,7-SD-TOOL-SEQ",[],

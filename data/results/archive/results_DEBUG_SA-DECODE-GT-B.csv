@@ -1,0 +1,5 @@
+instance,n_jobs,n_tools,magazine_size,variations,n_switches,time_running,run_type,sequence,switches
+"('yan', 8, 15, 5)",8,15,5,10,1.3,180.06879999999998,SA-DECODE-GT-B,[],
+"('yan', 8, 15, 10)",8,15,10,30,1.1,140.0592,SA-DECODE-GT-B,[],
+"('yan', 8, 20, 10)",8,20,10,30,1.8,180.17047,SA-DECODE-GT-B,[],
+"('yan', 8, 20, 5)",8,20,5,10,1.8,180.0664,SA-DECODE-GT-B,[],

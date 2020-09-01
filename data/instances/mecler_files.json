@@ -1,0 +1,607 @@
+{
+    "base": "SSP",
+    "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+    "root_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/",
+    "files": [
+        {
+            "original": "F1001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_25_1",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 25,
+            "variation": 1
+        },
+        {
+            "original": "F1002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_25_2",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 25,
+            "variation": 2
+        },
+        {
+            "original": "F1003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_25_3",
+            "author": "mec",`
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 25,
+            "variation": 3
+        },
+        {
+            "original": "F1004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_25_4",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 25,
+            "variation": 4
+        },
+        {
+            "original": "F1005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_25_5",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 25,
+            "variation": 5
+        },
+        {
+            "original": "F2001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_35_1",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 35,
+            "variation": 1
+        },
+        {
+            "original": "F2002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_35_2",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 35,
+            "variation": 2
+        },
+        {
+            "original": "F2003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_35_3",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 35,
+            "variation": 3
+        },
+        {
+            "original": "F2004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_35_4",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 35,
+            "variation": 4
+        },
+        {
+            "original": "F2005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_35_5",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 35,
+            "variation": 5
+        },
+        {
+            "original": "F3001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_40_1",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 40,
+            "variation": 1
+        },
+        {
+            "original": "F3002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_40_2",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 40,
+            "variation": 2
+        },
+        {
+            "original": "F3003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_40_3",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 40,
+            "variation": 3
+        },
+        {
+            "original": "F3004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_40_4",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 40,
+            "variation": 4
+        },
+        {
+            "original": "F3005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_40_5",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 40,
+            "variation": 5
+        },
+        {
+            "original": "F1001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_30_1",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 30,
+            "variation": 1
+        },
+        {
+            "original": "F1002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_30_2",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 30,
+            "variation": 2
+        },
+        {
+            "original": "F1003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_30_3",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 30,
+            "variation": 3
+        },
+        {
+            "original": "F1004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_30_4",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 30,
+            "variation": 4
+        },
+        {
+            "original": "F1005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_30_5",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 30,
+            "variation": 5
+        },
+        {
+            "original": "F2001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_40_1",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 40,
+            "variation": 1
+        },
+        {
+            "original": "F2002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_40_2",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 40,
+            "variation": 2
+        },
+        {
+            "original": "F2003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_40_3",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 40,
+            "variation": 3
+        },
+        {
+            "original": "F2004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_40_4",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 40,
+            "variation": 4
+        },
+        {
+            "original": "F2005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_40_5",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 40,
+            "variation": 5
+        },
+        {
+            "original": "F3001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_45_1",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 45,
+            "variation": 1
+        },
+        {
+            "original": "F3002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_45_2",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 45,
+            "variation": 2
+        },
+        {
+            "original": "F3003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_45_3",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 45,
+            "variation": 3
+        },
+        {
+            "original": "F3004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_45_4",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 45,
+            "variation": 4
+        },
+        {
+            "original": "F3005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_45_5",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 45,
+            "variation": 5
+        },
+        {
+            "original": "F1001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_35_1",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 35,
+            "variation": 1
+        },
+        {
+            "original": "F1002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_35_2",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 35,
+            "variation": 2
+        },
+        {
+            "original": "F1003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_35_3",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 35,
+            "variation": 3
+        },
+        {
+            "original": "F1004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_35_4",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 35,
+            "variation": 4
+        },
+        {
+            "original": "F1005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_35_5",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 35,
+            "variation": 5
+        },
+        {
+            "original": "F2001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_45_1",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 45,
+            "variation": 1
+        },
+        {
+            "original": "F2002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_45_2",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 45,
+            "variation": 2
+        },
+        {
+            "original": "F2003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_45_3",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 45,
+            "variation": 3
+        },
+        {
+            "original": "F2004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_45_4",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 45,
+            "variation": 4
+        },
+        {
+            "original": "F2005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_45_5",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 45,
+            "variation": 5
+        },
+        {
+            "original": "F3001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_50_1",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 50,
+            "variation": 1
+        },
+        {
+            "original": "F3002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_50_2",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 50,
+            "variation": 2
+        },
+        {
+            "original": "F3003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_50_3",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 50,
+            "variation": 3
+        },
+        {
+            "original": "F3004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_50_4",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 50,
+            "variation": 4
+        },
+        {
+            "original": "F3005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_50_5",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 50,
+            "variation": 5
+        },
+        {
+            "original": "F1001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_40_1",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 40,
+            "variation": 1
+        },
+        {
+            "original": "F1002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_40_2",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 40,
+            "variation": 2
+        },
+        {
+            "original": "F1003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_40_3",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 40,
+            "variation": 3
+        },
+        {
+            "original": "F1004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_40_4",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 40,
+            "variation": 4
+        },
+        {
+            "original": "F1005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_50_75_40_5",
+            "author": "mec",
+            "n_jobs": 50,
+            "n_tools": 75,
+            "magazine_size": 40,
+            "variation": 5
+        },
+        {
+            "original": "F2001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_50_1",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 50,
+            "variation": 1
+        },
+        {
+            "original": "F2002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_50_2",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 50,
+            "variation": 2
+        },
+        {
+            "original": "F2003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_50_3",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 50,
+            "variation": 3
+        },
+        {
+            "original": "F2004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_50_4",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 50,
+            "variation": 4
+        },
+        {
+            "original": "F2005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_60_90_50_5",
+            "author": "mec",
+            "n_jobs": 60,
+            "n_tools": 90,
+            "magazine_size": 50,
+            "variation": 5
+        },
+        {
+            "original": "F3001.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_55_1",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 55,
+            "variation": 1
+        },
+        {
+            "original": "F3002.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_55_2",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 55,
+            "variation": 2
+        },
+        {
+            "original": "F3003.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_55_3",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 55,
+            "variation": 3
+        },
+        {
+            "original": "F3004.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_55_4",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 55,
+            "variation": 4
+        },
+        {
+            "original": "F3005.txt",
+            "root_folder": "mecler",
+            "instance": "mec_70_105_55_5",
+            "author": "mec",
+            "n_jobs": 70,
+            "n_tools": 105,
+            "magazine_size": 55,
+            "variation": 5
+        }
+    ]
+}

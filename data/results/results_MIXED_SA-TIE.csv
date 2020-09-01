@@ -1,0 +1,6 @@
+instance,n_jobs,n_tools,magazine_size,variations,n_switches,time_running,run_type,sequence,switches
+"('yan', 8, 15, 10)",8,15,10,30,7.7,1.9825,SA-TIE,[],
+"('cram', 30, 40, 25)",30,40,25,10,48.7,421.2722,SA-TIE,[],
+"('cat', 15, 20, 12)",15,20,12,10,8.1,4.2705,SA-TIE,[],
+"('cat', 30, 40, 17)",30,40,17,10,94.6,421.2445,SA-TIE,[],
+"('cat', 40, 60, 30)",40,60,30,10,140.3,421.1408,SA-TIE,[],

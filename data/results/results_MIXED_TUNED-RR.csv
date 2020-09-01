@@ -1,0 +1,6 @@
+instance,n_jobs,n_tools,magazine_size,variations,n_switches,time_running,run_type,sequence,switches
+"('yan', 8, 15, 10)",8,15,10,30,7.07,2.1029,TUNED-RR,[],
+"('cram', 30, 40, 25)",30,40,25,10,41.4,421.4937,TUNED-RR,[],
+"('cat', 15, 20, 12)",15,20,12,10,7.6,5.815,TUNED-RR,[],
+"('cat', 30, 40, 17)",30,40,17,10,78.2,421.1313,TUNED-RR,[],
+"('cat', 40, 60, 30)",40,60,30,10,121.5,421.2869,TUNED-RR,[],

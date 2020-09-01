@@ -6,8 +6,12 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
 
+import plotly.graph_objects as go
+
+
 BASE = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
-LOGFILE = BASE + "/data/log_A.csv"
+LOGFILE = "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data" \
+          "/instances/catanzaro/cat_10_10_4_1/log_ran_swap-2job_full_sd_sw_v1_none.csv"
 
 
 # app = dash.Dash(__name__)
@@ -19,16 +23,18 @@ server = app.server
 
 #DATA
 df = pd.read_csv(LOGFILE)
-fig = px.line_3d(df, x = 'Time', y = 'Temperature', z='Accepted', title='SSP')
-fig.update_xaxes(autorange='reversed')
-fig1 = px.line(df, x = 'Time', y = 'Cost')
-fig1.update_xaxes(autorange="reversed")
-fig2 = px.line(df, x = 'Time', y = 'Min Cost')
-fig2.update_xaxes(autorange="reversed")
-fig3 = px.line(df, x = 'Time', y = 'Temperature')
-fig3.update_xaxes(autorange="reversed")
-fig4 = px.line(df, x = 'Time', y = 'Accepted')
-fig4.update_xaxes(autorange="reversed")
+fig = px.line_3d(df, x = 'T_RUN', y = 'TEMP', z='ACCEPT', title='SSP')
+#fig.update_xaxes(autorange='reversed')
+fig1 = px.line(df, x = 'T_RUN', y = 'SW')
+#fig1.update_xaxes(autorange="reversed")
+fig2 = px.line(df, x = 'T_RUN', y = 'IMPROVE')
+#fig2.update_xaxes(autorange="reversed")
+fig3 = px.line(df, x = 'T_RUN', y = 'TEMP')
+#fig3.update_xaxes(autorange="reversed")
+fig4 = px.line(df, x = 'T_RUN', y = 'ACCEPT')
+#fig4.update_xaxes(autorange="reversed")$
+
+
 
 app.layout = html.Div(
     style={"height": "100%"},
@@ -45,6 +51,7 @@ app.layout = html.Div(
             ],
             className="banner row",
         ),
+
         dcc.Graph(
             id='example-graph-1',
             figure=fig1

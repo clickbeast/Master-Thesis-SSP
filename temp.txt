@@ -1,0 +1,19 @@
+/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/build/libs/Master-Thesis-SSP-or_none_none_sw_v1_none_1.jar
+
+
+
+
+python /Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/python/scripts/SSP_run.py
+
+
+
+
+/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterPr
+oef/Master-Thesis-SSP/build/libs/Master-Thesis-SSP-or_none_none_sw_v1_none.jar
+
+
+
+
+
+git filter-branch --tree-filter 'rm -rf data/instances/catanzaro/cat_10_10_4_2/archive/log_DEBUG-A.csv' HEAD
+git push

@@ -1,0 +1,4 @@
+files,run_type,instance,run_time,seed,w_s,w_hops,w_ktns_hops,w_dist,w_dist_min,w_dist_max,constructive_heuristic,local_search,meta_heuristic,objective,blink_rate,avg_ruin,start_temp,end_temp,decay_rate,sa_timed,force_alpha,iterations,alpha,beta,w_f,w_alpha,w_tm,w_jobs,w_tools,w_mag,log,log_verbose,write_results,live_result
+all_files.json,"SA-TIE",SD,420,7,1,1,1,1,1,1,random,ruinAndRecreate,simulatedAnnealing,switches,0.01,10,100,0.00097,-1,false,true,-1,-1,0,1,1,0.5,1,1,1,true,false,true,false,
+all_files.json,SA-TIE,SD,420,7,1,1,1,1,1,1,ordered,ruinAndRecreate,simulatedAnnealing,switches,0.01,10,100,0.00097,-1,false,true,-1,-1,0,1,1,0.5,1,1,1,true,false,true,false,
+all_files.json,SA-TIE,SD,420,7,1,1,1,1,1,1,random,ruinAndRecreate,simulatedAnnealing,switches,0.01,10,100,0.00097,-1,false,true,-1,-1,0,1,1,0.5,1,1,1,true,false,true,false,

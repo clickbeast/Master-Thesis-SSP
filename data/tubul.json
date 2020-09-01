@@ -1,0 +1,31 @@
+{
+
+  "data": [
+    {
+      "head": {"title": "MAGAZINE", "subtitle":""},
+      "body": [[2,6],[2,8,9]],
+      "footer": {},
+      "layout": {
+        "0,[1,2]": {
+          "circle": "grey",
+          "color": "blue"
+        }
+      }
+
+
+    },
+    {
+      "head": {"title": "MAGAZINE", "subtitle":""},
+      "body": [[2,6],[2,8,9]],
+      "footer": {}
+
+    },
+    {
+      "head": {"title": "MAGAZINE", "subtitle":""},
+      "body": [[2,6],[2,8,9]],
+      "footer": {}
+
+    }
+  ]
+
+}

@@ -1,0 +1,165 @@
+---
+root_path: "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
+files: 'mixed_files.json' #filename of file containing instances to be run
+runs: 3  #int; amount of runs of each instance
+parallel: true      #(bool); run instances parallel
+background: False    #(bool); run everything as a background task; only applicable when running parallel
+multi: True         #(bool); run multiple params versions
+use_runs: True      #(bool); run each instance multiple times
+jobs: 32             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
+use_filter: false   #(bool); only use the instances that match the filter
+open_results: false #(bool); calculate the results of the runs and open after running
+
+filter:
+  author: 'cat'
+  n_jobs: 10
+  n_tools: 10
+  magazine_size: 4
+  variation: 1
+
+params:
+
+  #
+  # General: run info
+  #
+
+  - run_type: BASE          #name of the run , configured with the paramaters below
+    run: 0                    #(0); indicates which run it is
+    root_folder: ''           #(empty); indicates the folder of the author, containing the problem and aux file.
+    instance: ''              #(empty); indicates the instance being used
+
+    #
+    # General: parameters
+    #
+
+    run_time: 1000             #int; seconds; max run time
+    seed: 7                   #int; seed of random generator
+
+    #
+    # General: Method
+    #
+
+    constructive_heuristic: toolSequencing    #(ordered, toolSequencing, random)
+    local_search: ruinAndRecreate     #(ruinAndRecreate, swaps)
+    meta_heuristic: simulatedAnnealing #(steepestDescentBestRandom, steepestDescentBestFirst, simulatedAnnealing, hillClimbing, permutations, forceSequence, multiForceSequence)
+    objective: switches              #(switches, tieBreaking, toolDistance, penalty); the objective function needed to be used
+    run_backup_SD: true             #(bool)
+
+    #
+    # Ruin and Recreate
+    #
+
+    blink_rate: 0.01                  #(double);
+    avg_ruin: 10                      #(int); max allowed ruined solutions
+    select: randomTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
+    match: requiredTool                   #(requiredTool, ktnsTool, notRequiredTool, hopCreator, ktnsFail)
+    insert: best                       #(best); where to insert the removed jobs
+    filter: random                     #(random, worst); when making a choice how many to remove, which ones to keep
+    insert_positions: all             #(all, removed); insert at all possible positions, or only in the removed positions
+    decode: full                      #(full, shallow, hybrid); rank insert position quality with a full decode, shallow or hybrid (Depending if there are a lot of ktns tools that can be added)
+
+
+    #
+    # Decoding
+    #
+
+    decode_version: 'default'              #(groundTruth: Original Tang and Denaro, v1: Naive version, v2: Preprocessing , v3: delta evaluation)
+
+
+    #
+    # Performance
+    #
+
+    parallel: false               #(bool); run parrallel ; (during decode, ...)
+
+
+    #
+    # Objective: Tool Distance
+    #
+
+    w_s: 0                           #(double); weight switches
+    w_dist: 1                        #(double); weight total distance
+    w_dist_min: 1                    #(double); weight distance minimized distance(tools that are present)
+    w_dist_max: 1                    #(double); weight distance maximized distance(tools that are not present)
+    w_fail_ktns: 0                   #(double)
+
+    #
+    # Objective: Tool Hops
+    #
+
+
+
+
+    #
+    # Simulated Annealing
+    #
+
+    start_temp: 30                 #double; start temperature
+    end_temp:  0.003               #double; end temperature
+    sa_timed: false                 #double;
+    decay_rate: -1                  #(double,-1: auto generate); the decay rate,
+    force_iterations: false         #(bool); use hardcoded iterations function;
+    iterations: 100000              #(int,-1: auto generate); number of iterations
+    alpha: 1
+    beta: 0.7
+    theta: -1
+    itmin: 10000
+    itmax: 1000000
+
+
+    #
+    # Logging
+
+    log: true                      #(bool); write logs in general
+    log_verbose: false              #(bool); write logs to stdout
+    write_results: false            #(bool); write results to file
+    live_result: false             #(bool); transmit live results
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+
+    - run_type: SWAP-A
+
+
+
+
+    - run_type: RR-A
+      match: requiredTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
+      filter: random
+
+    - run_type: RR-B
+      match: ktnsTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
+      filter: random
+
+
+    - run_type: RR-C
+      match: usedTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
+      filter: random
+
+
+    - run_type: RR-D
+      match: notRequiredTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
+      filter: random
+
+
+    - run_type: RR-E
+      match: requiredTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
+      filter: worst
+
+    - run_type: RR-F
+      match: ktnsTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
+      filter: worst
+
+
+    - run_type: RR-G
+      match: usedTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
+      filter: worst
+
+
+    - run_type: RR-H
+      match: notRequiredTool                #(randomTool, randomJob, mostHops, mostHopsRoulette);
+      filter: worst
+
+
+

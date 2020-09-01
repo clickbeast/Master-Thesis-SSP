@@ -1,0 +1,51 @@
+{
+  "base": "SSP",
+  "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+  "root_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/",
+  "files": [
+
+    {
+      "original": "s1-2.txt",
+      "root_folder": "crama",
+      "instance": "cram_10_10_7_2",
+      "author": "cram",
+      "n_jobs": 10,
+      "n_tools": 10,
+      "magazine_size": 7,
+      "variation": 2
+    },
+
+    {
+      "original": "datA-6",
+      "root_folder": "catanzaro",
+      "instance": "cat_10_10_7_6",
+      "author": "cat",
+      "n_jobs": 10,
+      "n_tools": 10,
+      "magazine_size": 7,
+      "variation": 6
+    },
+
+    {
+      "original": "datD-1",
+      "root_folder": "catanzaro",
+      "instance": "cat_40_60_22_1",
+      "author": "cat",
+      "n_jobs": 40,
+      "n_tools": 60,
+      "magazine_size": 22,
+      "variation": 1
+    },
+    {
+      "original": "s3-3.txt",
+      "root_folder": "crama",
+      "instance": "cram_30_40_17_3",
+      "author": "cram",
+      "n_jobs": 30,
+      "n_tools": 40,
+      "magazine_size": 17,
+      "variation": 3
+    },
+
+
+  ]

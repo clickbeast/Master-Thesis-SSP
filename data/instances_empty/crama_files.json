@@ -1,0 +1,1607 @@
+{
+    "base": "SSP",
+    "run_type": "ran_swap-2job_full_sd_sw_v1_none",
+    "root_path": "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/",
+    "files": [
+        {
+            "original": "s1-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_4_1",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 4,
+            "variation": 1
+        },
+        {
+            "original": "s1-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_4_2",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 4,
+            "variation": 2
+        },
+        {
+            "original": "s1-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_4_3",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 4,
+            "variation": 3
+        },
+        {
+            "original": "s1-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_4_4",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 4,
+            "variation": 4
+        },
+        {
+            "original": "s1-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_4_5",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 4,
+            "variation": 5
+        },
+        {
+            "original": "s1-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_4_6",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 4,
+            "variation": 6
+        },
+        {
+            "original": "s1-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_4_7",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 4,
+            "variation": 7
+        },
+        {
+            "original": "s1-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_4_8",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 4,
+            "variation": 8
+        },
+        {
+            "original": "s1-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_4_9",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 4,
+            "variation": 9
+        },
+        {
+            "original": "s1-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_4_10",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 4,
+            "variation": 10
+        },
+        {
+            "original": "s2-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_6_1",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 6,
+            "variation": 1
+        },
+        {
+            "original": "s2-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_6_2",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 6,
+            "variation": 2
+        },
+        {
+            "original": "s2-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_6_3",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 6,
+            "variation": 3
+        },
+        {
+            "original": "s2-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_6_4",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 6,
+            "variation": 4
+        },
+        {
+            "original": "s2-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_6_5",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 6,
+            "variation": 5
+        },
+        {
+            "original": "s2-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_6_6",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 6,
+            "variation": 6
+        },
+        {
+            "original": "s2-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_6_7",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 6,
+            "variation": 7
+        },
+        {
+            "original": "s2-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_6_8",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 6,
+            "variation": 8
+        },
+        {
+            "original": "s2-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_6_9",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 6,
+            "variation": 9
+        },
+        {
+            "original": "s2-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_6_10",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 6,
+            "variation": 10
+        },
+        {
+            "original": "s3-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_15_1",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 1
+        },
+        {
+            "original": "s3-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_15_2",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 2
+        },
+        {
+            "original": "s3-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_15_3",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 3
+        },
+        {
+            "original": "s3-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_15_4",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 4
+        },
+        {
+            "original": "s3-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_15_5",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 5
+        },
+        {
+            "original": "s3-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_15_6",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 6
+        },
+        {
+            "original": "s3-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_15_7",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 7
+        },
+        {
+            "original": "s3-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_15_8",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 8
+        },
+        {
+            "original": "s3-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_15_9",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 9
+        },
+        {
+            "original": "s3-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_15_10",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 15,
+            "variation": 10
+        },
+        {
+            "original": "s4-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_20_1",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 1
+        },
+        {
+            "original": "s4-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_20_2",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 2
+        },
+        {
+            "original": "s4-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_20_3",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 3
+        },
+        {
+            "original": "s4-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_20_4",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 4
+        },
+        {
+            "original": "s4-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_20_5",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 5
+        },
+        {
+            "original": "s4-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_20_6",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 6
+        },
+        {
+            "original": "s4-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_20_7",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 7
+        },
+        {
+            "original": "s4-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_20_8",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 8
+        },
+        {
+            "original": "s4-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_20_9",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 9
+        },
+        {
+            "original": "s4-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_20_10",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 20,
+            "variation": 10
+        },
+        {
+            "original": "s1-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_5_1",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 5,
+            "variation": 1
+        },
+        {
+            "original": "s1-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_5_2",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 5,
+            "variation": 2
+        },
+        {
+            "original": "s1-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_5_3",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 5,
+            "variation": 3
+        },
+        {
+            "original": "s1-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_5_4",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 5,
+            "variation": 4
+        },
+        {
+            "original": "s1-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_5_5",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 5,
+            "variation": 5
+        },
+        {
+            "original": "s1-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_5_6",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 5,
+            "variation": 6
+        },
+        {
+            "original": "s1-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_5_7",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 5,
+            "variation": 7
+        },
+        {
+            "original": "s1-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_5_8",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 5,
+            "variation": 8
+        },
+        {
+            "original": "s1-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_5_9",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 5,
+            "variation": 9
+        },
+        {
+            "original": "s1-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_5_10",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 5,
+            "variation": 10
+        },
+        {
+            "original": "s2-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_8_1",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 8,
+            "variation": 1
+        },
+        {
+            "original": "s2-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_8_2",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 8,
+            "variation": 2
+        },
+        {
+            "original": "s2-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_8_3",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 8,
+            "variation": 3
+        },
+        {
+            "original": "s2-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_8_4",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 8,
+            "variation": 4
+        },
+        {
+            "original": "s2-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_8_5",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 8,
+            "variation": 5
+        },
+        {
+            "original": "s2-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_8_6",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 8,
+            "variation": 6
+        },
+        {
+            "original": "s2-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_8_7",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 8,
+            "variation": 7
+        },
+        {
+            "original": "s2-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_8_8",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 8,
+            "variation": 8
+        },
+        {
+            "original": "s2-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_8_9",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 8,
+            "variation": 9
+        },
+        {
+            "original": "s2-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_8_10",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 8,
+            "variation": 10
+        },
+        {
+            "original": "s3-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_17_1",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 1
+        },
+        {
+            "original": "s3-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_17_2",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 2
+        },
+        {
+            "original": "s3-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_17_3",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 3
+        },
+        {
+            "original": "s3-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_17_4",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 4
+        },
+        {
+            "original": "s3-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_17_5",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 5
+        },
+        {
+            "original": "s3-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_17_6",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 6
+        },
+        {
+            "original": "s3-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_17_7",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 7
+        },
+        {
+            "original": "s3-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_17_8",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 8
+        },
+        {
+            "original": "s3-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_17_9",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 9
+        },
+        {
+            "original": "s3-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_17_10",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 17,
+            "variation": 10
+        },
+        {
+            "original": "s4-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_22_1",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 1
+        },
+        {
+            "original": "s4-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_22_2",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 2
+        },
+        {
+            "original": "s4-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_22_3",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 3
+        },
+        {
+            "original": "s4-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_22_4",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 4
+        },
+        {
+            "original": "s4-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_22_5",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 5
+        },
+        {
+            "original": "s4-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_22_6",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 6
+        },
+        {
+            "original": "s4-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_22_7",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 7
+        },
+        {
+            "original": "s4-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_22_8",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 8
+        },
+        {
+            "original": "s4-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_22_9",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 9
+        },
+        {
+            "original": "s4-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_22_10",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 22,
+            "variation": 10
+        },
+        {
+            "original": "s1-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_6_1",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 6,
+            "variation": 1
+        },
+        {
+            "original": "s1-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_6_2",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 6,
+            "variation": 2
+        },
+        {
+            "original": "s1-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_6_3",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 6,
+            "variation": 3
+        },
+        {
+            "original": "s1-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_6_4",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 6,
+            "variation": 4
+        },
+        {
+            "original": "s1-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_6_5",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 6,
+            "variation": 5
+        },
+        {
+            "original": "s1-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_6_6",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 6,
+            "variation": 6
+        },
+        {
+            "original": "s1-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_6_7",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 6,
+            "variation": 7
+        },
+        {
+            "original": "s1-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_6_8",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 6,
+            "variation": 8
+        },
+        {
+            "original": "s1-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_6_9",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 6,
+            "variation": 9
+        },
+        {
+            "original": "s1-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_6_10",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 6,
+            "variation": 10
+        },
+        {
+            "original": "s2-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_10_1",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 10,
+            "variation": 1
+        },
+        {
+            "original": "s2-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_10_2",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 10,
+            "variation": 2
+        },
+        {
+            "original": "s2-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_10_3",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 10,
+            "variation": 3
+        },
+        {
+            "original": "s2-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_10_4",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 10,
+            "variation": 4
+        },
+        {
+            "original": "s2-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_10_5",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 10,
+            "variation": 5
+        },
+        {
+            "original": "s2-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_10_6",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 10,
+            "variation": 6
+        },
+        {
+            "original": "s2-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_10_7",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 10,
+            "variation": 7
+        },
+        {
+            "original": "s2-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_10_8",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 10,
+            "variation": 8
+        },
+        {
+            "original": "s2-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_10_9",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 10,
+            "variation": 9
+        },
+        {
+            "original": "s2-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_10_10",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 10,
+            "variation": 10
+        },
+        {
+            "original": "s3-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_20_1",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 1
+        },
+        {
+            "original": "s3-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_20_2",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 2
+        },
+        {
+            "original": "s3-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_20_3",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 3
+        },
+        {
+            "original": "s3-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_20_4",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 4
+        },
+        {
+            "original": "s3-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_20_5",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 5
+        },
+        {
+            "original": "s3-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_20_6",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 6
+        },
+        {
+            "original": "s3-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_20_7",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 7
+        },
+        {
+            "original": "s3-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_20_8",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 8
+        },
+        {
+            "original": "s3-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_20_9",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 9
+        },
+        {
+            "original": "s3-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_20_10",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 20,
+            "variation": 10
+        },
+        {
+            "original": "s4-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_25_1",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 1
+        },
+        {
+            "original": "s4-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_25_2",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 2
+        },
+        {
+            "original": "s4-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_25_3",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 3
+        },
+        {
+            "original": "s4-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_25_4",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 4
+        },
+        {
+            "original": "s4-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_25_5",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 5
+        },
+        {
+            "original": "s4-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_25_6",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 6
+        },
+        {
+            "original": "s4-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_25_7",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 7
+        },
+        {
+            "original": "s4-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_25_8",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 8
+        },
+        {
+            "original": "s4-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_25_9",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 9
+        },
+        {
+            "original": "s4-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_25_10",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 25,
+            "variation": 10
+        },
+        {
+            "original": "s1-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_7_1",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 7,
+            "variation": 1
+        },
+        {
+            "original": "s1-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_7_2",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 7,
+            "variation": 2
+        },
+        {
+            "original": "s1-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_7_3",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 7,
+            "variation": 3
+        },
+        {
+            "original": "s1-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_7_4",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 7,
+            "variation": 4
+        },
+        {
+            "original": "s1-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_7_5",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 7,
+            "variation": 5
+        },
+        {
+            "original": "s1-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_7_6",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 7,
+            "variation": 6
+        },
+        {
+            "original": "s1-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_7_7",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 7,
+            "variation": 7
+        },
+        {
+            "original": "s1-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_7_8",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 7,
+            "variation": 8
+        },
+        {
+            "original": "s1-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_7_9",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 7,
+            "variation": 9
+        },
+        {
+            "original": "s1-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_10_10_7_10",
+            "author": "cram",
+            "n_jobs": 10,
+            "n_tools": 10,
+            "magazine_size": 7,
+            "variation": 10
+        },
+        {
+            "original": "s2-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_12_1",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 12,
+            "variation": 1
+        },
+        {
+            "original": "s2-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_12_2",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 12,
+            "variation": 2
+        },
+        {
+            "original": "s2-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_12_3",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 12,
+            "variation": 3
+        },
+        {
+            "original": "s2-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_12_4",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 12,
+            "variation": 4
+        },
+        {
+            "original": "s2-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_12_5",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 12,
+            "variation": 5
+        },
+        {
+            "original": "s2-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_12_6",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 12,
+            "variation": 6
+        },
+        {
+            "original": "s2-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_12_7",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 12,
+            "variation": 7
+        },
+        {
+            "original": "s2-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_12_8",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 12,
+            "variation": 8
+        },
+        {
+            "original": "s2-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_12_9",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 12,
+            "variation": 9
+        },
+        {
+            "original": "s2-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_15_20_12_10",
+            "author": "cram",
+            "n_jobs": 15,
+            "n_tools": 20,
+            "magazine_size": 12,
+            "variation": 10
+        },
+        {
+            "original": "s3-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_1",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 1
+        },
+        {
+            "original": "s3-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_2",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 2
+        },
+        {
+            "original": "s3-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_3",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 3
+        },
+        {
+            "original": "s3-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_4",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 4
+        },
+        {
+            "original": "s3-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_5",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 5
+        },
+        {
+            "original": "s3-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_6",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 6
+        },
+        {
+            "original": "s3-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_7",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 7
+        },
+        {
+            "original": "s3-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_8",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 8
+        },
+        {
+            "original": "s3-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_9",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 9
+        },
+        {
+            "original": "s3-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_30_40_25_10",
+            "author": "cram",
+            "n_jobs": 30,
+            "n_tools": 40,
+            "magazine_size": 25,
+            "variation": 10
+        },
+        {
+            "original": "s4-1.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_30_1",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 1
+        },
+        {
+            "original": "s4-2.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_30_2",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 2
+        },
+        {
+            "original": "s4-3.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_30_3",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 3
+        },
+        {
+            "original": "s4-4.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_30_4",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 4
+        },
+        {
+            "original": "s4-5.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_30_5",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 5
+        },
+        {
+            "original": "s4-6.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_30_6",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 6
+        },
+        {
+            "original": "s4-7.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_30_7",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 7
+        },
+        {
+            "original": "s4-8.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_30_8",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 8
+        },
+        {
+            "original": "s4-9.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_30_9",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 9
+        },
+        {
+            "original": "s4-10.txt",
+            "root_folder": "crama",
+            "instance": "cram_40_60_30_10",
+            "author": "cram",
+            "n_jobs": 40,
+            "n_tools": 60,
+            "magazine_size": 30,
+            "variation": 10
+        }
+    ]
+}
