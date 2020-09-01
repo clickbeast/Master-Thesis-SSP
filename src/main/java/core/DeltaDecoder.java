@@ -15,11 +15,6 @@ public class DeltaDecoder {
     ProblemManager problemManager;
     private Parameters parameters;
 
-    class DecodeFeedback {
-        ResultDelta result;
-        int ktnsSuccess = 0;
-    }
-
 
     public DeltaDecoder(ProblemManager problemManager, Parameters parameters) {
         this.problemManager = problemManager;
@@ -31,8 +26,6 @@ public class DeltaDecoder {
         this.KTNSVerified(result);
         this.evaluate(result);
     }
-
-
 
     public void KTNS(Result result){
 
@@ -134,10 +127,7 @@ public class DeltaDecoder {
                 //Fill remaining nToolsAdd with any tool
                 ListIterator<Integer> remainingIter = diffPrevCurTools.listIterator();
                 while(nToolsAdd != 0) {
-
-
                     int toolAddId = remainingIter.next();
-
                     result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
                     remainingIter.remove();
                     nToolsAdd-=1;
@@ -156,7 +146,6 @@ public class DeltaDecoder {
 
         for(int i = 0; i < antiToolSetB.length; i++) {
             int toolId = antiToolSetB[i];
-
             if(toolsA[toolId] == 1) {
                 list.add(toolId);
             }
@@ -165,8 +154,10 @@ public class DeltaDecoder {
     }
 
 
+
+
     public void evaluate(Result result) {
-        result.setnSwitches(nSwitchesSetupBased(result));
+        result.setnSwitches(nSwitches(count_switches(result)));
         result.setCost((double) result.getnSwitches());
     }
 
@@ -197,9 +188,55 @@ public class DeltaDecoder {
 
 
 
+    public int nSwitches(int[] switches) {
+        int count = 0;
+        for (int i = 0; i < switches.length; i++) {
+            count+= switches[i];
+        }
+        return count;
+    }
 
 
 
+
+
+
+    public int[] count_switches(Result result) {
+
+        //Count first tool loadings
+
+        int[] switches = new int[result.getSequence().length];
+
+        Job jobPos1 = result.getJobAtSeqPos(0);
+
+        //Inserstions
+        int insertionCount = 0;
+        for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
+            if (result.getJobToolMatrix()[jobPos1.getId()][i] == 1) {
+                insertionCount += 1;
+            }
+        }
+
+
+        insertionCount = 0;
+        switches[0] = insertionCount;
+
+
+        for (int seqPos = 1; seqPos < result.getSequence().length; seqPos++) {
+            int swapCount = 0;
+
+            Job job = result.getJobAtSeqPos(seqPos);
+            Job prevJob = result.getJobAtSeqPos(seqPos - 1);
+            for (int j = 0; j < result.getJobToolMatrix()[job.getId()].length; j++) {
+                if (result.getJobToolMatrix()[prevJob.getId()][j] ==  1 & result.getJobToolMatrix()[job.getId()][j] ==  0) {
+                    swapCount+=1;
+                }
+            }
+            switches[seqPos] = swapCount;
+        }
+
+        return switches;
+    }
 
 
 
