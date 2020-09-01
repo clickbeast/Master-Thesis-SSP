@@ -1073,11 +1073,9 @@ public class ProblemManager {
             this.logger.logInfo("SA Stopped: time limit exceeded");
         }else{
             this.logger.logInfo("SA Stopped: max steps reached");
-
         }
 
         this.logger.logInfo("Number of steps used:" + String.valueOf(steps));
-
     }
 
 

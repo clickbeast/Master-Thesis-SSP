@@ -6,6 +6,7 @@ import util.General;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 
 public class DeltaDecoder {
@@ -27,7 +28,7 @@ public class DeltaDecoder {
 
 
     public void decode(Result result) throws IOException {
-        this.KTNS(result);
+        this.KTNSVerified(result);
         this.evaluate(result);
     }
 
@@ -46,8 +47,6 @@ public class DeltaDecoder {
                 int nToolsAdd = Math.max(0,this.problemManager.getMAGAZINE_SIZE() - job.getSet().length);
                 int nextJobSeqPos = seqPos + 1;
                 int nextJobId = result.getJobIdAtSeqPos(nextJobSeqPos);
-
-                //Pool every tool in thread
 
                 while(nToolsAdd != 0 & nextJobId != -1) {
                     for(int toolId: job.getAntiSet()) {
@@ -83,13 +82,93 @@ public class DeltaDecoder {
     }
 
 
+    public void KTNSVerified(Result result) throws IOException {
+
+        result.setJobToolMatrix(General.copyGrid(this.problemManager.getJOB_TOOL_MATRIX()));
+
+        //for all jobs
+        for (int seqPos = 0; seqPos < result.getSequence().length; seqPos++) {
+
+            Job job = result.getJobAtSeqPos(seqPos);
+
+            //base case
+            if (seqPos == 0) {
+                //resultJobToolMatrix[job.getId()] = Arrays.copyOf(job.getTOOLS(),job.getTOOLS().length);
+            }else{
+
+                Job prevJob = result.getJobAtSeqPos(seqPos-1);
+
+                LinkedList<Integer> diffPrevCurTools = this.getDifTools(result.getJobToolMatrix()[prevJob.getId()], job.getAntiSet());
+
+                int unionPrevCurJobSize = diffPrevCurTools.size() + job.getSet().length;
+                int nToolsDelete = Math.max(0, unionPrevCurJobSize - this.problemManager.getMAGAZINE_SIZE());
+                int nToolsKeep = unionPrevCurJobSize - nToolsDelete;
+                int nToolsAdd = nToolsKeep - job.getSet().length;
+
+
+                int nextJobPos = seqPos + 1;
+                Job nextJob = result.getJobAtSeqPos(nextJobPos);
+
+
+                while(nToolsAdd != 0 & nextJob != null & diffPrevCurTools.size() > 0) {
+
+                    ListIterator<Integer> iter = diffPrevCurTools.listIterator();
+
+                    while (iter.hasNext() && nToolsAdd != 0) {
+                        int toolAddId = iter.next();
+
+
+                        if(result.getJobToolMatrix()[nextJob.getId()][toolAddId] == 1) {
+                            result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
+                            nToolsAdd-=1;
+                            iter.remove();
+                        }
+                    }
+
+                    nextJobPos = nextJobPos + 1;
+                    nextJob = result.getJobAtSeqPos(nextJobPos);
+                }
+
+
+
+                //Fill remaining nToolsAdd with any tool
+                ListIterator<Integer> remainingIter = diffPrevCurTools.listIterator();
+                while(nToolsAdd != 0) {
+
+
+                    int toolAddId = remainingIter.next();
+
+                    result.getJobToolMatrix()[job.getId()][toolAddId] = 1;
+                    remainingIter.remove();
+                    nToolsAdd-=1;
+                }
+
+            }
+
+        }
+
+        this.evaluate(result);
+    }
+
+    public LinkedList<Integer> getDifTools(int[] toolsA, int[] antiToolSetB) {
+
+        LinkedList<Integer> list = new LinkedList<>();
+
+        for(int i = 0; i < antiToolSetB.length; i++) {
+            int toolId = antiToolSetB[i];
+
+            if(toolsA[toolId] == 1) {
+                list.add(toolId);
+            }
+        }
+        return list;
+    }
+
 
     public void evaluate(Result result) {
         result.setnSwitches(nSwitchesSetupBased(result));
         result.setCost((double) result.getnSwitches());
     }
-
-
 
     public int nSwitchesSetupBased(Result result) {
         //Inserstions
@@ -114,6 +193,23 @@ public class DeltaDecoder {
         //System.out.println(setupCount);
         return  setupCount - this.problemManager.getMAGAZINE_SIZE();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    /* GETTERS & SETTERS ------------------------------------------------------------------ */
+
+
+
+
 
     public ProblemManager getProblemManager() {
         return problemManager;

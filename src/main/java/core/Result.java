@@ -90,11 +90,17 @@ public class Result {
     }
 
     public Job getJobAtSeqPos(int seqPos) {
-        return this.problemManager.getJob(getJobIdAtSeqPos(seqPos));
+        int jobId = getJobIdAtSeqPos(seqPos);
+
+        if(jobId == -1) {
+            return null;
+        }else{
+            return this.problemManager.getJob(getJobIdAtSeqPos(seqPos));
+        }
     }
 
     public int getJobIdAtSeqPos(int seqPos) {
-        if(seqPos >= this.problemManager.getN_JOBS()) {
+        if(seqPos >= this.problemManager.getN_JOBS() || seqPos < 0) {
             return -1;
         }
 
