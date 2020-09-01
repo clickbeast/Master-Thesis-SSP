@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Master-Thesis-SSP.iml" filepath="$PROJECT_DIR$/Master-Thesis-SSP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Master-Thesis-SSP.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Master-Thesis-SSP.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Master-Thesis-SSP.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Master-Thesis-SSP.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/python/python.iml" filepath="$PROJECT_DIR$/python/python.iml" />
     </modules>
   </component>

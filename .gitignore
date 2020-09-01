@@ -1,3 +1,20 @@
 # Compiled class file
 *.class
 venv
+
+#ignore instance results
+data/instances/catanzaro
+data/instances/crama
+data/instances/mecler
+data/instances/yanasse
+data/instances_archive
+data/instances_remote
+data/instances_local
+data/collection
+data/waiting
+data/instances_temp
+data/instances_temp
+data/collection
+data/waiting
+.gradle
+/data/instances_local/
