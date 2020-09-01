@@ -1,4 +1,4 @@
-/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_30_40_15_2
-cat_30_40_15_2
-MAIN-V2
-0
+/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_40_60_30_3
+cat_40_60_30_3
+TIE-BABY
+1

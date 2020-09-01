@@ -3814,31 +3814,13 @@
       "n_tools": 6,
       "magazine_size": 3,
       "variation": 1
-    },
-
-    {
-      "original": "Simon2020ExampleB",
-      "root_folder": "yanasse",
-      "instance": "yan_4_4_2_1",
-      "author": "yan",
-      "n_jobs": 4,
-      "n_tools": 4,
-      "magazine_size": 2,
-      "variation": 1
-    },
-
-
-    {
-      "original": "Simon2020ExampleA",
-      "root_folder": "yanasse",
-      "instance": "yan_4_4_3_1",
-      "author": "yan",
-      "n_jobs": 4,
-      "n_tools": 4,
-      "magazine_size": 2,
-      "variation": 1
     }
-  ,
+
+
+
+
+
+    ,
 
     {
       "original": "L1-1.txt",

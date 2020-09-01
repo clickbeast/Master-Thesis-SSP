@@ -10,6 +10,8 @@ data/instances/yanasse
 data/instances_archive
 data/instances_remote
 data/instances_local
-
+data/instances_temp
+data/collection
+data/waiting
 .gradle
 /data/instances_local/

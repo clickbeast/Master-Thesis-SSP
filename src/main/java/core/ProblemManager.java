@@ -146,9 +146,10 @@ public class ProblemManager {
             }
         }
 
-        this.getLogger().writeResult(this.workingResult);
-        this.getLogger().writeLiveResult(this.workingResult);
 
+      /*  this.forceSequence(this.parameters.getForceSequence());
+        this.getLogger().writeResult(this.workingResult);
+        this.getLogger().writeLiveResult(this.workingResult);*/
 
         switch (this.getParameters().getMetaHeuristic()) {
             case "simulatedAnnealing": {
@@ -964,6 +965,9 @@ public class ProblemManager {
         this.decoder.decode(this.bestResult);
         this.getLogger().writeLiveResult(this.bestResult);
         this.logger.writeResult(this.bestResult);
+
+        this.workingResult = this.bestResult.getCopy();
+        this.currentResult = this.bestResult.getCopy();
     }
 
     //SA

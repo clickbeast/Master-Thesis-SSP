@@ -314,9 +314,8 @@ public class Decoder {
 
     }
 
-
-
-    public void evaluate(Result result) {
+    public void
+    evaluate(Result result) {
         //int[] switches = this.count_switches(result);
         result.setSwitches(new int[result.getSequence().length]);
 
@@ -325,16 +324,17 @@ public class Decoder {
         result.setnSwitches(nSwitchesSetupBased(result));
 
         //NEW TYPE OF COST
-        //result.setZeroBlockLength(this.zeroBlockLength(result));
-        //result.setTieBreakingCost(this.calculateTieBreakingCost(result));
+        result.setZeroBlockLength(this.zeroBlockLength(result));
+        result.setTieBreakingCost(this.calculateTieBreakingCost(result));
         //result.setToolDistance(this.calculateToolDistance(result));
 
         //result.setToolDistance(new int[this.problemManager.getN_JOBS()][]);
         //result.toolDistanceCost = this.calculateToolDistanceCost(result);
         //result.penaltyCost = this.calculatePenaltyCos t(result);
 
-        result.setCost((double) result.getnSwitches());
-        //result.setCost(result.getTieBreakingCost());
+        //result.setCost((double) result.getnSwitches());
+
+        result.setCost(result.getTieBreakingCost());
 
         /*switch (this.problemManager.getParameters().getObjective()) {
             case "switches": {

@@ -74,16 +74,24 @@ public class MoveManager {
         int picked = select[this.random.nextInt(select.length)];
 
 
-        if(picked == 0) {
+        /*if(picked == 0) {
             ruin = ruinMultiBlock(result);
         }else{
             ruin = ruinBlock(result);
-        }
+        }*/
+
+        ruin = ruinCross(result);
+
 
         recreate(result, ruin);
-
         return result;
     }
+
+
+
+
+
+
 
 
     class Ruin {
@@ -131,7 +139,6 @@ public class MoveManager {
         //Select
         int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
 
-
         switch (this.problemManager.getParameters().getMatch()) {
             case "requiredTool": {
 
@@ -146,7 +153,6 @@ public class MoveManager {
                         ruined.getKeep().add(job.getId());
                     }
                 }
-
 
                 break;
             }

@@ -76,10 +76,8 @@ public class Parameters {
     private boolean parallel = false;
 
 
-
-
     //FORCE SEQUECE
-    private int[] forceSequence = {2,1,0,3};
+    private int[] forceSequence = {2,0,3,1};
 
 
     //private int[] forceSequence = {6,7,5,4,3,2,1,0};
