@@ -24,8 +24,9 @@ public class Parameters {
     //yan_8_15_10_29
     @Option(names = {"--instance"})
     //private String INSTANCE                 =   "cat_10_10_6_1";
-    private String INSTANCE                 =   "cat_40_60_20_10";
-    //private String INSTANCE                 =   "cat_10_10_4_1";
+    private String INSTANCE                 =   "cat_10_10_4_1";
+    //private  String INSTANCE = "cat_30_40_17_9";
+    //private String INSTANCE                 =   "cat_40_60_20_10";
 
 
     //private String INSTANCE                  =   "yan_8_15_10_29";
@@ -63,7 +64,7 @@ public class Parameters {
     @Option(names = {"--constructive_heuristic"})
     private String constructiveHeuristic = "random";
     @Option(names = {"--local_search"})
-    private String localSearch = "ruinAndRecreate";
+    private String localSearch = "swaps";
     @Option(names = {"--meta_heuristic"})
     private String metaHeuristic = "simulatedAnnealing";
     @Option(names = {"--objective"})
