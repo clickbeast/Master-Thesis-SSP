@@ -214,6 +214,7 @@ public class DeltaDecoder {
         for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
             if (result.getJobToolMatrix()[jobPos1.getId()][i] == 1) {
                 insertionCount += 1;
+
             }
         }
 
@@ -228,12 +229,22 @@ public class DeltaDecoder {
             Job job = result.getJobAtSeqPos(seqPos);
             Job prevJob = result.getJobAtSeqPos(seqPos - 1);
             for (int j = 0; j < result.getJobToolMatrix()[job.getId()].length; j++) {
-                if (result.getJobToolMatrix()[prevJob.getId()][j] ==  1 & result.getJobToolMatrix()[job.getId()][j] ==  0) {
+                /*if (result.getJobToolMatrix()[prevJob.getId()][j] ==  1 & result.getJobToolMatrix()[job.getId()][j] ==  0) {
+                    swapCount+=1;
+                    System.out.println(job.getId() + "->" + j);
+                }*/
+
+                if (result.isToolUsedAtJobId(j,prevJob.getId()) && result.isToolUsedAtJobId(j,job.getId())) {
+                    System.out.println(job.getId() + "->" + j);
                     swapCount+=1;
                 }
+
             }
             switches[seqPos] = swapCount;
         }
+
+        System.out.println("- - - - - - - - - - - - - - - ");
+
 
         return switches;
     }

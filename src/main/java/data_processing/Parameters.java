@@ -147,7 +147,7 @@ public class Parameters {
     @Option(names = {"--force_alpha"})
     private  boolean FORCE_ALPHA            =   false;
     @Option(names = {"--force_iterations"})
-    private  boolean FORCE_ITERATIONS            =   false;
+    private  boolean FORCE_ITERATIONS            =   true;
     @Option(names = {"--iterations"})
     private  long    ITERATIONS             =   20;
 
