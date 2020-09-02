@@ -57,7 +57,8 @@ public class Decoder {
     }
 
     public void decodeRR(Result result) throws IOException{
-        switch (this.problemManager.getParameters().getDecode()) {
+        this.decode(result);
+ /*       switch (this.problemManager.getParameters().getDecode()) {
             case "full": {
                 //this.decode(result);
                 this.decode(result);
@@ -76,7 +77,7 @@ public class Decoder {
             default: {
                 this.problemManager.getLogger().logInfo("NO RR DECODE CHOSEN");
             }
-        }
+        }*/
     }
 
 
@@ -280,7 +281,7 @@ public class Decoder {
         //result.toolDistanceCost = this.calculateToolDistanceCost(result);
         //result.penaltyCost = this.calculatePenaltyCost(result);
 
-        result.setCost((double) result.getnSwitches());
+        //result.setCost((double) result.getnSwitches());
         //result.setCost(result.getTieBreakingCost());
 
 
@@ -332,11 +333,8 @@ public class Decoder {
         //result.toolDistanceCost = this.calculateToolDistanceCost(result);
         //result.penaltyCost = this.calculatePenaltyCos t(result);
 
-
         result.setCost((double) result.getnSwitches());
-
         //result.setCost(result.getTieBreakingCost());
-
         /*switch (this.problemManager.getParameters().getObjective()) {
             case "switches": {
                 result.setCost((double) result.getnSwitches());
@@ -451,8 +449,6 @@ public class Decoder {
                 setupCount += 1;
             }
         }
-
-
 
         for (int seqPos = 1; seqPos < result.getSequence().length; seqPos++) {
             int swapCount = 0;

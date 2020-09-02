@@ -111,8 +111,8 @@ public class ProblemManager {
 
     public void optimize() throws IOException {
         this.logger.logLegend();
-        General.printGrid(this.getJOB_TOOL_MATRIX());
-        General.printTransposeGrid(this.getJOB_TOOL_MATRIX());
+        //General.printGrid(this.getJOB_TOOL_MATRIX());
+        //General.printTransposeGrid(this.getJOB_TOOL_MATRIX());
 
         switch (this.getParameters().getConstructiveHeuristic()) {
             case "ordered": {
@@ -918,45 +918,6 @@ public class ProblemManager {
 
     }
 
-    //First improvement
-    public void hillClimbing() throws IOException {
-        boolean improved = false;
-        while (System.currentTimeMillis() < this.getTIME_LIMIT()) {
-
-            climb: for (int i = 0; i < this.workingResult.getSequence().length; i++) {
-                for (int j = i + 1 ; j < this.workingResult.getSequence().length; j++) {
-                    int[] seq = this.workingResult.getSequence();
-
-                    //Swap moves
-                    int temp = seq[i];
-                    seq[i] = seq[j];
-                    seq[j] = temp;
-
-
-                    this.decoder.decode(this.workingResult);
-
-
-                    if(this.workingResult.getnSwitches() < this.bestResult.getnSwitches()) {
-                        improved = true;
-                        this.bestResult = this.workingResult.getCopy();
-
-                        //First improvement
-                        break climb;
-                    }
-
-                }
-            }
-
-            this.logger.logInfo("next neighbourhood");
-
-            if (!improved) {
-                this.logger.logInfo("local min reached, no improvement");
-                break;
-            }
-            improved = false;
-        }
-    }
-
     public void forceSequence(int[] sequence) throws IOException {
         this.logger.logInfo("RUNNING FORCE SEQUENCE");
         this.bestResult.reloadJobPositions();
@@ -1012,9 +973,7 @@ public class ProblemManager {
         int noChange = 0;
         int nBestResults = 0;
 
-
-
-        long stopTime = System.currentTimeMillis() + (1000 * 200);
+        long stopTime = System.currentTimeMillis() + (1000 * this.getParameters().getSTOP_TIME());
 
         while (System.currentTimeMillis() < this.getTIME_LIMIT() && this.steps <= this.getParameters().getITERATIONS()) {
 
@@ -1037,12 +996,10 @@ public class ProblemManager {
                 this.workingResult.setAccepted();
                 this.currentResult = this.workingResult;
                 accepted+=1;
-                /*if (steps % 10 == 0) {
-
+                if (steps % 100 == 0) {
                     this.logger.log(this.workingResult, temperature);
-                    this.logger.writeResult(this.getWorkingResult());
-
-                }*/
+                    //this.logger.writeResult(this.getWorkingResult());
+                }
             }else{
                 //Reject
                 this.workingResult.setRejected();
@@ -1056,7 +1013,7 @@ public class ProblemManager {
                 this.logger.log(this.workingResult, temperature);
                 this.logger.writeResult(this.workingResult);
                 improved+=1;
-                stopTime = System.currentTimeMillis() + (1000 * 200);
+                stopTime = System.currentTimeMillis() + (1000 * this.parameters.getSTOP_TIME());
             }
 
             //Additional Stop criterium
@@ -1078,7 +1035,7 @@ public class ProblemManager {
             }
 
             if(steps % 10000 == 0) {
-                this.logger.writeResult(this.getWorkingResult());
+                //this.logger.writeResult(this.getWorkingResult());
                 //this.getLogger().writeLiveResult(this.getWorkingResult());
             }
 
@@ -1105,7 +1062,6 @@ public class ProblemManager {
                 this.logger.logInfo("SA Stopped: result not changing within time limit");
                 break;
             }
-
 
 
             //Reduce temperature
@@ -1142,8 +1098,6 @@ public class ProblemManager {
     public void runDecodeExperiment() {
 
     }
-
-
 
 
     public Job getJob(int id) {

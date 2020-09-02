@@ -24,8 +24,8 @@ public class Parameters {
     //yan_8_15_10_29
     @Option(names = {"--instance"})
     //private String INSTANCE                 =   "cat_10_10_6_1";
-    private String INSTANCE                 =   "cat_10_10_4_1";
-    //private  String INSTANCE = "cat_30_40_17_9";
+    //private String INSTANCE                 =   "cat_10_10_4_1";
+    private  String INSTANCE = "cat_30_40_17_9";
     //private String INSTANCE                 =   "cat_40_60_20_10";
 
 
@@ -40,7 +40,7 @@ public class Parameters {
 
 
     @Option(names = {"--run_type"})
-    private String RUN_TYPE                 =   "TEST";
+    private String RUN_TYPE                 =   "DEMO-A";
     @Option(names = {"--run"})
     private int RUN                         =   0;
 
@@ -57,6 +57,8 @@ public class Parameters {
 
     @Option(names = {"--run_time"})
     private  long RUN_TIME                  =   1000;
+    @Option(names = {"--stop_time"})
+    private  long STOP_TIME                 =   600;
     private  long START_TIME                =   0;
 
 
@@ -64,7 +66,7 @@ public class Parameters {
     @Option(names = {"--constructive_heuristic"})
     private String constructiveHeuristic = "random";
     @Option(names = {"--local_search"})
-    private String localSearch = "swaps";
+    private String localSearch = "ruinAndRecreate";
     @Option(names = {"--meta_heuristic"})
     private String metaHeuristic = "simulatedAnnealing";
     @Option(names = {"--objective"})
@@ -155,7 +157,7 @@ public class Parameters {
     @Option(names = {"--itmin"})
     private  int  itmin                  =   30000;
     @Option(names = {"--itmax"})
-    private  int  itmax                   =   670000;
+    private  int  itmax                   =   5000000;
     @Option(names = {"--alpha"})
     private  double  ALPHA                  =   1;
     @Option(names = {"--beta"})
@@ -401,6 +403,14 @@ public class Parameters {
         this.setSTART_TIME(System.currentTimeMillis());
     }
 
+
+    public long getSTOP_TIME() {
+        return STOP_TIME;
+    }
+
+    public void setSTOP_TIME(long STOP_TIME) {
+        this.STOP_TIME = STOP_TIME;
+    }
 
     public double getwFailKTNS() {
         return wFailKTNS;

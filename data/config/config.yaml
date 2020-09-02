@@ -1,12 +1,12 @@
 ---
 root_path: "/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP"
-files: 'mixed_files.json' #filename of file containing instances to be run
+files: 'keynote_files.json' #filename of file containing instances to be run
 runs: 2  #int; amount of runs of each instance
 parallel: True      #(bool); run instances parallel
 background: False    #(bool); run everything as a background task; only applicable when running parallel
 multi: True         #(bool); run multiple params versions
 use_runs: True      #(bool); run each instance multiple times
-jobs: 6             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
+jobs: 2             #(int); how many jobs need to be run in parrallel; only applicable when running parallel
 use_filter: false   #(bool); only use the instances that match the filter
 open_results: true #(bool); calculate the results of the runs and open after running
 
@@ -23,7 +23,7 @@ params:
   # General: run info
   #
 
-  - run_type: TIE-BABY        #name of the run , configured with the paramaters below
+  - run_type: C        #name of the run , configured with the paramaters below
     run: 0                    #(0); indicates which run it is
     root_folder: ''           #(empty); indicates the folder of the author, containing the problem and aux file.
     instance: ''              #(empty); indicates the instance being used
@@ -32,7 +32,8 @@ params:
     # General: parameters
     #
 
-    run_time: 1000             #int; seconds; max run time
+    run_time: 800             #int; seconds; max run time
+    stop_time: 300
     seed: 7                   #int; seed of random generator
     use_seed: false           #(boolean); use a seed or not
 
@@ -103,7 +104,7 @@ params:
     beta: 0.7
     theta: -1
     itmin: 30000
-    itmax: 300000
+    itmax: 420000
 
 
     #

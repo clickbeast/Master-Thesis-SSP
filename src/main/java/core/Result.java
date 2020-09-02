@@ -92,8 +92,6 @@ public class Result {
         result.setnSwitches(this.getnSwitches());
         result.setType(this.getType());
         result.setTieBreakingCost(this.getTieBreakingCost());
-
-
         //result.setToolDistance(General.copyGrid(this.getToolDistance()));
 
         result.penaltyCost = this.penaltyCost;
