@@ -27,7 +27,7 @@
             "original": "F1003.txt",
             "root_folder": "mecler",
             "instance": "mec_50_75_25_3",
-            "author": "mec",`
+            "author": "mec",
             "n_jobs": 50,
             "n_tools": 75,
             "magazine_size": 25,
