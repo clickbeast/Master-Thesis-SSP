@@ -157,9 +157,11 @@ public class DeltaDecoder {
 
 
     public void evaluate(Result result) {
-        result.setnSwitches(nSwitches(count_switches(result)));
+        //result.setnSwitches(nSwitches(count_switches(result)));
+        result.setnSwitches(nSwitchesSetupBased(result));
         result.setCost((double) result.getnSwitches());
     }
+
 
     public int nSwitchesSetupBased(Result result) {
         //Inserstions
@@ -169,19 +171,21 @@ public class DeltaDecoder {
                 setupCount += 1;
             }
         }
-
         //Only check the tools that are d'office present...
         for (int seqPos = 1; seqPos < result.getSequence().length; seqPos++) {
             int swapCount = 0;
-            for (int toolId = 0; toolId < this.problemManager.getN_JOBS(); toolId++) {
-                //CHECK: current implementation: when a tool gets loaded a "switch" is performed
+
+
+            for (int toolId = 0; toolId < this.problemManager.getN_TOOLS(); toolId++) {
                 if (!result.isToolUsedAtSeqPos(toolId,seqPos - 1) && result.isToolUsedAtSeqPos(toolId, seqPos)) {
                     swapCount+=1;
                 }
             }
+
             setupCount+=swapCount;
         }
-        //System.out.println(setupCount);
+
+
         return  setupCount - this.problemManager.getMAGAZINE_SIZE();
     }
 
@@ -218,10 +222,8 @@ public class DeltaDecoder {
             }
         }
 
-
         insertionCount = 0;
         switches[0] = insertionCount;
-
 
         for (int seqPos = 1; seqPos < result.getSequence().length; seqPos++) {
             int swapCount = 0;
@@ -229,21 +231,19 @@ public class DeltaDecoder {
             Job job = result.getJobAtSeqPos(seqPos);
             Job prevJob = result.getJobAtSeqPos(seqPos - 1);
             for (int j = 0; j < result.getJobToolMatrix()[job.getId()].length; j++) {
-                /*if (result.getJobToolMatrix()[prevJob.getId()][j] ==  1 & result.getJobToolMatrix()[job.getId()][j] ==  0) {
+                if (result.getJobToolMatrix()[prevJob.getId()][j] ==  1 & result.getJobToolMatrix()[job.getId()][j] ==  0) {
                     swapCount+=1;
-                    System.out.println(job.getId() + "->" + j);
-                }*/
-
-                if (result.isToolUsedAtJobId(j,prevJob.getId()) && result.isToolUsedAtJobId(j,job.getId())) {
-                    System.out.println(job.getId() + "->" + j);
-                    swapCount+=1;
+                    //System.out.println(job.getId() + "->" + j);
                 }
+
+
+                /*if (result.isToolUsedAtJobId(j,prevJob.getId()) && !result.isToolUsedAtJobId(j,job.getId())) {
+                    swapCount+=1;
+                }*/
 
             }
             switches[seqPos] = swapCount;
         }
-
-        System.out.println("- - - - - - - - - - - - - - - ");
 
 
         return switches;
