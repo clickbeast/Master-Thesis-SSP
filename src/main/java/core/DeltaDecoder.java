@@ -23,7 +23,9 @@ public class DeltaDecoder {
 
 
     public void decode(Result result) throws IOException {
-        this.KTNSVerified(result);
+        //this.KTNSVerified(result);
+
+        this.KTNS(result);
         this.evaluate(result);
     }
 
@@ -36,27 +38,26 @@ public class DeltaDecoder {
             Job job = result.getJobAtSeqPos(seqPos);
 
             if (seqPos != 0) {
+
                 int prevJobId = result.getJobIdAtSeqPos(seqPos - 1);
-                int nToolsAdd = Math.max(0,this.problemManager.getMAGAZINE_SIZE() - job.getSet().length);
                 int nextJobSeqPos = seqPos + 1;
                 int nextJobId = result.getJobIdAtSeqPos(nextJobSeqPos);
 
+
+                int nToolsAdd = Math.max(0,this.problemManager.getMAGAZINE_SIZE() - job.getSet().length);
+
                 while(nToolsAdd != 0 & nextJobId != -1) {
                     for(int toolId: job.getAntiSet()) {
-
-                        //System.out.println(result.isToolUsedAtJobId(toolId,prevJobId));
-                        //System.out.println(result.isToolKTNSAtJobId(toolId, job.getId()));
-                        //System.out.println(result.isToolUsedAtJobId(toolId, nextJobId));
                         if(result.isToolUsedAtJobId(toolId,prevJobId) && !result.isToolKTNSAtJobId(toolId, job.getId()) && result.isToolUsedAtJobId(toolId, nextJobId)) {
                             result.getJobToolMatrix()[job.getId()][toolId] = result.getKtnsId();
                             nToolsAdd--;
                         }
                     }
-                    //System.out.println(nextJobId);
-
                     nextJobSeqPos = nextJobSeqPos + 1;
                     nextJobId = result.getJobIdAtSeqPos(nextJobSeqPos);
                 }
+
+                //Add remaining tools
 
                 for(int toolId: job.getAntiSet()) {
                     if(nToolsAdd == 0) {
@@ -68,11 +69,16 @@ public class DeltaDecoder {
                         nToolsAdd--;
                     }
                 }
+
             }
         }
 
         //General.printGridP(result);
     }
+
+
+
+
 
 
     public void KTNSVerified(Result result) throws IOException {

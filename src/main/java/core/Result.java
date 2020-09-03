@@ -59,7 +59,7 @@ public class Result {
 
 
     public boolean isToolUsedAtJobId(int toolId, int jobId) {
-        return this.getJobToolMatrix()[jobId][toolId] == 1;
+        return this.getJobToolMatrix()[jobId][toolId] == 1 || this.getJobToolMatrix()[jobId][toolId] == this.getKtnsId();
     }
 
     public boolean isToolUsedAtSeqPos(int toolId, int seqPos) {

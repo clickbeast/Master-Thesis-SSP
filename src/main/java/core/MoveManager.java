@@ -23,7 +23,7 @@ public class MoveManager {
 
 
     public Result doMove(Result result) throws IOException {
-
+        //TODO: for debug
         return this.swap(result);
 
        /* if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
