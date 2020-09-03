@@ -573,6 +573,135 @@ public class MoveManager {
 
 
 
+    public void insertJobsRandomBestPositionBlinksParallel(Result result , Ruin ruined) throws IOException{
+        LinkedList<Integer> sequence = ruined.getKeep();
+        int[] seq = sequence.stream().mapToInt(i -> i).toArray();
+
+        //Shuffle Randomly
+        Collections.shuffle(ruined.getRemove(), this.random);
+
+
+        //System.out.println(ruined.toString());
+
+        for (Integer jobId : ruined.getRemove()) {
+            Double bestCost = Double.MAX_VALUE;
+            int bestPosition = 0;
+            int nBestPositions = 0;
+
+            double[] scores = this.getScoresBestInsert(result, ruined, jobId, sequence);
+
+            for (int index = 0; index < sequence.size(); index++) {
+
+                //Blink
+                if (random.nextDouble() <= (1 - this.problemManager.getParameters().getBLINK_RATE())) {
+                    if(scores[index] <  bestCost) {
+
+                        nBestPositions = 1;
+                        bestPosition = index;
+                        bestCost = scores[index];
+
+                    }else if(scores[index] == bestCost) {
+                        nBestPositions += 1;
+                        float probability = 1 / (float) nBestPositions;
+                        if (random.nextDouble() <= probability) {
+                            bestPosition = index;
+                            bestCost = scores[index];
+                        }
+                    }
+                }
+            }
+
+            sequence.add(bestPosition, jobId);
+
+        }
+
+
+        int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
+        result.setSequence(seqOut);
+        this.problemManager.getDecoder().decode(result);
+    }
+
+
+    class BestPlace extends Thread {
+
+        int score;
+        ProblemManager problemManager;
+        LinkedList<Integer> sequence;
+        int insertPosition;
+        int jobId;
+        double value;
+
+        public BestPlace(ProblemManager problemManager, int jobId, LinkedList<Integer> copy, int insertPosition) {
+            this.problemManager = problemManager;
+            this.jobId = jobId;
+            this.insertPosition = insertPosition;
+            this.sequence = copy;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+
+            int[] seq = new int[0];
+            Result temp = new Result(seq, problemManager);
+
+            sequence.add(insertPosition, jobId);
+            //To Array -> optimize to linked list strucuture
+            // TODO: Optimize -> handle linked list directly
+            temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
+
+            try {
+                this.problemManager.getDecoder().decode(temp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            this.value = temp.getCost();
+
+        }
+
+        public double getScore() {
+            return value;
+        }
+    }
+
+
+
+
+
+
+
+
+    public double[] getScoresBestInsert(Result result, Ruin ruined, int jobId, LinkedList<Integer> sequence) {
+        double[] scores = new double[sequence.size()];
+        BestPlace[] bestPlaces = new BestPlace[sequence.size()];
+
+        for (int insertPosition = 0; insertPosition < sequence.size(); insertPosition++) {
+            LinkedList<Integer> copy = new LinkedList<>(sequence);
+            bestPlaces[insertPosition] = new BestPlace(this.problemManager,jobId,copy,insertPosition);
+            bestPlaces[insertPosition].start();
+        }
+
+
+        try {
+            for (BestPlace bestPlace : bestPlaces) {
+                bestPlace.join();
+            }
+
+        } catch (InterruptedException e) {
+            System.out.println("An error occured");
+        }
+
+
+        for (BestPlace bestPlace: bestPlaces) {
+            scores[bestPlace.insertPosition] = bestPlace.getScore();
+        }
+
+        return scores;
+    }
+
+
+
 
 
 

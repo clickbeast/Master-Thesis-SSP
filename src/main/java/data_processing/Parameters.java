@@ -37,7 +37,7 @@ public class Parameters {
     //private String INSTANCE                 =   "mec_70_105_55_1";
 
     @Option(names = {"--run_type"})
-    private String RUN_TYPE                 =   "DELTA-B";
+    private String RUN_TYPE                 =   "TEST";
     @Option(names = {"--run"})
     private int RUN                         =   0;
 

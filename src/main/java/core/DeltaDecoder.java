@@ -25,9 +25,9 @@ public class DeltaDecoder {
     public void decode(Result result) throws IOException {
         //this.KTNSVerified(result);
 
-        //this.KTNS(result);
+        this.KTNS(result);
 
-        this.KTNSHalf(result);
+        //this.KTNSHalf(result);
         //this.KTNSVerified(result);
         this.evaluate(result);
     }
@@ -279,10 +279,6 @@ public class DeltaDecoder {
         }
         return list;
     }
-
-
-
-
 
 
     public int nSwitchesDelta(Result result) {
