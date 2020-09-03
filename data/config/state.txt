@@ -1,11 +1,4 @@
-<<<<<<< HEAD
 /Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_30_40_17_9
 cat_30_40_17_9
-TEST
+DELTA-B
 0
-=======
-/Users/simonvermeir/Documents/industrial-engineering/SchoolCurrent/MasterProef/Master-Thesis-SSP/data/instances/catanzaro/cat_10_10_4_3
-cat_10_10_4_3
-C
-1
->>>>>>> development_version_3

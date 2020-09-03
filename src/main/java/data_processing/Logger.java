@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import core.ProblemManager;
 import core.Result;
 import data_processing.serializable.OutputData;
+import util.General;
 
 import java.io.*;
 import java.math.RoundingMode;
@@ -250,14 +251,19 @@ public class Logger {
         this.logInfo("WRITE SOLUTION ");
         PrintWriter out = this.getSolutionWriter();
 
+        int[][] jobToolMatrix = result.getJobToolMatrix();
+        result.setJobToolMatrix(General.convertToBinaryGrid(result));
+
         result.setProblemManager(null);
         outputData.updateData(-1, this.getTimeRunning(), this.getTimeRemaining(),result);
         String a = gson.toJson(outputData);
-
         out.println(a);
         System.out.println(a);
         System.out.println(this.problemManager.getParameters().getSOLUTION_PATH());
+        result.setProblemManager(this.getProblemManager());
 
+
+        result.setJobToolMatrix(jobToolMatrix);
     }
 
 
@@ -265,12 +271,20 @@ public class Logger {
          if(this.getProblemManager().getParameters().isWRITE_RESULTS()) {
              PrintWriter out = this.getResultsWriter();
 
+             int[][] jobToolMatrix = result.getJobToolMatrix();
+             result.setJobToolMatrix(General.convertToBinaryGrid(result));
 
              result.setProblemManager(null);
              outputData.updateData(this.getResultsCount(), this.getTimeRunning(), this.getTimeRemaining(), result);
              String a = gson.toJson(outputData);
              out.println(a);
              result.setProblemManager(this.getProblemManager());
+
+
+             //ONLY FOR USE WITH DELTA EVAL -> translation
+             result.setJobToolMatrix(jobToolMatrix);
+
+
              ////out.println("#" + this.getResultsCount());
              //this.printResult(result, out);
 

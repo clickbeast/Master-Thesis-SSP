@@ -36,10 +36,8 @@ public class Parameters {
 
     //private String INSTANCE                 =   "mec_70_105_55_1";
 
-
-
     @Option(names = {"--run_type"})
-    private String RUN_TYPE                 =   "TEST";
+    private String RUN_TYPE                 =   "DELTA-B";
     @Option(names = {"--run"})
     private int RUN                         =   0;
 
@@ -80,8 +78,6 @@ public class Parameters {
 
     //FORCE SEQUECE
     private int[] forceSequence = {0,1,2,3};
-
-
     //private int[] forceSequence = {6,7,5,4,3,2,1,0};
 
 
@@ -149,7 +145,7 @@ public class Parameters {
     @Option(names = {"--force_iterations"})
     private  boolean FORCE_ITERATIONS            =   true;
     @Option(names = {"--iterations"})
-    private  long    ITERATIONS             =   20;
+    private  long    ITERATIONS             =   10000000;
 
 
 

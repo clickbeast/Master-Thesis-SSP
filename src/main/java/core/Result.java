@@ -20,6 +20,8 @@ public class Result {
     private int[] sequence;
 
     private int ktnsId;
+    private int nReductions;
+
 
     private String type;
 
@@ -34,6 +36,7 @@ public class Result {
         this.setnSwitches(-1);
         this.setType("Initial");
         this.setTieBreakingCost(-1);
+        this.setnReductions(0);
         this.setKtnsId(2);
     }
 
@@ -59,6 +62,7 @@ public class Result {
 
 
     public boolean isToolUsedAtJobId(int toolId, int jobId) {
+
         return this.getJobToolMatrix()[jobId][toolId] == 1 || this.getJobToolMatrix()[jobId][toolId] == this.getKtnsId();
     }
 
@@ -213,4 +217,11 @@ public class Result {
     }
 
 
+    public int getnReductions() {
+        return nReductions;
+    }
+
+    public void setnReductions(int nReductions) {
+        this.nReductions = nReductions;
+    }
 }

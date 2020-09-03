@@ -14,6 +14,8 @@ public class MoveManager {
     ProblemManager problemManager;
     private Move move;
 
+
+
     public MoveManager(ProblemManager problemManager) {
         this.problemManager = problemManager;
 
@@ -568,9 +570,10 @@ public class MoveManager {
     }
 
 
-    /*//TODO
-    public Result shake(Result result) {
 
-    }*/
+
+
+
+
 
 }

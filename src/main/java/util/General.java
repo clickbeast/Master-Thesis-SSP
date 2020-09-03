@@ -27,6 +27,10 @@ public class General {
     }
 
 
+    public static void printGridPBinary(Result result) {
+        //
+    }
+
     public static void printGridP(Result result) {
         printTransposeGrid(mapToSequence(result.getJobToolMatrix(),result.getSequence()));
     }
@@ -37,7 +41,7 @@ public class General {
 
 
     public static void printGrid(int[][] grid) {
-        for (int i = 0; i < grid.length; i++) {
+        for(int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 System.out.print(grid[i][j] + " ");
             }
@@ -107,10 +111,20 @@ public class General {
     }
 
 
+    public static int[][] convertToBinaryGrid(Result result) {
+        int[][] gridCopy = new int[result.getJobToolMatrix().length][result.getJobToolMatrix()[0].length];
+        for (int i = 0; i < result.getJobToolMatrix().length; i++) {
+            for (int j = 0; j < result.getJobToolMatrix()[i].length; j++) {
+                if(result.getJobToolMatrix()[i][j] == 1 || result.getJobToolMatrix()[i][j] == result.getKtnsId()) {
+                    gridCopy[i][j] = 1;
+                }else{
+                    gridCopy[i][j] = 0;
+                }
+            }
+        }
+        return gridCopy;
 
-
-
-
+    }
 
 
 

@@ -30,6 +30,7 @@ public class ProblemManager {
     private int[][] JOB_TOOL_MATRIX;
 
     private int[][] SWITCHES_MATRIX;
+    private int[][] SETUP_MATRIX;
 
     private int[][][] SHARED_TOOLS_MATRIX;
     private int[][][] DIFFERENCE_TOOLS_MATRIX;
@@ -214,6 +215,7 @@ public class ProblemManager {
         this.SWITCHES_LB_MATRIX = this.initializeSwitchesLowerBoundMatrix();
         this.TOOL_PAIR_MATRIX = this.initializeToolPairMatrix();
         this.TOOL_PAIR_GRAPH = this.initializeToolPairGraph();
+        this.SETUP_MATRIX = this.initializeSetupMatrix();
         this.setMAX_N_TOOLS(this.findMaxNTools());
     }
 
@@ -229,6 +231,34 @@ public class ProblemManager {
             jobs[i] = job;
         }
         return jobs;
+    }
+
+    public int[][] initializeSetupMatrix() {
+        int[][] setups = new int[this.getN_JOBS()][this.getN_JOBS()];
+
+        for (int prevJobId = 0; prevJobId < this.getN_JOBS(); prevJobId++) {
+            for (int jobId = 0; jobId < this.getN_JOBS(); jobId++) {
+                int nSetups = 0;
+                if(prevJobId == jobId) {
+                    //Count setups
+                    for (int toolId = 0; toolId < this.getN_TOOLS(); toolId++) {
+                        if (this.getJOB_TOOL_MATRIX()[jobId][toolId] == 1) {
+                            nSetups += 1;
+                        }
+                    }
+                }else {
+                    //Count setups
+                    for (int toolId = 0; toolId < this.getN_TOOLS(); toolId++) {
+                        if (this.getJOB_TOOL_MATRIX()[prevJobId][toolId] == 0 && this.getJOB_TOOL_MATRIX()[jobId][toolId] == 1) {
+                            nSetups += 1;
+                        }
+                    }
+                }
+                setups[prevJobId][jobId] = nSetups;
+            }
+        }
+
+        return setups;
     }
 
     public Tool[] initializeTools() {
@@ -348,6 +378,8 @@ public class ProblemManager {
         return matrix;
     }
 
+
+
     //TODO: initializeToolPairMatrix
     //OK
     public int[][] initializeToolPairMatrix() {
@@ -396,6 +428,8 @@ public class ProblemManager {
 
         return weightedGraph;
     }
+
+
 
 
 
@@ -991,8 +1025,6 @@ public class ProblemManager {
         int noChange = 0;
         int nBestResults = 0;
 
-
-
         long stopTime = System.currentTimeMillis() + (1000 * 200);
 
         while (System.currentTimeMillis() < this.getTIME_LIMIT() && this.steps <= this.getParameters().getITERATIONS()) {
@@ -1013,7 +1045,6 @@ public class ProblemManager {
 
                     this.logger.log(this.workingResult, temperature);
                     this.logger.writeResult(this.getWorkingResult());
-
                 }*/
             }else{
                 //Reject
@@ -1026,7 +1057,7 @@ public class ProblemManager {
                 this.workingResult.setImproved();
                 this.bestResult = this.workingResult.getCopy();
                 this.logger.log(this.workingResult, temperature);
-                this.logger.writeResult(this.workingResult);
+                //this.logger.writeResult(this.workingResult);
                 improved+=1;
                 stopTime = System.currentTimeMillis() + (1000 * 200);
             }
@@ -1050,7 +1081,7 @@ public class ProblemManager {
             }
 
             if(steps % 10000 == 0) {
-                this.logger.writeResult(this.getWorkingResult());
+                //this.logger.writeResult(this.getWorkingResult());
                 //this.getLogger().writeLiveResult(this.getWorkingResult());
             }
 
@@ -1174,6 +1205,13 @@ public class ProblemManager {
         this.dataProcessing = dataProcessing;
     }
 
+    public int[][] getSETUP_MATRIX() {
+        return SETUP_MATRIX;
+    }
+
+    public void setSETUP_MATRIX(int[][] SETUP_MATRIX) {
+        this.SETUP_MATRIX = SETUP_MATRIX;
+    }
 
     public Job[] getJobs() {
         return jobs;
