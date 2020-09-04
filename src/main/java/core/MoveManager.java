@@ -1,8 +1,8 @@
 package core;
 
+import com.google.common.graph.EndpointPair;
 import core.moves.Move;
 import models.elemental.Job;
-import util.General;
 
 
 import java.io.IOException;
@@ -14,8 +14,6 @@ public class MoveManager {
     ProblemManager problemManager;
     private Move move;
 
-
-
     public MoveManager(ProblemManager problemManager) {
         this.problemManager = problemManager;
 
@@ -25,15 +23,13 @@ public class MoveManager {
 
 
     public Result doMove(Result result) throws IOException {
-        //TODO: for debug
-        return this.swap(result);
-
-       /* if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
+        /*if(problemManager.getParameters().getLocalSearch().equals("swaps")) {
             return this.swap(result);
         }else if(problemManager.getParameters().getLocalSearch().equals("ruinAndRecreate")){
             return this.ruinAndRecreate(result);
-        }
-        return null;*/
+        }*/
+        //return this.swap(result);
+        return this.ruinAndRecreate(result);
     }
 
     /* SWAP ------------------------------------------------------------------ */
@@ -79,24 +75,25 @@ public class MoveManager {
         int[] select = {0,0,1};
         int picked = select[this.random.nextInt(select.length)];
 
-
         if(picked == 0) {
             ruin = ruinMultiCross(result);
-        }else if(picked == 1){
+        }else{
             ruin = ruinBlock(result);
         }
 
-        recreate(result, ruin);
+        //ruin = ruinMultiCross(result);
 
+        recreate(result, ruin);
         return result;
     }
-
 
 
 
     class Ruin {
         LinkedList<Integer> remove;
         LinkedList<Integer> keep;
+
+        int toolId;
 
         public Ruin() {
             remove = new LinkedList<>();
@@ -137,8 +134,8 @@ public class MoveManager {
         //Select
         int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
 
-        //Match
-        //Remove associated tools -> currently: ONLY NON KTNS TOOLS
+        ruined.toolId = selectedToolId;
+
         for (int i = 0; i < result.getSequence().length; i++) {
             Job job = result.getJobAtSeqPos(i);
             if(job.getTOOLS()[selectedToolId] == 1) {
@@ -146,23 +143,6 @@ public class MoveManager {
                 ruined.getRemove().add(job.getId());
             }else{
                 ruined.getKeep().add(job.getId());
-            }
-        }
-
-        //Filter at random
-
-        //Shuffle
-        Collections.shuffle(ruined.getRemove(), random);
-
-
-        int remove = ruined.getRemove().size() - this.problemManager.getParameters().getAVG_RUIN();
-
-
-
-        //TODO: check for behavuoir of linked list during remove
-        if(remove > 0) {
-            for (int i = 0; i < remove; i++) {
-                ruined.getKeep().add(ruined.getRemove().removeFirst());
             }
         }
 
@@ -179,7 +159,6 @@ public class MoveManager {
             this.nMatches = nMatches;
         }
     }
-
 
     public Ruin ruinMultiCross(Result result) {
         Ruin ruined = new Ruin();
@@ -232,71 +211,74 @@ public class MoveManager {
         return ruined;
     }
 
+    public int getHightestWeightNeighbour(int startToolId) {
+        Set<EndpointPair<Integer>> endpointPairs = this.problemManager.getTOOL_PAIR_GRAPH().incidentEdges(startToolId);
 
-    public Ruin ruinMultiCrossXBestMatch(Result result) {
+        //Base case: just a random tool
+        int neighbour = this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
+        int max = 0;
+
+        for(EndpointPair<Integer> pair: endpointPairs) {
+            int value = this.problemManager.getTOOL_PAIR_GRAPH().edgeValue(pair).orElse(0);
+            if(value > max){
+                max = value;
+
+                if(pair.nodeU() != startToolId) {
+                    neighbour =  pair.nodeU();
+                }else{
+                    neighbour = pair.nodeV();
+                }
+            }
+        }
+
+
+        return neighbour;
+    }
+
+
+    public Ruin ruinMultiCrossToolGraph(Result result) {
         Ruin ruined = new Ruin();
 
         int nTools =  this.random.nextInt(this.problemManager.getMAX_N_TOOLS()) + 1;
         int[] toolId = new int[nTools];
 
         //select n tools at random
-        for (int i = 0; i < nTools; i++) {
-            int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
+        int selectedToolId = this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
+        toolId[0] = selectedToolId;
+
+        for (int i = 1; i < nTools; i++) {
+            selectedToolId =  getHightestWeightNeighbour(selectedToolId);
             toolId[i] = selectedToolId;
         }
 
+
         boolean[] removed = new boolean[this.problemManager.getN_JOBS()];
-        //int[] nMatchesPerJob = new int[this.problemManager.getN_JOBS()];
-
-        ArrayList<Match> matches = new ArrayList<>(this.problemManager.getN_JOBS());
-
+        int[] nMatchesPerJob = new int[this.problemManager.getN_JOBS()];
         int max = 0;
 
         //match jobs, count how much matches per job
         jobLoop: for (int jobId = 0; jobId < this.problemManager.getN_JOBS(); jobId++) {
-            matches.add(new Match(jobId,0));
             if(this.problemManager.getJobs()[jobId].getSet().length >= nTools) {
                 for (int j = 0; j < nTools; j++) {
                     if(this.problemManager.getJOB_TOOL_MATRIX()[jobId][toolId[j]] == 1) {
-                        matches.get(jobId).nMatches += 1;
+                        nMatchesPerJob[jobId]+= 1;
                     }
                 }
             }
 
-
-            //Try random select
-            if (matches.get(jobId).nMatches > max) {
-                max = matches.get(jobId).nMatches;
+            if (nMatchesPerJob[jobId] > max) {
+                max = nMatchesPerJob[jobId];
             }
         }
 
+
         //Only keep maximum matches
-        /*for(int jobId = 0; jobId < nMatchesPerJob.length; jobId++) {
+        for(int jobId = 0; jobId < nMatchesPerJob.length; jobId++) {
             if(nMatchesPerJob[jobId] == max) {
                 ruined.getRemove().add(jobId);
                 removed[jobId] =  true;
             }
-        }*/
-
-        Comparator<Match> byNumberOfMatches = Comparator.comparingInt(
-                match -> {
-                    return match.nMatches;
-                });
-
-        matches.sort(byNumberOfMatches.reversed());
-
-        int nRemove = this.random.nextInt(this.problemManager.getParameters().getAVG_RUIN()) + 1;
-        //Keep the x best matches
-        for (Match match: matches) {
-            ruined.getRemove().add(match.jobId);
-            removed[match.jobId] = true;
-            nRemove --;
-
-            if(nRemove < 1) {
-                break;
-            }
         }
-
 
         //Add remaining tools to keep
         for (int seqPos = 0; seqPos < result.getSequence().length; seqPos++) {
@@ -310,19 +292,15 @@ public class MoveManager {
     }
 
 
-
-
     public Ruin ruinBlock(Result result) {
         Ruin ruined = new Ruin();
 
         //Select random tool
         int selectedToolId =  this.problemManager.getRandom().nextInt(this.problemManager.getN_TOOLS());
-
         return this.ruinBlockAtTool(result, ruined, selectedToolId);
     }
 
-
-    public Ruin ruinBlockAtTool(Result result, Ruin ruined, int selectedToolId) {
+    public Ruin ruinBlockAtTool(Result result, Ruin ruined,int selectedToolId) {
 
         //TODO: can be combined with tie breaking cost
         boolean[] zeroBlock = new boolean[result.getSequence().length];
@@ -337,7 +315,7 @@ public class MoveManager {
                 if(!used) {
                     //Left tool has to be 1
                     if (seqPos > 0) {
-                        if (result.isToolUsedAtSeqPos(selectedToolId, seqPos -1)) {
+                        if (result.isToolUsedAtSeqPos(selectedToolId, seqPos - 1)) {
                             run = true;
                             zeroBlock[seqPos] = true;
                             nZeroBlocks += 1;
@@ -390,7 +368,7 @@ public class MoveManager {
                     ruined.getKeep().add(result.getJobIdAtSeqPos(seqPos));
                 }
             }else{
-                boolean used = result.isToolUsedAtSeqPos(seqPos, selectedToolId);
+                boolean used = result.isToolUsedAtSeqPos(selectedToolId, seqPos);
 
                 if(!used) {
                     //run is still in progress
@@ -411,11 +389,8 @@ public class MoveManager {
             }
         }
 
-
-
         return ruined;
     }
-
 
     public Ruin ruinMultiBlock(Result result) {
 
@@ -426,12 +401,12 @@ public class MoveManager {
         int selectedToolId = this.random.nextInt(this.problemManager.getN_TOOLS());
         ruined = this.ruinBlockAtTool(result, ruined,selectedToolId);
 
-        General.printGridP(result);
-        General.printArrayP(this.problemManager.getTools()[selectedToolId].getJOBS(), result.getSequence());
-        System.out.println(Arrays.toString(result.getSequence()));
+        //General.printGridP(result);
+        //General.printArrayP(this.problemManager.getTools()[selectedToolId].getJOBS(), result.getSequence());
+        //System.out.println(Arrays.toString(result.getSequence()));
+
         int[] nMatchesPerJob = new int[this.problemManager.getN_JOBS()];
         int max = 0;
-
 
         for (int nTool = 1; nTool < nTools; nTool++) {
             selectedToolId = this.random.nextInt(this.problemManager.getN_TOOLS());
@@ -474,13 +449,6 @@ public class MoveManager {
         return ruinedOut;
     }
 
-    class Block {
-        //Interval [a,b[
-        //Included
-        int start;
-        //Not included
-        int end;
-    }
 
 
     // STEP 2: Recreate
@@ -488,16 +456,25 @@ public class MoveManager {
 
 
     public Result recreate(Result result, Ruin ruined) throws IOException {
+        //insertJobsRandomBestPositionBlinks(result, ruined);
+        //insertJobsRandom(result, ruined);
+        bestInsertWithBlinks(result,ruined);
+        //bestInsertWithBlinksParallel(result,ruined);
 
-        insertJobsRandomBestPositionBlinks(result, ruined);
+        /*int[] select = {0, 1};
+        int picked = select[this.random.nextInt(select.length)];
 
-        /*//System.out.println("allo");
-        if(this.problemManager.getParameters().getInsertPositions().equals("all")) {
-            insertJobsRandomBestPositionBlinks(result, ruined);
-        }else if(this.problemManager.getParameters().getInsertPositions().equals("removed")){
-            //TODO: recreate only on removed positions
+        if(picked == 0) {
+            //bestInsertWithBlinksNextTo(result, ruined);
+            bestInsertWithBlinks(result,ruined);
+        }else if(picked == 1){
+            insertJobsRandom(result, ruined);
+        }else if(picked == 2) {
+            bestInsertWithBlinksNextTo(result,ruined);
         }
 */
+
+
         return result;
     }
 
@@ -506,8 +483,7 @@ public class MoveManager {
     //- - - - - - - - - - - -
 
 
-
-    public void insertJobsRandomBestPositionBlinks(Result result , Ruin ruined) throws IOException{
+    public void bestInsertWithBlinks(Result result , Ruin ruined) throws IOException{
         LinkedList<Integer> sequence = ruined.getKeep();
         int[] seq = sequence.stream().mapToInt(i -> i).toArray();
         Result temp = new Result(seq, problemManager);
@@ -518,7 +494,7 @@ public class MoveManager {
 
         //System.out.println(ruined.toString());
 
-         for (Integer jobId : ruined.getRemove()) {
+        for (Integer jobId : ruined.getRemove()) {
 
             Double bestCost = Double.MAX_VALUE;
             int bestPosition = 0;
@@ -532,8 +508,6 @@ public class MoveManager {
                     sequence.add(index, jobId);
 
                     //To Array -> optimize to linked list strucuture
-
-                    // TODO: Optimize -> handle linked list directly
                     temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
                     this.problemManager.getDecoder().decode(temp);
 
@@ -565,23 +539,258 @@ public class MoveManager {
 
 
         int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
-         result.setSequence(seqOut);
+        result.setSequence(seqOut);
         this.problemManager.getDecoder().decode(result);
     }
 
 
+    public void insertJobsRandom(Result result, Ruin ruined) throws IOException {
 
+        for (Integer jobId : ruined.getRemove()) {
 
+            int position = 0;
+            if(ruined.getKeep().size() != 0) {
+                position = this.random.nextInt(ruined.getKeep().size());
+            }
 
-    public void insertJobsRandomBestPositionBlinksParallel(Result result , Ruin ruined) throws IOException{
+            ruined.getKeep().add(position, jobId);
+        }
+
+        int[] seqOut = ruined.getKeep().stream().mapToInt(i -> i).toArray();
+        result.setSequence(seqOut);
+        this.problemManager.getDecoder().decode(result);
+    }
+
+    public LinkedList<Integer> bestSequenceRemoved(Result result, Ruin ruined) throws IOException {
+
+        LinkedList<Integer> sequence = new LinkedList<>();
+        int[] seq = new int[0];
+        Result temp = new Result(seq, problemManager);
+
+        for (Integer jobId : ruined.getRemove()) {
+
+            Double bestCost = Double.MAX_VALUE;
+            int bestPosition = 0;
+            int nBestPositions = 0;
+
+            for (int index = 0; index <= sequence.size(); index++) {
+                //Blink
+                if (random.nextDouble() <= (1 - this.problemManager.getParameters().getBLINK_RATE())) {
+
+                    sequence.add(index, jobId);
+
+                    temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
+                    this.problemManager.getDecoder().decode(temp);
+
+                    if (temp.getCost() < bestCost) {
+
+                        nBestPositions = 1;
+                        bestPosition = index;
+                        bestCost = temp.getCost();
+
+                    } else if (temp.getCost() == bestCost) {
+                        nBestPositions += 1;
+
+                        float probability = 1 / (float) nBestPositions;
+                        if (random.nextDouble() <= probability) {
+                            bestPosition = index;
+                            bestCost = temp.getCost();
+                        }
+                    }
+
+                    sequence.remove(index);
+                }
+            }
+
+            sequence.add(bestPosition, jobId);
+        }
+
+        return  sequence;
+    }
+
+    public void bestInsertWithBlinksNextTo(Result result , Ruin ruined) throws IOException{
+        LinkedList<Integer> sequence = ruined.getKeep();
+
+        int[] seq = sequence.stream().mapToInt(i -> i).toArray();
+        Result temp = new Result(seq, problemManager);
+
+        //Shuffle Randomly
+        Collections.shuffle(ruined.getRemove(), this.random);
+
+        //Sequence removed first
+        LinkedList<Integer> removed = this.bestSequenceRemoved(result, ruined);
+        //System.out.println(removed);
+
+        Double bestCost = Double.MAX_VALUE;
+        int bestPosition = this.problemManager.getRandom().nextInt(ruined.getKeep().size());
+        int nBestPositions = 0;
+
+        for (int index = 0; index < sequence.size(); index++) {
+            //Blink
+            if (random.nextDouble() <= (1 - this.problemManager.getParameters().getBLINK_RATE())) {
+                LinkedList<Integer>  tempSequence = new LinkedList<>(ruined.getKeep());
+                tempSequence.addAll(index, removed);
+                temp.setSequence(tempSequence.stream().mapToInt(i -> i).toArray());
+                this.problemManager.getDecoder().decode(temp);
+
+                if (temp.getCost() < bestCost) {
+
+                    nBestPositions = 1;
+                    bestPosition = index;
+                    bestCost = temp.getCost();
+
+                } else if (temp.getCost() == bestCost) {
+                    nBestPositions += 1;
+                    float probability = 1 / (float) nBestPositions;
+                    if (random.nextDouble() <= probability) {
+                        bestPosition = index;
+                        bestCost = temp.getCost();
+                    }
+                }
+            }
+        }
+
+        sequence.addAll(bestPosition, removed);
+
+        int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
+        result.setSequence(seqOut);
+        this.problemManager.getDecoder().decode(result);
+    }
+
+    public void bestInsertWithBlinksOnlyInRemoved(Result result , Ruin ruined) throws IOException{
         LinkedList<Integer> sequence = ruined.getKeep();
         int[] seq = sequence.stream().mapToInt(i -> i).toArray();
+        Result temp = new Result(seq, problemManager);
 
         //Shuffle Randomly
         Collections.shuffle(ruined.getRemove(), this.random);
 
 
         //System.out.println(ruined.toString());
+
+        for (Integer jobId : ruined.getRemove()) {
+
+            Double bestCost = Double.MAX_VALUE;
+            int bestPosition = 0;
+            int nBestPositions = 0;
+
+            for (int index = 0; index < sequence.size(); index++) {
+
+                //Blink
+                if (random.nextDouble() <= (1 - this.problemManager.getParameters().getBLINK_RATE())) {
+
+                    sequence.add(index, jobId);
+
+
+                    //To Array -> optimize to linked list strucuture
+                    temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
+                    this.problemManager.getDecoder().decode(temp);
+
+                    //this.problemManager.getLogger().writeResult(temp);
+
+                    if(temp.getCost() <  bestCost) {
+
+                        nBestPositions = 1;
+                        bestPosition = index;
+                        bestCost = temp.getCost();
+
+
+                    }else if(temp.getCost() == bestCost) {
+                        nBestPositions += 1;
+                        float probability = 1 / (float) nBestPositions;
+                        if (random.nextDouble() <= probability) {
+                            bestPosition = index;
+                            bestCost = temp.getCost();
+                        }
+                    }
+
+                    sequence.remove(index);
+                }
+            }
+
+            sequence.add(bestPosition, jobId);
+
+        }
+
+
+
+        int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
+        result.setSequence(seqOut);
+        this.problemManager.getDecoder().decode(result);
+    }
+
+    public void constrainedBestInsertWithBlinks(Result result , Ruin ruined) throws IOException{
+        LinkedList<Integer> sequence = ruined.getKeep();
+        int[] seq = sequence.stream().mapToInt(i -> i).toArray();
+        Result temp = new Result(seq, problemManager);
+
+        //Shuffle Randomly
+        Collections.shuffle(ruined.getRemove(), this.random);
+
+
+        for (Integer jobId : ruined.getRemove()) {
+
+            Double bestCost = Double.MAX_VALUE;
+            int bestPosition = this.problemManager.getRandom().nextInt(sequence.size());
+            int nBestPositions = 0;
+
+            for (int index = 0; index < sequence.size(); index++) {
+
+                //Blink
+                if (random.nextDouble() <= (1 - this.problemManager.getParameters().getBLINK_RATE())) {
+
+                    int neighbourJobId = sequence.get(index);
+                    if(result.getJobToolMatrix()[neighbourJobId][ruined.toolId] == 1) {
+                        sequence.add(index, jobId);
+
+                        //To Array -> optimize to linked list strucuture
+                        temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
+                        this.problemManager.getDecoder().decode(temp);
+
+
+                        if (temp.getCost() < bestCost) {
+
+                            nBestPositions = 1;
+                            bestPosition = index;
+                            bestCost = temp.getCost();
+
+
+                        } else if (temp.getCost() == bestCost) {
+                            nBestPositions += 1;
+                            float probability = 1 / (float) nBestPositions;
+                            if (random.nextDouble() <= probability) {
+                                bestPosition = index;
+                                bestCost = temp.getCost();
+                            }
+                        }
+
+                        sequence.remove(index);
+                    }
+                }
+            }
+
+            sequence.add(bestPosition, jobId);
+
+        }
+
+
+
+
+
+        int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
+        result.setSequence(seqOut);
+        this.problemManager.getDecoder().decode(result);
+    }
+
+
+    public void bestInsertWithBlinksParallel(Result result, Ruin ruined) throws IOException {
+        LinkedList<Integer> sequence = ruined.getKeep();
+        int[] seq = sequence.stream().mapToInt(i -> i).toArray();
+
+        // Shuffle Randomly
+        Collections.shuffle(ruined.getRemove(), this.random);
+
+        // System.out.println(ruined.toString());
 
         for (Integer jobId : ruined.getRemove()) {
             Double bestCost = Double.MAX_VALUE;
@@ -592,15 +801,15 @@ public class MoveManager {
 
             for (int index = 0; index < sequence.size(); index++) {
 
-                //Blink
+                // Blink
                 if (random.nextDouble() <= (1 - this.problemManager.getParameters().getBLINK_RATE())) {
-                    if(scores[index] <  bestCost) {
+                    if (scores[index] < bestCost) {
 
                         nBestPositions = 1;
                         bestPosition = index;
                         bestCost = scores[index];
 
-                    }else if(scores[index] == bestCost) {
+                    } else if (scores[index] == bestCost) {
                         nBestPositions += 1;
                         float probability = 1 / (float) nBestPositions;
                         if (random.nextDouble() <= probability) {
@@ -610,17 +819,13 @@ public class MoveManager {
                     }
                 }
             }
-
             sequence.add(bestPosition, jobId);
-
         }
-
 
         int[] seqOut = sequence.stream().mapToInt(i -> i).toArray();
         result.setSequence(seqOut);
         this.problemManager.getDecoder().decode(result);
     }
-
 
     class BestPlace extends Thread {
 
@@ -646,7 +851,7 @@ public class MoveManager {
             Result temp = new Result(seq, problemManager);
 
             sequence.add(insertPosition, jobId);
-            //To Array -> optimize to linked list strucuture
+            // To Array -> optimize to linked list strucuture
             // TODO: Optimize -> handle linked list directly
             temp.setSequence(sequence.stream().mapToInt(i -> i).toArray());
 
@@ -665,23 +870,15 @@ public class MoveManager {
         }
     }
 
-
-
-
-
-
-
-
     public double[] getScoresBestInsert(Result result, Ruin ruined, int jobId, LinkedList<Integer> sequence) {
         double[] scores = new double[sequence.size()];
         BestPlace[] bestPlaces = new BestPlace[sequence.size()];
 
         for (int insertPosition = 0; insertPosition < sequence.size(); insertPosition++) {
             LinkedList<Integer> copy = new LinkedList<>(sequence);
-            bestPlaces[insertPosition] = new BestPlace(this.problemManager,jobId,copy,insertPosition);
+            bestPlaces[insertPosition] = new BestPlace(this.problemManager, jobId, copy, insertPosition);
             bestPlaces[insertPosition].start();
         }
-
 
         try {
             for (BestPlace bestPlace : bestPlaces) {
@@ -692,17 +889,12 @@ public class MoveManager {
             System.out.println("An error occured");
         }
 
-
-        for (BestPlace bestPlace: bestPlaces) {
+        for (BestPlace bestPlace : bestPlaces) {
             scores[bestPlace.insertPosition] = bestPlace.getScore();
         }
 
+        //System.out.println(Arrays.toString(scores));
         return scores;
     }
-
-
-
-
-
 
 }

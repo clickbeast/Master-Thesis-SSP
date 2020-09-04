@@ -54,6 +54,8 @@ public class Parameters {
 
     @Option(names = {"--run_time"})
     private  long RUN_TIME                  =   1000;
+    @Option(names = {"--stop_time"})
+    private  long STOP_TIME                 =   600;
     private  long START_TIME                =   0;
 
 
@@ -145,7 +147,7 @@ public class Parameters {
     @Option(names = {"--force_iterations"})
     private  boolean FORCE_ITERATIONS            =   true;
     @Option(names = {"--iterations"})
-    private  long    ITERATIONS             =   10000000;
+    private  long    ITERATIONS             =   300;
 
 
 
@@ -988,5 +990,13 @@ public class Parameters {
 
     public void setUSE_SEED(boolean USE_SEED) {
         this.USE_SEED = USE_SEED;
+    }
+
+    public long getSTOP_TIME() {
+        return STOP_TIME;
+    }
+
+    public void setSTOP_TIME(long STOP_TIME) {
+        this.STOP_TIME = STOP_TIME;
     }
 }

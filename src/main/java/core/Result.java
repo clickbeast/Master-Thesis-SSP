@@ -104,16 +104,12 @@ public class Result {
     }
 
     public int getJobIdAtSeqPos(int seqPos) {
-        if(seqPos >= this.problemManager.getN_JOBS() || seqPos < 0) {
+        if(seqPos >= this.getSequence().length || seqPos < 0) {
             return -1;
         }
 
         return this.getSequence()[seqPos];
     }
-
-
-
-
 
 
     /* ----------------------------------------------------------------------------------------- */

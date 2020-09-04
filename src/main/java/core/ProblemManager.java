@@ -947,9 +947,7 @@ public class ProblemManager {
                     seq[i] = seq[j];
                     seq[j] = temp;
 
-
                     this.decoder.decode(this.workingResult);
-
 
                     if(this.workingResult.getnSwitches() < this.bestResult.getnSwitches()) {
                         improved = true;
@@ -1025,7 +1023,7 @@ public class ProblemManager {
         int noChange = 0;
         int nBestResults = 0;
 
-        long stopTime = System.currentTimeMillis() + (1000 * 200);
+        long stopTime = System.currentTimeMillis() + (1000 * this.parameters.getSTOP_TIME());
 
         while (System.currentTimeMillis() < this.getTIME_LIMIT() && this.steps <= this.getParameters().getITERATIONS()) {
 
@@ -1059,7 +1057,7 @@ public class ProblemManager {
                 this.logger.log(this.workingResult, temperature);
                 //this.logger.writeResult(this.workingResult);
                 improved+=1;
-                stopTime = System.currentTimeMillis() + (1000 * 200);
+                stopTime = System.currentTimeMillis() + (1000 * this.parameters.getSTOP_TIME());
             }
 
             //Additional Stop criterium
@@ -1067,23 +1065,15 @@ public class ProblemManager {
                 noChange+=1;
             }
 
-
-
-            //Additional Stop Criterium : stop after 100 seconds of not improving
-            /*if(this.getWorkingResult().getnSwitches() == this.getBestResult().getnSwitches()) {
-                noChange+=1;
-            }*/
-
-
             //LOGGING
-            if (steps % 3000 == 0) {
+            if (steps % 7000 == 0) {
                 this.logger.log(this.getWorkingResult(), temperature);
             }
 
-            if(steps % 10000 == 0) {
+            /*if(steps % 10000 == 0) {
                 //this.logger.writeResult(this.getWorkingResult());
                 //this.getLogger().writeLiveResult(this.getWorkingResult());
-            }
+            }*/
 
 
             // - PREPARE FOR NEW ITERATION - -

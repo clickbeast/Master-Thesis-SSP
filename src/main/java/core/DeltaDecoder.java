@@ -29,6 +29,8 @@ public class DeltaDecoder {
 
         //this.KTNSHalf(result);
         //this.KTNSVerified(result);
+        //this.KTNSGroundTruth(result);
+
         this.evaluate(result);
     }
 
@@ -334,10 +336,6 @@ public class DeltaDecoder {
     }
 
 
-
-
-
-
     public int[] count_switches(Result result) {
 
         //Count first tool loadings
@@ -386,10 +384,164 @@ public class DeltaDecoder {
 
 
 
+
+
+    public void KTNSGroundTruth(Result result) throws IOException {
+
+        int[][] resultJobToolMatrix = new int[this.problemManager.getN_JOBS()][this.problemManager.getN_TOOLS()];
+
+        int n = 0;
+
+        int[] toolRowJob = new int[this.problemManager.getN_TOOLS()];
+
+        int C = 0;
+
+        //Step 1
+        for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
+            if(L(i,n, result) == 0) {
+                toolRowJob[i] = 1;
+                C+=1;
+            }
+            if(C == this.problemManager.getMAGAZINE_SIZE()) {
+                break;
+            }
+        }
+
+        //Step1.2
+        n = 1;
+        step2(n,toolRowJob,result);
+    }
+
+
+    public void step2(int n, int[] toolRowJob, Result result) throws IOException {
+        if(n != this.problemManager.getN_JOBS()) {
+            result.getJobToolMatrix()[n-1] = toolRowJob.clone();
+            step3(n, toolRowJob,result);
+        }else{
+            stop(n, toolRowJob,result);
+        }
+    }
+
+    //STEP 3 : If each i having L(i, n) = n also has Ji = 1, set n = n + 1 and go to Step 2.
+    public void step3(int n, int[] toolRowJob , Result result) throws IOException {
+
+        boolean goToStep2 = true;
+        for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
+            if(L(i,n,result) ==  n) {
+                if(toolRowJob[i] != 1) {
+                    goToStep2 = false;
+                    break;
+                }
+            }
+        }
+
+        if(goToStep2) {
+            n = n + 1;
+            step2(n, toolRowJob, result);
+        }else{
+            step4(n, toolRowJob, result);
+        }
+    }
+
+
+
+    //TODO: convertable to induvidual steps possible
+
+
+    //Pick i having L(i, n) = n and Ji = 0. Set Ji = 1. IE INSERT THE REQUIRED TOOLS
+    public void step4(int n, int[] toolRowJob, Result result) throws IOException {
+
+        //Maybe for only 1 tool
+        for (int i = 0; i < this.problemManager.getN_TOOLS(); i++) {
+            if(L(i,n, result) == n & toolRowJob[i] == 0) {
+                toolRowJob[i] = 1;
+            }
+        }
+        step5(n, toolRowJob, result);
+    }
+
+    //Set Jk = 0 for a k that maximizes L(p, n) over {p: Jp = 1}. Go to Step 3. IE DELETE THE LEAST IMPORTANT TOOL
+
+    public void step5(int n , int[] toolRowJob, Result result) throws IOException {
+
+        //Step How many tools to remove?
+        //Not explicitlely mentioned??
+        int count = 0;
+        for (int i = 0; i < toolRowJob.length; i++) {
+            if(toolRowJob[i] ==  1) {
+                count+=1;
+            }
+        }
+
+        int nDelete = Math.max(0,count - this.problemManager.getMAGAZINE_SIZE());
+
+        //TODO: possible to optimize
+
+        while(nDelete != 0) {
+
+            int maxL = -1;
+            int id = -1;
+
+            for (int i = 0; i < toolRowJob.length; i++) {
+                if (toolRowJob[i] == 1) {
+                    int value = L(i, n, result);
+                    if (value > maxL) {
+                        id = i;
+                        maxL = value;
+                    }
+                }
+            }
+
+            if(id != -1) {
+                //Set to Jk = O
+                toolRowJob[id] = 0;
+                nDelete--;
+            }
+        }
+
+
+
+        step3(n, toolRowJob, result);
+    }
+
+
+
+    public void stop(int n, int[] toolRowJob, Result result) throws IOException {
+
+    }
+
+
+
+
+    public int L(int toolId, int n, Result result) {
+
+        if(result.getSequence()[0] == 0) {
+            //System.out.println("helloo");
+        }
+        for (int seqPos = n; seqPos < result.getSequence().length; seqPos++) {
+            Job job = result.getJobAtSeqPos(seqPos);
+            if(this.problemManager.getJOB_TOOL_MATRIX()[job.getId()][toolId] == 1) {
+                return seqPos;
+            }
+        }
+
+        return this.problemManager.getN_JOBS();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /* GETTERS & SETTERS ------------------------------------------------------------------ */
-
-
-
 
 
     public ProblemManager getProblemManager() {

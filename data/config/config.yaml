@@ -23,7 +23,7 @@ params:
   # General: run info
   #
 
-  - run_type: C        #name of the run , configured with the paramaters below
+  - run_type: GOAL-B        #name of the run , configured with the paramaters below
     run: 0                    #(0); indicates which run it is
     root_folder: ''           #(empty); indicates the folder of the author, containing the problem and aux file.
     instance: ''              #(empty); indicates the instance being used
@@ -33,7 +33,7 @@ params:
     #
 
     run_time: 800             #int; seconds; max run time
-    stop_time: 300
+    stop_time: 600
     seed: 7                   #int; seed of random generator
     use_seed: false           #(boolean); use a seed or not
 
